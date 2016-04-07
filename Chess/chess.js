@@ -10,7 +10,7 @@
 var WHITE = 'w';
 var BLACK = 'b';
 var LETTERS = 'abcdefgh';
-
+ 
 function Chessboard() {
 	this.reset();
 }

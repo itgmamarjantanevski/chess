@@ -209,4 +209,4 @@ Figure.parent(Pawn, 'P');
 
 var c = new Chessboard();
 console.log("" + c);
-console.log("" + c.moves());
+console.log("" + c.moves().join(", "));

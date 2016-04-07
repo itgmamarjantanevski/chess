@@ -11,6 +11,7 @@ var WHITE = 'w';
 var BLACK = 'b';
 var LETTERS = 'abcdefgh';
 
+// Self-contained instance of a chessboard
 function Chessboard() {
 	this.reset();
 }

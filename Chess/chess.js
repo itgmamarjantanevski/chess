@@ -126,13 +126,14 @@ Movement.prototype.toString = function() {
 	return this.fig.toString() + "/" + this.from + "->" + this.to;
 }
 
+
+//===== Figure Type ======
+
 function Figure(type, color, index) {
 	this.type = type;
 	this.color = color;
 	if (index) this.index = index;
 }
-
-//===== Figure Type ======
 
 Figure.parent = function (d) {
 	var b = this;

@@ -92,6 +92,8 @@ Chessboard.prototype.toString = function() {
 	return s;
 }
 
+// ===== Common Types ======
+
 function Pos(a, b, c) {
 	if (c === undefined) {
 		this.row = a;
@@ -124,19 +126,19 @@ Movement.prototype.toString = function() {
 	return this.fig.toString() + "/" + this.from + "->" + this.to;
 }
 
-function Figure(color, index, pos) {
-	this.type = this.symbol;
+function Figure(type, color, index) {
+	this.type = type;
 	this.color = color;
-	if (index) this.index = index;	
-	this.pos = pos;
+	if (index) this.index = index;
 }
 
-Figure.parent = function (d, symbol) {
+//===== Figure Type ======
+
+Figure.parent = function (d) {
 	var b = this;
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    if (symbol != undefined) d.prototype.symbol = symbol;
 }
 
 Figure.prototype.moves = function() {
@@ -144,32 +146,41 @@ Figure.prototype.moves = function() {
 } 
 
 Figure.prototype.toString = function() {
-	return this.color + this.symbol + (this.index || ''); 
+	return this.color + this.type + (this.index || ''); 
 }
 
-Figure.prototype._super = function() {
+Figure.prototype.init = function() {
 	Figure.apply(this, arguments);
 }
 
+//===== King Type ======
+
+Figure.parent(King);
 function King(color, pos) {
-	this._super(color, null, pos);
+	this.init('KG', color, null, pos);
 }
-Figure.parent(King, 'KG');
 
+//===== Queen Type ======
+
+Figure.parent(Queen);
 function Queen(color, pos) {
-	this._super(color, null, pos);
+	this.init('QN', color, null, pos);
 }
-Figure.parent(Queen, 'QN');
 
+//===== Rook Type ======
+
+Figure.parent(Rook);
 function Rook(color, index, pos) {
-	this._super(color, index, pos);
+	this.init('R', color, index, pos);
 }
-Figure.parent(Rook, 'R');
 
+//===== Knight Type ======
+
+Figure.parent(Knight);
 function Knight(color, index, pos) {
-	this._super(color, index, pos);
+	this.init('S', color, index, pos);
 }
-Figure.parent(Knight, 'S');
+
 Knight.prototype.moves = function() {
 	var fig = this;
 	var board = this.board;
@@ -196,16 +207,21 @@ Knight.prototype.moves = function() {
 	return moves;
 }
 
+//===== Laufer Type ======
+
+Figure.parent(Laufer);
 function Laufer(color, index, pos) {
-	this._super(color, index, pos);
+	this.init('L', color, index, pos);
 }
-Figure.parent(Laufer, 'L');
 
+//===== Pawn Type ======
+
+Figure.parent(Pawn);
 function Pawn(color, index, pos) {
-	this._super(color, index, pos);
+	this.init('P', color, index, pos);
 }
-Figure.parent(Pawn, 'P');
 
+//===== Demo code ======
 
 var c = new Chessboard();
 console.log("" + c);

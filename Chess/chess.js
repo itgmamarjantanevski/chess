@@ -273,7 +273,7 @@ Queen.prototype.moves = function() {
         pos.off(+7,-7),
     	];
     
-    	moves_Queen =moves_Queen.filter(function(x) {
+    	moves_Queen = moves_Queen.filter(function(x) {
 	    var at = board.at(x);
 	    if (at === undefined) return false;
 	    return (at == null || at && at.color != fig.color);

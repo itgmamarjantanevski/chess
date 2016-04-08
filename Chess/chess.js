@@ -241,11 +241,93 @@ function Laufer(color, index, pos) {
 	this.init('L', color, index, pos);
 }
 
+
+Laufer.prototype.moves = function(){
+	var fig = this;
+	var board = this.board;
+	var pos = this.pos;
+	
+	
+	var potezi = [
+	              pos.off(+1,+1),
+	              pos.off(+2,+2),
+	              pos.off(+3,+3),
+	              pos.off(+4,+4),
+	              pos.off(+5,+5),
+	              pos.off(+6,+6),
+	              pos.off(+7,+7),
+	              
+	              pos.off(-1,-1),
+	              pos.off(-2,-2),
+	              pos.off(-3,-3),
+	              pos.off(-4,-4),
+	              pos.off(-5,-5),
+	              pos.off(-6,-6),
+	              pos.off(-7,-7),
+	              
+	              pos.off(+1,-1),
+	              pos.off(+2,-2),
+	              pos.off(+3,-3),
+	              pos.off(+4,-4),
+	              pos.off(+5,-5),
+	              pos.off(+6,-6),
+	              pos.off(+7,-7),
+	              
+	              
+	              pos.off(-1,+1),
+	              pos.off(-2,+2),
+	              pos.off(-3,+3),
+	              pos.off(-4,+4),
+	              pos.off(-5,+5),
+	              pos.off(-6,+6),
+	              pos.off(-7,+7)
+	              ];
+	
+	potezi = potezi.filter(function(x) {
+	    var at = board.at(x);
+	    if (at === undefined) return false;
+	    return (at == null || at && at.color != fig.color);
+	}).map(function(x) {
+		return new Movement(fig, x);
+	});
+		
+	return potezi;
+}
+
+
 //===== Pawn Type ======
 
 Figure.parent(Pawn);
 function Pawn(color, index, pos) {
 	this.init('P', color, index, pos);
+}
+
+Pawn.prototype.moves = function() {
+	
+	var fig = this;
+	var board = this.board;
+	var pos = this.pos;
+	var PawnMoves = [
+	             pos.off(+1,0),
+	             pos.off(+2,0),
+	             pos.off(+1,+1),
+	             pos.off(+1,-1),
+	             pos.off(-1,0),
+	             pos.off(-2,0),
+	             pos.off(-1,-1),
+	             pos.off(-1,1)];
+				 
+	
+	PawnMoves=PawnMoves.filter(function(x){
+		var at = board.at(x);
+	    if (at === undefined) return false;
+	    return (at == null || at && at.color != fig.color);
+	}).map(function(x) {
+		return new Movement(fig, x);
+	});	
+	
+	return PawnMoves;
+	
 }
 
 //===== Demo code ======

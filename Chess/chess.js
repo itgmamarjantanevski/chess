@@ -194,7 +194,7 @@ function Queen(color, pos) {
 	this.init('QN', color, null, pos);
 }
 
-<<<<<<< HEAD
+
 Queen.prototype.moves = function() {
     	var fig = this;
 	    var board = this.board;

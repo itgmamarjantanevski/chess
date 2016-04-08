@@ -288,8 +288,6 @@ Queen.prototype.moves = function() {
 
 // ===== Rook Type ======
 
-
-
 Figure.parent(Rook);
 function Rook(color, index, pos) {
 	this.init('R', color, index, pos);

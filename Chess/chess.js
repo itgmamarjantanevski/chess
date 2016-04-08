@@ -196,17 +196,17 @@ function Queen(color, pos) {
 
 
 Queen.prototype.moves = function() {
-    	var fig = this;
-	    var board = this.board;
-	    var pos = this.pos;
-        
-        var moves_Queen = [
+    var fig = this;
+    var board = this.board;
+    var pos = this.pos;
+    
+    var movesQueen = [
         //up move
         pos.off(+0,+1),
         pos.off(+0,+2),
         pos.off(+0,+3),
         pos.off(+0,+4),
-		pos.off(+0,+5),
+        pos.off(+0,+5),
         pos.off(+0,+6),
         pos.off(+0,+7),
         
@@ -216,7 +216,7 @@ Queen.prototype.moves = function() {
         pos.off(+0,-3),
         pos.off(+0,-4),
         pos.off(+0,-5),
-		pos.off(+0,-6),
+        pos.off(+0,-6),
         pos.off(+0,-7),
         
         //right move
@@ -272,17 +272,17 @@ Queen.prototype.moves = function() {
         pos.off(+5,-5),
         pos.off(+6,-6),
         pos.off(+7,-7),
-    	];
+    ];
+
+    movesQueen = movesQueen.filter(function(x) {
+    var at = board.at(x);
+    if (at === undefined) return false;
+        return (at == null || at && at.color != fig.color);
+    }).map(function(x) {
+        return new Movement(fig, x);
+    });
     
-    	movesQueen = movesQueen.filter(function(x) {
-	    var at = board.at(x);
-	    if (at === undefined) return false;
-	    return (at == null || at && at.color != fig.color);
-	    }).map(function(x) {
-		return new Movement(fig, x);
-	    });
-	 
-     return movesQueen;
+    return movesQueen;
 }
 
 
@@ -290,60 +290,60 @@ Queen.prototype.moves = function() {
 
 Figure.parent(Rook);
 function Rook(color, index, pos) {
-	this.init('R', color, index, pos);
+this.init('R', color, index, pos);
 }
 
 Rook.prototype.moves = function() {
-    	var fig = this;
-	    var board = this.board;
-	    var pos = this.pos;
-        
-        var moves_Rook = [
-        //move up
-		pos.off(+0,+1),
-        pos.off(+0,+2),
-        pos.off(+0,+3),
-        pos.off(+0,+4),
-        pos.off(+0,+5),
-		pos.off(+0,+6),
-        pos.off(+0,+7),
-        
-        //move down 
-        pos.off(+0,-1),
-        pos.off(+0,-2),
-        pos.off(+0,-3),
-        pos.off(+0,-4),
-        pos.off(+0,-5),
-		pos.off(+0,-6),
-        pos.off(+0,-7),
-        
-        //move right
-        pos.off(+1,+0),
-        pos.off(+2,+0),
-        pos.off(+3,+0),
-        pos.off(+4,+0),
-        pos.off(+5,+0),
-        pos.off(+6,+0),
-        pos.off(+7,+0),
-        
-        //move left
-        pos.off(-1,+0),
-        pos.off(-2,+0),
-        pos.off(-3,+0),
-        pos.off(-4,+0),
-        pos.off(-5,+0),
-        pos.off(-6,+0),
-        pos.off(-7,+0),
-        
-    	];
+    var fig = this;
+    var board = this.board;
+    var pos = this.pos;
     
-    	movesRook = movesRook.filter(function(x) {
-	    var at = board.at(x);
-	    if (at === undefined) return false;
-	    return (at == null || at && at.color != fig.color);
-	    }).map(function(x) {
-		return new Movement(fig, x);
-	    });
+    var movesRook = [
+    //move up
+    pos.off(+0,+1),
+    pos.off(+0,+2),
+    pos.off(+0,+3),
+    pos.off(+0,+4),
+    pos.off(+0,+5),
+    pos.off(+0,+6),
+    pos.off(+0,+7),
+    
+    //move down 
+    pos.off(+0,-1),
+    pos.off(+0,-2),
+    pos.off(+0,-3),
+    pos.off(+0,-4),
+    pos.off(+0,-5),
+    pos.off(+0,-6),
+    pos.off(+0,-7),
+    
+    //move right
+    pos.off(+1,+0),
+    pos.off(+2,+0),
+    pos.off(+3,+0),
+    pos.off(+4,+0),
+    pos.off(+5,+0),
+    pos.off(+6,+0),
+    pos.off(+7,+0),
+    
+    //move left
+    pos.off(-1,+0),
+    pos.off(-2,+0),
+    pos.off(-3,+0),
+    pos.off(-4,+0),
+    pos.off(-5,+0),
+    pos.off(-6,+0),
+    pos.off(-7,+0),
+    
+    ];
+
+    movesRook = movesRook.filter(function(x) {
+    var at = board.at(x);
+    if (at === undefined) return false;
+        return (at == null || at && at.color != fig.color);
+    }).map(function(x) {
+        return new Movement(fig, x);
+    });
         
 	return movesRook;
 }

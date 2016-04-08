@@ -18,7 +18,7 @@ function Chessboard() {
 
 Chessboard.prototype.reset = function() {
 	var i;
-	
+	this.move = 0;
 	this.figures = [];
 	this.board = [];
 	for(i=0; i<8; i++) this.board[i] = [null, null, null, null, null, null, null, null];
@@ -126,7 +126,6 @@ Movement.prototype.toString = function() {
 	return this.fig.toString() + "/" + this.from + "->" + this.to;
 }
 
-
 // ===== Figure Type ======
 
 function Figure(type, color, index) {
@@ -154,6 +153,7 @@ Figure.prototype.init = function() {
 	Figure.apply(this, arguments);
 }
 
+
 // ===== King Type ======
 
 Figure.parent(King);
@@ -165,7 +165,7 @@ King.prototype.moves = function() {
 	var fig = this;
 	var board = this.board;
 	var pos = this.pos;
-	var king_moves = [
+	var kingMoves = [
 		pos.off(+1, 0),
 		pos.off(+1, +1),
 		pos.off(0, +1),
@@ -176,7 +176,7 @@ King.prototype.moves = function() {
 		pos.off(+1, -1)
 	];
 	
-	king_moves = king_moves.filter(function(x) {
+	kingMoves = kingMoves.filter(function(x) {
 	    var at = board.at(x);
 	    if (at === undefined) return false;
 	    return (at == null || at && at.color != fig.color);
@@ -184,7 +184,7 @@ King.prototype.moves = function() {
 		return new Movement(fig, x);
 	});
 		
-	return king_moves;
+	return kingMoves;
 }
 
 // ===== Queen Type ======
@@ -196,18 +196,18 @@ function Queen(color, pos) {
 
 
 Queen.prototype.moves = function() {
-    	var fig = this;
-	    var board = this.board;
-	    var pos = this.pos;
-        
-        var moves_Queen = [
+    var fig = this;
+    var board = this.board;
+    var pos = this.pos;
+    
+    var movesQueen = [
         //up move
-		pos.off(+0,+1),
+        pos.off(+0,+1),
         pos.off(+0,+2),
         pos.off(+0,+3),
         pos.off(+0,+4),
         pos.off(+0,+5),
-		pos.off(+0,+6),
+        pos.off(+0,+6),
         pos.off(+0,+7),
         
         //down move
@@ -216,7 +216,7 @@ Queen.prototype.moves = function() {
         pos.off(+0,-3),
         pos.off(+0,-4),
         pos.off(+0,-5),
-		pos.off(+0,-6),
+        pos.off(+0,-6),
         pos.off(+0,-7),
         
         //right move
@@ -272,17 +272,17 @@ Queen.prototype.moves = function() {
         pos.off(+5,-5),
         pos.off(+6,-6),
         pos.off(+7,-7),
-    	];
+    ];
+
+    movesQueen = movesQueen.filter(function(x) {
+    var at = board.at(x);
+    if (at === undefined) return false;
+        return (at == null || at && at.color != fig.color);
+    }).map(function(x) {
+        return new Movement(fig, x);
+    });
     
-    	moves_Queen = moves_Queen.filter(function(x) {
-	    var at = board.at(x);
-	    if (at === undefined) return false;
-	    return (at == null || at && at.color != fig.color);
-	    }).map(function(x) {
-		return new Movement(fig, x);
-	    });
-	 
-     return moves_Queen;
+   return movesQueen;
 }
 
 
@@ -290,63 +290,68 @@ Queen.prototype.moves = function() {
 
 Figure.parent(Rook);
 function Rook(color, index, pos) {
-	this.init('R', color, index, pos);
+this.init('R', color, index, pos);
 }
 
 Rook.prototype.moves = function() {
-    	var fig = this;
-	    var board = this.board;
-	    var pos = this.pos;
-        
-        var moves_Rook = [
-        //move up
-		pos.off(+0,+1),
-        pos.off(+0,+2),
-        pos.off(+0,+3),
-        pos.off(+0,+4),
-        pos.off(+0,+5),
-		pos.off(+0,+6),
-        pos.off(+0,+7),
-        
-        //move down 
-        pos.off(+0,-1),
-        pos.off(+0,-2),
-        pos.off(+0,-3),
-        pos.off(+0,-4),
-        pos.off(+0,-5),
-		pos.off(+0,-6),
-        pos.off(+0,-7),
-        
-        //move right
-        pos.off(+1,+0),
-        pos.off(+2,+0),
-        pos.off(+3,+0),
-        pos.off(+4,+0),
-        pos.off(+5,+0),
-        pos.off(+6,+0),
-        pos.off(+7,+0),
-        
-        //move left
-        pos.off(-1,+0),
-        pos.off(-2,+0),
-        pos.off(-3,+0),
-        pos.off(-4,+0),
-        pos.off(-5,+0),
-        pos.off(-6,+0),
-        pos.off(-7,+0),
-        
-    	];
+    var fig = this;
+    var board = this.board;
+    var pos = this.pos;
     
-    	moves_Rook = moves_Rook.filter(function(x) {
-	    var at = board.at(x);
-	    if (at === undefined) return false;
-	    return (at == null || at && at.color != fig.color);
-	    }).map(function(x) {
-		return new Movement(fig, x);
-	    });
-        
-	return moves_Rook;
+    var movesRook = [
+    //move up
+    pos.off(+0,+1),
+    pos.off(+0,+2),
+    pos.off(+0,+3),
+    pos.off(+0,+4),
+    pos.off(+0,+5),
+    pos.off(+0,+6),
+    pos.off(+0,+7),
+    
+    //move down 
+    pos.off(+0,-1),
+    pos.off(+0,-2),
+    pos.off(+0,-3),
+    pos.off(+0,-4),
+    pos.off(+0,-5),
+    pos.off(+0,-6),
+    pos.off(+0,-7),
+    
+    //move right
+    pos.off(+1,+0),
+    pos.off(+2,+0),
+    pos.off(+3,+0),
+    pos.off(+4,+0),
+    pos.off(+5,+0),
+    pos.off(+6,+0),
+    pos.off(+7,+0),
+    
+    //move left
+    pos.off(-1,+0),
+    pos.off(-2,+0),
+    pos.off(-3,+0),
+    pos.off(-4,+0),
+    pos.off(-5,+0),
+    pos.off(-6,+0),
+    pos.off(-7,+0),
+    
+    ];
+
+    movesRook = movesRook.filter(function(x) {
+    var at = board.at(x);
+    if (at === undefined) return false;
+        return (at == null || at && at.color != fig.color);
+    }).map(function(x) {
+        return new Movement(fig, x);
+    });
+      
+     
+    for (var i = 0; i < board.length; i++) {
+        console.log(board[i]);
+    }
+	 return movesRook;
 }
+
 
 // ===== Knight Type ======
 
@@ -378,7 +383,7 @@ Knight.prototype.moves = function() {
 		return new Movement(fig, x);
 	});
 		
-	return moves;
+	 return moves;
 }
 
 // ===== Laufer Type ======
@@ -395,7 +400,7 @@ Laufer.prototype.moves = function(){
 	var pos = this.pos;
 	
 	
-	var potezi = [
+	var movesLaufer = [
 	              pos.off(+1,+1),
 	              pos.off(+2,+2),
 	              pos.off(+3,+3),
@@ -430,7 +435,7 @@ Laufer.prototype.moves = function(){
 	              pos.off(-7,+7)
 	              ];
 	
-	potezi = potezi.filter(function(x) {
+	movesLaufer = movesLaufer.filter(function(x) {
 	    var at = board.at(x);
 	    if (at === undefined) return false;
 	    return (at == null || at && at.color != fig.color);
@@ -438,7 +443,7 @@ Laufer.prototype.moves = function(){
 		return new Movement(fig, x);
 	});
 		
-	return potezi;
+	 return movesLaufer;
 }
 
 
@@ -454,7 +459,7 @@ Pawn.prototype.moves = function() {
 	var fig = this;
 	var board = this.board;
 	var pos = this.pos;
-	var PawnMoves = [
+	var pawnMoves = [
 	             pos.off(+1,0),
 	             pos.off(+2,0),
 	             pos.off(+1,+1),
@@ -465,15 +470,16 @@ Pawn.prototype.moves = function() {
 	             pos.off(-1,1)];
 				 
 	
-	PawnMoves=PawnMoves.filter(function(x){
+	pawnMoves=pawnMoves.filter(function(x){
 		var at = board.at(x);
+
 	    if (at === undefined) return false;
 	    return (at == null || at && at.color != fig.color);
 	}).map(function(x) {
 		return new Movement(fig, x);
 	});	
 	
-	return PawnMoves;
+	return pawnMoves;
 	
 }
 

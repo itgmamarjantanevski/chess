@@ -194,11 +194,146 @@ function Queen(color, pos) {
 	this.init('QN', color, null, pos);
 }
 
-//===== Rook Type ======
+Queen.prototype.moves = function() {
+    	var fig = this;
+	    var board = this.board;
+	    var pos = this.pos;
+        
+        var moves_Queen = [
+        //up move
+		pos.off(+0,+1),
+        pos.off(+0,+2),
+        pos.off(+0,+3),
+        pos.off(+0,+4),
+        pos.off(+0,+5),
+		pos.off(+0,+6),
+        pos.off(+0,+7),
+        //down move
+        pos.off(+0,-1),
+        pos.off(+0,-2),
+        pos.off(+0,-3),
+        pos.off(+0,-4),
+        pos.off(+0,-5),
+		pos.off(+0,-6),
+        pos.off(+0,-7),
+        //right move
+        pos.off(+1,+0),
+        pos.off(+2,+0),
+        pos.off(+3,+0),
+        pos.off(+4,+0),
+        pos.off(+5,+0),
+        pos.off(+6,+0),
+        pos.off(+7,+0),
+        //left move
+        pos.off(-1,+0),
+        pos.off(-2,+0),
+        pos.off(-3,+0),
+        pos.off(-4,+0),
+        pos.off(-5,+0),
+        pos.off(-6,+0),
+        pos.off(-7,+0),
+        //diagonal up right
+        pos.off(+1,+1),
+        pos.off(+2,+2),
+        pos.off(+3,+3),
+        pos.off(+4,+4),
+        pos.off(+5,+5),
+        pos.off(+6,+6),
+        pos.off(+7,+7),
+        //diagonal up left
+        pos.off(-1,+1),
+        pos.off(-2,+2),
+        pos.off(-3,+3),
+        pos.off(-4,+4),
+        pos.off(-5,+5),
+        pos.off(-6,+6),
+        pos.off(-7,+7),
+        //diagonal down left
+        pos.off(-1,-1),
+        pos.off(-2,-2),
+        pos.off(-3,-3),
+        pos.off(-4,-4),
+        pos.off(-5,-5),
+        pos.off(-6,-6),
+        pos.off(-7,-7),
+        //diagonal down right
+        pos.off(+1,-1),
+        pos.off(+2,-2),
+        pos.off(+3,-3),
+        pos.off(+4,-4),
+        pos.off(+5,-5),
+        pos.off(+6,-6),
+        pos.off(+7,-7),
+    	];
+    
+    	moves_Queen =moves_Queen.filter(function(x) {
+	    var at = board.at(x);
+	    if (at === undefined) return false;
+	    return (at == null || at && at.color != fig.color);
+	    }).map(function(x) {
+		return new Movement(fig, x);
+	    });
+	 
+     return moves_Queen;
+}
 
+
+//===== Rook Type ======
 Figure.parent(Rook);
 function Rook(color, index, pos) {
 	this.init('R', color, index, pos);
+}
+
+Rook.prototype.moves = function() {
+    	var fig = this;
+	    var board = this.board;
+	    var pos = this.pos;
+        
+        var moves_Rook = [
+        //move up
+		pos.off(+0,+1),
+        pos.off(+0,+2),
+        pos.off(+0,+3),
+        pos.off(+0,+4),
+        pos.off(+0,+5),
+		pos.off(+0,+6),
+        pos.off(+0,+7),
+        //move down 
+        pos.off(+0,-1),
+        pos.off(+0,-2),
+        pos.off(+0,-3),
+        pos.off(+0,-4),
+        pos.off(+0,-5),
+		pos.off(+0,-6),
+        pos.off(+0,-7),
+        //move right
+        pos.off(+1,+0),
+        pos.off(+2,+0),
+        pos.off(+3,+0),
+        pos.off(+4,+0),
+        pos.off(+5,+0),
+        pos.off(+6,+0),
+        pos.off(+7,+0),
+        //move left
+        pos.off(-1,+0),
+        pos.off(-2,+0),
+        pos.off(-3,+0),
+        pos.off(-4,+0),
+        pos.off(-5,+0),
+        pos.off(-6,+0),
+        pos.off(-7,+0),
+        
+    	];
+    
+    	moves_Rook = moves_Rook.filter(function(x) {
+	    var at = board.at(x);
+	    if (at === undefined) return false;
+	    return (at == null || at && at.color != fig.color);
+	    }).map(function(x) {
+		return new Movement(fig, x);
+	    });
+        
+	return moves_Rook;
 }
 
 //===== Knight Type ======
@@ -233,6 +368,7 @@ Knight.prototype.moves = function() {
 		
 	return moves;
 }
+
 
 //===== Laufer Type ======
 

@@ -127,7 +127,7 @@ Movement.prototype.toString = function() {
 }
 
 
-//===== Figure Type ======
+// ===== Figure Type ======
 
 function Figure(type, color, index) {
 	this.type = type;
@@ -154,28 +154,28 @@ Figure.prototype.init = function() {
 	Figure.apply(this, arguments);
 }
 
-//===== King Type ======
+// ===== King Type ======
 
 Figure.parent(King);
 function King(color, pos) {
 	this.init('KG', color, null, pos);
 }
 
-//===== Queen Type ======
+// ===== Queen Type ======
 
 Figure.parent(Queen);
 function Queen(color, pos) {
 	this.init('QN', color, null, pos);
 }
 
-//===== Rook Type ======
+// ===== Rook Type ======
 
 Figure.parent(Rook);
 function Rook(color, index, pos) {
 	this.init('R', color, index, pos);
 }
 
-//===== Knight Type ======
+// ===== Knight Type ======
 
 Figure.parent(Knight);
 function Knight(color, index, pos) {
@@ -208,22 +208,76 @@ Knight.prototype.moves = function() {
 	return moves;
 }
 
-//===== Laufer Type ======
+// ===== Laufer Type ======
 
 Figure.parent(Laufer);
 function Laufer(color, index, pos) {
 	this.init('L', color, index, pos);
 }
 
-//===== Pawn Type ======
+
+Laufer.prototype.moves = function(){
+	var fig = this;
+	var board = this.board;
+	var pos = this.pos;
+	
+	
+	var potezi = [
+	              pos.off(+1,+1),
+	              pos.off(+2,+2),
+	              pos.off(+3,+3),
+	              pos.off(+4,+4),
+	              pos.off(+5,+5),
+	              pos.off(+6,+6),
+	              pos.off(+7,+7),
+	              
+	              pos.off(-1,-1),
+	              pos.off(-2,-2),
+	              pos.off(-3,-3),
+	              pos.off(-4,-4),
+	              pos.off(-5,-5),
+	              pos.off(-6,-6),
+	              pos.off(-7,-7),
+	              
+	              pos.off(+1,-1),
+	              pos.off(+2,-2),
+	              pos.off(+3,-3),
+	              pos.off(+4,-4),
+	              pos.off(+5,-5),
+	              pos.off(+6,-6),
+	              pos.off(+7,-7),
+	              
+	              
+	              pos.off(-1,+1),
+	              pos.off(-2,+2),
+	              pos.off(-3,+3),
+	              pos.off(-4,+4),
+	              pos.off(-5,+5),
+	              pos.off(-6,+6),
+	              pos.off(-7,+7)
+	              ];
+	
+	potezi = potezi.filter(function(x) {
+	    var at = board.at(x);
+	    if (at === undefined) return false;
+	    return (at == null || at && at.color != fig.color);
+	}).map(function(x) {
+		return new Movement(fig, x);
+	});
+		
+	return potezi;
+}
+
+// ===== Pawn Type ======
 
 Figure.parent(Pawn);
 function Pawn(color, index, pos) {
 	this.init('P', color, index, pos);
 }
 
-//===== Demo code ======
+// ===== Demo code ======
 
 var c = new Chessboard();
 console.log("" + c);
 console.log("" + c.moves().join(", "));
+

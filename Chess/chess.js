@@ -161,6 +161,32 @@ function King(color, pos) {
 	this.init('KG', color, null, pos);
 }
 
+King.prototype.moves = function() {
+	var fig = this;
+	var board = this.board;
+	var pos = this.pos;
+	var king_moves = [
+		pos.off(+1, 0),
+		pos.off(+1, +1),
+		pos.off(0, +1),
+		pos.off(-1, +1),
+		pos.off(-1, 0),
+		pos.off(-1, -1),
+		pos.off(0, -1),
+		pos.off(+1, -1)
+	];
+	
+	king_moves = king_moves.filter(function(x) {
+	    var at = board.at(x);
+	    if (at === undefined) return false;
+	    return (at == null || at && at.color != fig.color);
+	}).map(function(x) {
+		return new Movement(fig, x);
+	});
+		
+	return king_moves;
+}
+
 // ===== Queen Type ======
 
 Figure.parent(Queen);
@@ -173,6 +199,61 @@ function Queen(color, pos) {
 Figure.parent(Rook);
 function Rook(color, index, pos) {
 	this.init('R', color, index, pos);
+}
+
+Rook.prototype.moves = function() {
+    	var fig = this;
+	    var board = this.board;
+	    var pos = this.pos;
+        
+        var moves_Rook = [
+        //move up
+		pos.off(+0,+1),
+        pos.off(+0,+2),
+        pos.off(+0,+3),
+        pos.off(+0,+4),
+        pos.off(+0,+5),
+		pos.off(+0,+6),
+        pos.off(+0,+7),
+        
+        //move down 
+        pos.off(+0,-1),
+        pos.off(+0,-2),
+        pos.off(+0,-3),
+        pos.off(+0,-4),
+        pos.off(+0,-5),
+		pos.off(+0,-6),
+        pos.off(+0,-7),
+        
+        //move right
+        pos.off(+1,+0),
+        pos.off(+2,+0),
+        pos.off(+3,+0),
+        pos.off(+4,+0),
+        pos.off(+5,+0),
+        pos.off(+6,+0),
+        pos.off(+7,+0),
+        
+        //move left
+        pos.off(-1,+0),
+        pos.off(-2,+0),
+        pos.off(-3,+0),
+        pos.off(-4,+0),
+        pos.off(-5,+0),
+        pos.off(-6,+0),
+        pos.off(-7,+0),
+        
+    	];
+    
+    	moves_Rook = moves_Rook.filter(function(x) {
+	    var at = board.at(x);
+	    if (at === undefined) return false;
+	    return (at == null || at && at.color != fig.color);
+	    }).map(function(x) {
+		return new Movement(fig, x);
+	    });
+        
+	return moves_Rook;
 }
 
 // ===== Knight Type ======

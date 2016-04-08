@@ -268,6 +268,7 @@ Laufer.prototype.moves = function(){
 	return potezi;
 }
 
+
 // ===== Pawn Type ======
 
 Figure.parent(Pawn);
@@ -275,9 +276,38 @@ function Pawn(color, index, pos) {
 	this.init('P', color, index, pos);
 }
 
+Pawn.prototype.moves = function() {
+	
+	var fig = this;
+	var board = this.board;
+	var pos = this.pos;
+	var PawnMoves = [
+	             pos.off(+1,0),
+	             pos.off(+2,0),
+	             pos.off(+1,+1),
+	             pos.off(+1,-1),
+	             pos.off(-1,0),
+	             pos.off(-2,0),
+	             pos.off(-1,-1),
+	             pos.off(-1,1)];
+				 
+	
+	PawnMoves=PawnMoves.filter(function(x){
+		var at = board.at(x);
+	    if (at === undefined) return false;
+	    return (at == null || at && at.color != fig.color);
+	}).map(function(x) {
+		return new Movement(fig, x);
+	});	
+	
+	return PawnMoves;
+	
+}
+
 // ===== Demo code ======
 
 var c = new Chessboard();
 console.log("" + c);
 console.log("" + c.moves().join(", "));
+
 

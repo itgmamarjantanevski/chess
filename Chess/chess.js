@@ -127,7 +127,7 @@ Movement.prototype.toString = function() {
 }
 
 
-//===== Figure Type ======
+// ===== Figure Type ======
 
 function Figure(type, color, index) {
 	this.type = type;
@@ -154,7 +154,7 @@ Figure.prototype.init = function() {
 	Figure.apply(this, arguments);
 }
 
-//===== King Type ======
+// ===== King Type ======
 
 Figure.parent(King);
 function King(color, pos) {
@@ -187,13 +187,14 @@ King.prototype.moves = function() {
 	return king_moves;
 }
 
-//===== Queen Type ======
+// ===== Queen Type ======
 
 Figure.parent(Queen);
 function Queen(color, pos) {
 	this.init('QN', color, null, pos);
 }
 
+<<<<<<< HEAD
 Queen.prototype.moves = function() {
     	var fig = this;
 	    var board = this.board;
@@ -285,7 +286,10 @@ Queen.prototype.moves = function() {
 }
 
 
-//===== Rook Type ======
+// ===== Rook Type ======
+
+
+
 Figure.parent(Rook);
 function Rook(color, index, pos) {
 	this.init('R', color, index, pos);
@@ -346,7 +350,7 @@ Rook.prototype.moves = function() {
 	return moves_Rook;
 }
 
-//===== Knight Type ======
+// ===== Knight Type ======
 
 Figure.parent(Knight);
 function Knight(color, index, pos) {
@@ -379,8 +383,7 @@ Knight.prototype.moves = function() {
 	return moves;
 }
 
-
-//===== Laufer Type ======
+// ===== Laufer Type ======
 
 Figure.parent(Laufer);
 function Laufer(color, index, pos) {
@@ -441,7 +444,7 @@ Laufer.prototype.moves = function(){
 }
 
 
-//===== Pawn Type ======
+// ===== Pawn Type ======
 
 Figure.parent(Pawn);
 function Pawn(color, index, pos) {
@@ -476,8 +479,10 @@ Pawn.prototype.moves = function() {
 	
 }
 
-//===== Demo code ======
+// ===== Demo code ======
 
 var c = new Chessboard();
 console.log("" + c);
 console.log("" + c.moves().join(", "));
+
+

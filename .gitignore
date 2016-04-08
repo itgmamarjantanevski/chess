@@ -35,8 +35,9 @@ node_modules
 # Eclipse
 .settings
 .jshintrc
-.*project
+.project
+.tern-project
 
-#Gradle
+# Gradle
 .gradle
 

@@ -18,7 +18,7 @@ function Chessboard() {
 
 Chessboard.prototype.reset = function() {
 	var i;
-	
+	this.move = 0;
 	this.figures = [];
 	this.board = [];
 	for(i=0; i<8; i++) this.board[i] = [null, null, null, null, null, null, null, null];

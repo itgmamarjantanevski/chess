@@ -208,6 +208,7 @@ Queen.prototype.moves = function() {
         pos.off(+0,+5),
 		pos.off(+0,+6),
         pos.off(+0,+7),
+        
         //down move
         pos.off(+0,-1),
         pos.off(+0,-2),
@@ -216,6 +217,7 @@ Queen.prototype.moves = function() {
         pos.off(+0,-5),
 		pos.off(+0,-6),
         pos.off(+0,-7),
+        
         //right move
         pos.off(+1,+0),
         pos.off(+2,+0),
@@ -224,6 +226,7 @@ Queen.prototype.moves = function() {
         pos.off(+5,+0),
         pos.off(+6,+0),
         pos.off(+7,+0),
+        
         //left move
         pos.off(-1,+0),
         pos.off(-2,+0),
@@ -232,6 +235,7 @@ Queen.prototype.moves = function() {
         pos.off(-5,+0),
         pos.off(-6,+0),
         pos.off(-7,+0),
+        
         //diagonal up right
         pos.off(+1,+1),
         pos.off(+2,+2),
@@ -240,6 +244,7 @@ Queen.prototype.moves = function() {
         pos.off(+5,+5),
         pos.off(+6,+6),
         pos.off(+7,+7),
+        
         //diagonal up left
         pos.off(-1,+1),
         pos.off(-2,+2),
@@ -248,6 +253,7 @@ Queen.prototype.moves = function() {
         pos.off(-5,+5),
         pos.off(-6,+6),
         pos.off(-7,+7),
+        
         //diagonal down left
         pos.off(-1,-1),
         pos.off(-2,-2),
@@ -256,6 +262,7 @@ Queen.prototype.moves = function() {
         pos.off(-5,-5),
         pos.off(-6,-6),
         pos.off(-7,-7),
+        
         //diagonal down right
         pos.off(+1,-1),
         pos.off(+2,-2),
@@ -298,6 +305,7 @@ Rook.prototype.moves = function() {
         pos.off(+0,+5),
 		pos.off(+0,+6),
         pos.off(+0,+7),
+        
         //move down 
         pos.off(+0,-1),
         pos.off(+0,-2),
@@ -306,6 +314,7 @@ Rook.prototype.moves = function() {
         pos.off(+0,-5),
 		pos.off(+0,-6),
         pos.off(+0,-7),
+        
         //move right
         pos.off(+1,+0),
         pos.off(+2,+0),
@@ -314,6 +323,7 @@ Rook.prototype.moves = function() {
         pos.off(+5,+0),
         pos.off(+6,+0),
         pos.off(+7,+0),
+        
         //move left
         pos.off(-1,+0),
         pos.off(-2,+0),

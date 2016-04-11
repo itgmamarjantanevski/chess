@@ -143,7 +143,32 @@ Figure.parent = function (d) {
 
 Figure.prototype.moves = function() {
 	return [];
-} 
+}
+
+Figure.prototype.moveSteps = function(steps, repeat) {
+	var fig = this;
+    var moves = [];
+   
+    for(var i=0; i<steps.length; i++) {
+    	var step = steps[i];
+    	var tmp = fig.pos.off(step[0], step[1]);
+
+    	var at = this.board.at(tmp);
+        while(at === null || at && at.color != fig.color) {
+        	moves.push(tmp);
+        	
+        	if (at != null || !repeat) break;
+        	var tmp = tmp.off(step[0], step[1]);
+        	var at = this.board.at(tmp);
+        }
+    }
+    
+    moves = moves.map(function(x) {
+        return new Movement(fig, x);
+    });
+          
+	return moves;
+}
 
 Figure.prototype.toString = function() {
 	return this.color + this.type + (this.index || ''); 
@@ -196,93 +221,17 @@ function Queen(color, pos) {
 
 
 Queen.prototype.moves = function() {
-    var fig = this;
-    var board = this.board;
-    var pos = this.pos;
-    
-    var movesQueen = [
-        //up move
-        pos.off(+0,+1),
-        pos.off(+0,+2),
-        pos.off(+0,+3),
-        pos.off(+0,+4),
-        pos.off(+0,+5),
-        pos.off(+0,+6),
-        pos.off(+0,+7),
-        
-        //down move
-        pos.off(+0,-1),
-        pos.off(+0,-2),
-        pos.off(+0,-3),
-        pos.off(+0,-4),
-        pos.off(+0,-5),
-        pos.off(+0,-6),
-        pos.off(+0,-7),
-        
-        //right move
-        pos.off(+1,+0),
-        pos.off(+2,+0),
-        pos.off(+3,+0),
-        pos.off(+4,+0),
-        pos.off(+5,+0),
-        pos.off(+6,+0),
-        pos.off(+7,+0),
-        
-        //left move
-        pos.off(-1,+0),
-        pos.off(-2,+0),
-        pos.off(-3,+0),
-        pos.off(-4,+0),
-        pos.off(-5,+0),
-        pos.off(-6,+0),
-        pos.off(-7,+0),
-        
-        //diagonal up right
-        pos.off(+1,+1),
-        pos.off(+2,+2),
-        pos.off(+3,+3),
-        pos.off(+4,+4),
-        pos.off(+5,+5),
-        pos.off(+6,+6),
-        pos.off(+7,+7),
-        
-        //diagonal up left
-        pos.off(-1,+1),
-        pos.off(-2,+2),
-        pos.off(-3,+3),
-        pos.off(-4,+4),
-        pos.off(-5,+5),
-        pos.off(-6,+6),
-        pos.off(-7,+7),
-        
-        //diagonal down left
-        pos.off(-1,-1),
-        pos.off(-2,-2),
-        pos.off(-3,-3),
-        pos.off(-4,-4),
-        pos.off(-5,-5),
-        pos.off(-6,-6),
-        pos.off(-7,-7),
-        
-        //diagonal down right
-        pos.off(+1,-1),
-        pos.off(+2,-2),
-        pos.off(+3,-3),
-        pos.off(+4,-4),
-        pos.off(+5,-5),
-        pos.off(+6,-6),
-        pos.off(+7,-7),
+	var steps = [
+		[+1,  0],
+		[ 0, +1],
+		[-1,  0],
+		[ 0, -1],
+		[+1, +1],
+		[+1, -1],
+		[-1, +1],
+		[-1, -1]
     ];
-
-    movesQueen = movesQueen.filter(function(x) {
-    var at = board.at(x);
-    if (at === undefined) return false;
-        return (at == null || at && at.color != fig.color);
-    }).map(function(x) {
-        return new Movement(fig, x);
-    });
-    
-   return movesQueen;
+    return this.moveSteps(steps, true);
 }
 
 
@@ -293,63 +242,14 @@ function Rook(color, index, pos) {
 this.init('R', color, index, pos);
 }
 
-Rook.prototype.moves = function() {
-    var fig = this;
-    var board = this.board;
-    var pos = this.pos;
-    
-    var movesRook = [
-    //move up
-    pos.off(+0,+1),
-    pos.off(+0,+2),
-    pos.off(+0,+3),
-    pos.off(+0,+4),
-    pos.off(+0,+5),
-    pos.off(+0,+6),
-    pos.off(+0,+7),
-    
-    //move down 
-    pos.off(+0,-1),
-    pos.off(+0,-2),
-    pos.off(+0,-3),
-    pos.off(+0,-4),
-    pos.off(+0,-5),
-    pos.off(+0,-6),
-    pos.off(+0,-7),
-    
-    //move right
-    pos.off(+1,+0),
-    pos.off(+2,+0),
-    pos.off(+3,+0),
-    pos.off(+4,+0),
-    pos.off(+5,+0),
-    pos.off(+6,+0),
-    pos.off(+7,+0),
-    
-    //move left
-    pos.off(-1,+0),
-    pos.off(-2,+0),
-    pos.off(-3,+0),
-    pos.off(-4,+0),
-    pos.off(-5,+0),
-    pos.off(-6,+0),
-    pos.off(-7,+0),
-    
+Rook.prototype.moves = function(steps) {
+    var steps = [
+         [+1,  0],
+         [ 0, +1],
+         [-1,  0],
+         [ 0, -1]
     ];
-
-    movesRook = movesRook.filter(function(x) {
-    var at = board.at(x);
-    if (at === undefined) return false;
-        return (at == null || at && at.color != fig.color);
-    }).map(function(x) {
-        return new Movement(fig, x);
-    });
-      
-     
-    for (var i = 0; i < board.length; i++) {
-        console.log(board[i]);
-    }
-	 return movesRook;
+    return this.moveSteps(steps, true);
 }
 
 
@@ -361,29 +261,17 @@ function Knight(color, index, pos) {
 }
 
 Knight.prototype.moves = function() {
-	var fig = this;
-	var board = this.board;
-	var pos = this.pos;
-	var moves = [
-		pos.off(+2, +1),
-		pos.off(+2, -1),
-		pos.off(-2, +1),
-		pos.off(-2, -1),
-		pos.off(+1, +2),
-		pos.off(+1, -2),
-		pos.off(-1, +2),
-		pos.off(-1, -2)
+	var steps = [
+		[+2, +1],
+		[+2, -1],
+		[-2, +1],
+		[-2, -1],
+		[+1, +2],
+		[+1, -2],
+		[-1, +2],
+		[-1, -2]
 	];
-	
-	moves = moves.filter(function(x) {
-	    var at = board.at(x);
-	    if (at === undefined) return false;
-	    return (at == null || at && at.color != fig.color);
-	}).map(function(x) {
-		return new Movement(fig, x);
-	});
-		
-	 return moves;
+	return this.moveSteps(steps, false);
 }
 
 // ===== Laufer Type ======
@@ -395,55 +283,13 @@ function Laufer(color, index, pos) {
 
 
 Laufer.prototype.moves = function(){
-	var fig = this;
-	var board = this.board;
-	var pos = this.pos;
-	
-	
-	var movesLaufer = [
-	              pos.off(+1,+1),
-	              pos.off(+2,+2),
-	              pos.off(+3,+3),
-	              pos.off(+4,+4),
-	              pos.off(+5,+5),
-	              pos.off(+6,+6),
-	              pos.off(+7,+7),
-	              
-	              pos.off(-1,-1),
-	              pos.off(-2,-2),
-	              pos.off(-3,-3),
-	              pos.off(-4,-4),
-	              pos.off(-5,-5),
-	              pos.off(-6,-6),
-	              pos.off(-7,-7),
-	              
-	              pos.off(+1,-1),
-	              pos.off(+2,-2),
-	              pos.off(+3,-3),
-	              pos.off(+4,-4),
-	              pos.off(+5,-5),
-	              pos.off(+6,-6),
-	              pos.off(+7,-7),
-	              
-	              
-	              pos.off(-1,+1),
-	              pos.off(-2,+2),
-	              pos.off(-3,+3),
-	              pos.off(-4,+4),
-	              pos.off(-5,+5),
-	              pos.off(-6,+6),
-	              pos.off(-7,+7)
-	              ];
-	
-	movesLaufer = movesLaufer.filter(function(x) {
-	    var at = board.at(x);
-	    if (at === undefined) return false;
-	    return (at == null || at && at.color != fig.color);
-	}).map(function(x) {
-		return new Movement(fig, x);
-	});
-		
-	 return movesLaufer;
+	var steps = [
+         [+1, +1],
+         [+1, -1],
+         [-1, +1],
+         [-1, -1]
+    ];
+    return this.moveSteps(steps, true);
 }
 
 

@@ -187,29 +187,17 @@ function King(color, pos) {
 }
 
 King.prototype.moves = function() {
-	var fig = this;
-	var board = this.board;
-	var pos = this.pos;
-	var kingMoves = [
-		pos.off(+1, 0),
-		pos.off(+1, +1),
-		pos.off(0, +1),
-		pos.off(-1, +1),
-		pos.off(-1, 0),
-		pos.off(-1, -1),
-		pos.off(0, -1),
-		pos.off(+1, -1)
-	];
-	
-	kingMoves = kingMoves.filter(function(x) {
-	    var at = board.at(x);
-	    if (at === undefined) return false;
-	    return (at == null || at && at.color != fig.color);
-	}).map(function(x) {
-		return new Movement(fig, x);
-	});
-		
-	return kingMoves;
+	var steps = [
+	    [+1,0],
+	    [+1,+1],
+	    [0,+1],
+	    [-1,+1],
+	    [-1,0],
+	    [-1,-1],
+	    [0,-1],
+	    [+1,-1]
+	 ];
+	 return this.moveSteps(steps, true);
 }
 
 // ===== Queen Type ======

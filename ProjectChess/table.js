@@ -1,136 +1,414 @@
-var whiteTeam = [];
-var blackTeam = [];
+// Chessboard
 
-function King(name, team, position) {
 
-	this.name = name;
-	this.team = team;
 
-	this.position = position;
+var WHITE = 'w';
+var BLACK = 'b';
+var LETTERS = 'abcdefgh';
 
+// Self-contained instance of a chessboard
+function Chessboard() {
+	this.reset();
 }
 
-function Queen(name, team, position) {
-	this.name = name;
-	this.team = team;
-	this.position = position;
+Chessboard.prototype.reset = function() {
+	var i;
+	this.move = 0;
+	this.figures = [];
+	this.board = [];
+	for(i=0; i<8; i++) this.board[i] = [null, null, null, null, null, null, null, null];
+	
+	this.set(0, 0, new Rook(WHITE, 1));
+	this.set(0, 1, new Knight(WHITE, 1));
+	this.set(0, 2, new Laufer(WHITE, 1));
+	this.set(0, 3, new Queen(WHITE));
+	this.set(0, 4, new King(WHITE));
+	this.set(0, 5, new Laufer(WHITE, 2));
+	this.set(0, 6, new Knight(WHITE, 2));
+	this.set(0, 7, new Rook(WHITE, 2));
+	
+	for(i=0; i<8; i++) {
+		this.set(1, i, new Pawn(WHITE, i+1));
+		this.set(6, i, new Pawn(BLACK, i+1));
+	}
+	
+	this.set(7,	0, new Rook(BLACK, 1));
+	this.set(7, 1, new Knight(BLACK, 1));
+	this.set(7, 2, new Laufer(BLACK, 1));
+	this.set(7, 3, new Queen(BLACK));
+	this.set(7, 4, new King(BLACK));
+	this.set(7, 5, new Laufer(BLACK, 2));
+	this.set(7, 6, new Knight(BLACK, 2));
+	this.set(7, 7, new Rook(BLACK, 2));
 }
 
-function Rook(name, team, position) {
-	this.name = name;
-	this.team = team;
-	this.position = position;
+Chessboard.prototype.set = function(row, col, fig) {
+	if (fig.board === undefined) {
+		Object.defineProperty(fig, 'board', {
+			  value: this,
+			  writable: false,
+			  enumerable: false,
+			  configurable: false
+		});
+		this.figures.push(fig);
+	}
+	this.board[row][col] = fig;
+	fig.pos = new Pos(row, col);
 }
 
-function Bishop(name, team, position) {
-	this.name = name;
-	this.team = team;
-	this.position = position;
+Chessboard.prototype.at = function(a, b) {
+	if (a === undefined) return undefined;
+	var pos = a;
+	if (arguments.length == 2) pos = new Pos(a,b);
+	if (!pos.isValid()) return undefined;
+	return this.board[pos.row][pos.col];
 }
 
-function Knight(name, team, position) {
-	this.name = name;
-	this.team = team;
-	this.position = position;
+Chessboard.prototype.moves = function() {
+	var moves = [];
+	this.figures.forEach(function(fig) {
+		var x = fig.moves();
+		if (x && x.length > 0) moves = moves.concat(x);
+	});
+	return moves;
 }
 
-function Pawn(name, team, position) {
-	this.name = name;
-	this.team = team;
-	this.position = position;
-	this.isFirstMove = true;
+Chessboard.prototype.toString = function() {
+	var s = '';
+	var i, j;
+	for(i=7; i>=0; i--) {
+		s += (i + 1) + ' ';
+		for(j=0; j<8; j++) {
+			s += (this.board[i][j] || '...') + ' ';
+		}
+		s += '\n';
+	}
+	s += '   A   B   C   D   E   F   G   H\n';
+	return s;
 }
 
-var matrix = [];
-for (var i = 0; i < 8; i++) {
-	matrix[i] = [];
-	for (var j = 0; j < 8; j++) {
-		matrix[i][j] = null;
+// ===== Common Types ======
+
+function Pos(a, b, c) {
+	if (c === undefined) {
+		this.row = a;
+		this.col = b;
+	} else {
+		this.row = a.row + b;
+		this.col = a.col + c;
 	}
 }
 
-var rookWhite1 = new Rook("rW1", "white", [ 0, 0 ]);
-var rookWhite2 = new Rook("rW2", "white", [ 0, 7 ]);
+Pos.prototype.off = function(r, c) {
+	return new Pos(this, r, c);
+}
 
-matrix[0][0] = rookWhite1;
-matrix[0][7] = rookWhite2;
+Pos.prototype.toString = function() {
+	return LETTERS[this.col] + (this.row + 1);
+}
 
-var rookBlack1 = new Rook("rB1", "black", [ 7, 0 ]);
-var rookBlack2 = new Rook("rB2", "black", false, [ 7, 7 ]);
+Pos.prototype.isValid = function() {
+	return !(this.row < 0 || this.row > 7 || this.col < 0 || this.col > 7);
+}
 
-matrix[7][0] = rookBlack1;
-matrix[7][7] = rookBlack2;
+function Movement(fig, to) {
+	this.fig = fig;
+	this.from = fig.pos;
+	this.to = to;
+}
 
-var knightWhite1 = new Knight("knW1", "white", [ 0, 1 ]);
-var knightWhite2 = new Knight("knW2", "white", [ 0, 6 ]);
+Movement.prototype.toString = function() {
+	return this.fig.toString() + "/" + this.from + "->" + this.to;
+}
 
-matrix[0][1] = knightWhite1;
-matrix[0][6] = knightWhite2;
+// ===== Figure Type ======
 
-var knightBlack1 = new Knight("kB1", "black", [ 7, 1 ]);
-var knightBlack2 = new Knight("kB2", "black", [ 7, 6 ]);
+function Figure(type, color, index) {
+	this.type = type;
+	this.color = color;
+	if (index) this.index = index;
+}
 
-matrix[7][1] = knightBlack1;
-matrix[7][6] = knightBlack2;
+Figure.parent = function (d) {
+	var b = this;
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+}
 
-var bishopWhite1 = new Bishop("bW1", "white", [ 0, 2 ]);
-var bishopWhite2 = new Bishop("bW2", "white", [ 0, 5 ]);
+Figure.prototype.moves = function() {
+	return [];
+}
 
-matrix[0][2] = bishopWhite1;
-matrix[0][5] = bishopWhite2;
+Figure.prototype.moveSteps = function(steps, repeat) {
+	var fig = this;
+    var moves = [];
+    var moveCounter = 0;
+    if(fig.color==BLACK){
+	     steps = steps.map(function(obj){
+	      obj[0]=obj[0]*(-1);
+	      obj[1]=obj[1]*(-1);
+	      return [obj[0], obj[1]];
+	    });
+	    }
+   
+    for(var i=0; i<steps.length; i++) {
+    	var step = steps[i];
+    
+    	var tmp = fig.pos.off(step[0], step[1]);
+    
+    	var at = this.board.at(tmp);
 
-var bishopBlack1 = new Bishop("bB1", "black", [ 7, 2 ]);
-var bishopBlack2 = new Bishop("bB2", "black", [ 7, 5 ]);
+		
+    	
+        while(at === null || at && at.color != fig.color) {
+        	
+        		if(fig instanceof Pawn){
+				
+				if(at === null ){
+						
+							if(fig.movePawn(step))
+								{
+								if(moveCounter < 2){
+									var pown = fig.pos;
+									
+									if(pown.row == 1){
+										var tmp2 = fig.pos.off(step[0]+1, step[1]);
+										moves.push(tmp2);
+										
+									} if( pown.row == 6){
+										var tmp3 = fig.pos.off(step[0]-1, step[1]);
+										moves.push(tmp3);
+									}	
+									moveCounter++;
+								}
+								
+								moves.push(tmp);	
+								}
+									
+					
+				} else if(at !=null && at.color !=fig.color){
+					
+					if(fig.pawnAttack(step))
+					moves.push(tmp);
+				}
+			}
+			
+			else moves.push(tmp);
+   			
+        	if (at != null || !repeat) break;
+        	var tmp = tmp.off(step[0], step[1]);
+        	var at = this.board.at(tmp);
+        }
+        
+      
 
-matrix[7][2] = bishopBlack1;
-matrix[0][5] = bishopBlack2;
+    }
+    
+    moves = moves.map(function(x) {
+        return new Movement(fig, x);
+    });
+          
+	return moves;
+}
 
-var kingWhite = new King("kW", "white", [ 0, 3 ]);
-var queenWhite = new Queen("qW", "white", [ 0, 4 ]);
+Figure.prototype.movePawn = function(tmp){
+	
+	if((tmp[0] == 1 && tmp[1] == 0) || (tmp[0] == -1 && tmp[1] == 0)){
+		
+		return true;
+	} else return false;
+	
+	
+}
 
-matrix[0][3] = kingWhite;
-matrix[0][4] = queenWhite;
+Figure.prototype.pawnAttack = function(tmp){
+	
+	if((tmp[0] == 1 && tmp[1] == -1) || (tmp[0] == 1 && tmp[1] == 1) || (tmp[0] == -1 && tmp[1] == 1) || (tmp[0] == -1 && tmp[1] == -1)){
+		
+		return true;
+	} else return false;
+}
 
-var kingBlack = new King("kB", "black", [ 7, 3 ]);
-var queensBlack = new Queen("qB", "black", [ 7, 4 ]);
+Figure.prototype.toString = function() {
+	return this.color + this.type + (this.index || ''); 
+}
 
-matrix[7][3] = kingBlack;
-matrix[7][4] = queensBlack;
+Figure.prototype.init = function() {
+	Figure.apply(this, arguments);
+}
 
-var pawnW1 = new Pawn("pw1", "white", [ 1, 0 ])
-var pawnW2 = new Pawn("pW2", "white", [ 1, 1 ]);
-var pawnW3 = new Pawn("pW3", "white", [ 1, 2 ]);
-var pawnW4 = new Pawn("pW4", "white", [ 1, 3 ]);
-var pawnW5 = new Pawn("pW5", "white", [ 1, 4 ]);
-var pawnW6 = new Pawn("pW6", "white", [ 1, 5 ]);
-var pawnW7 = new Pawn("pW7", "white", [ 1, 6 ]);
-var pawnW8 = new Pawn("pW8", "white", [ 1, 7 ]);
 
-matrix[1][0] = pawnW1;
-matrix[1][1] = pawnW2;
-matrix[1][2] = pawnW3;
-matrix[1][3] = pawnW4;
-matrix[1][4] = pawnW5;
-matrix[1][5] = pawnW6;
-matrix[1][6] = pawnW7;
-matrix[1][7] = pawnW8;
+Figure.prototype.moveStepsPawn = function(steps,turn) {
+	 	var fig = this;
+	    var moves = [];
+	    
+	    if(fig.color==BLACK){
+	     steps = steps.map(function(obj){
+	      obj[0]=obj[0]*(-1);
+	      obj[1]=obj[1]*(-1);
+	      return [obj[0], obj[1]];
+	    });
+	    } 
+	    
+	    // za gore
+	    var step = steps[0];
+	    var tmp = fig.pos.off(step[0], step[1]);
+	    var at = this.board.at(tmp);
+	    if (at === null ){
+	     moves.push(tmp); 
+	    }
+	    
+	    if(turn == 1 && at===null){ 
+	        tmp = tmp.off(step[0], step[1]);
+	        at = this.board.at(tmp);
+	        if (at === null ){
+	         moves.push(tmp); 
+	        }         
+	    }     
+	    
+	    // za strana
+	    for(var i=1; i<steps.length; i++) {
+	     step = steps[i];
+	     tmp = fig.pos.off(step[0], step[1]);
+	     at = this.board.at(tmp);
+	     
+	     if (at && at.color !== fig.color ){
+	      moves.push(tmp); 
+	     }
+	     
+	    }
+	        
+	    moves = moves.map(function(x) {
+	        return new Movement(fig, x);
+	    });          
+	 return moves;
+	}
+// ===== King Type ======
 
-var pawnB1 = new Pawn("pB1", "black", [ 6, 0 ]);
-var pawnB2 = new Pawn("pB2", "black", [ 6, 1 ]);
-var pawnB3 = new Pawn("pB3", "black", [ 6, 2 ]);
-var pawnB4 = new Pawn("pB4", "black", [ 6, 3 ]);
-var pawnB5 = new Pawn("pB5", "black", [ 6, 4 ]);
-var pawnB6 = new Pawn("pB6", "black", [ 6, 5 ]);
-var pawnB7 = new Pawn("pB7", "black", [ 6, 6 ]);
-var pawnB8 = new Pawn("pB8", "black", [ 6, 7 ]);
+Figure.parent(King);
+function King(color, pos) {
+	this.init('KG', color, null, pos);
+}
 
-matrix[6][0] = pawnB1;
-matrix[6][1] = pawnB2;
-matrix[6][2] = pawnB3;
-matrix[6][3] = pawnB4;
-matrix[6][4] = pawnB5;
-matrix[6][5] = pawnB6;
-matrix[6][6] = pawnB7;
-matrix[6][7] = pawnB8;
+King.prototype.moves = function() {
+	var steps = [
+	    [+1,  0],
+	    [+1, +1],
+	    [ 0, +1],
+	    [-1, +1],
+	    [-1,  0],
+	    [-1, -1],
+	    [ 0, -1],
+	    [+1, -1]
+	 ];
+	 return this.moveSteps(steps, true);
+}
 
-console.log(matrix);
+// ===== Queen Type ======
+
+Figure.parent(Queen);
+function Queen(color, pos) {
+	this.init('QN', color, null, pos);
+}
+
+
+Queen.prototype.moves = function() {
+	var steps = [
+		[+1,  0],
+		[ 0, +1],
+		[-1,  0],
+		[ 0, -1],
+		[+1, +1],
+		[+1, -1],
+		[-1, +1],
+		[-1, -1]
+    ];
+    return this.moveSteps(steps, true);
+}
+
+
+// ===== Rook Type ======
+
+Figure.parent(Rook);
+function Rook(color, index, pos) {
+this.init('R', color, index, pos);
+}
+
+Rook.prototype.moves = function(steps) {
+    var steps = [
+         [+1,  0],
+         [ 0, +1],
+         [-1,  0],
+         [ 0, -1]
+    ];
+    return this.moveSteps(steps, true);
+}
+
+
+// ===== Knight Type ======
+
+Figure.parent(Knight);
+function Knight(color, index, pos) {
+	this.init('S', color, index, pos);
+}
+
+Knight.prototype.moves = function() {
+	var steps = [
+		[+2, +1],
+		[+2, -1],
+		[-2, +1],
+		[-2, -1],
+		[+1, +2],
+		[+1, -2],
+		[-1, +2],
+		[-1, -2]
+	];
+	return this.moveSteps(steps, false);
+}
+
+// ===== Laufer Type ======
+
+Figure.parent(Laufer);
+function Laufer(color, index, pos) {
+	this.init('L', color, index, pos);
+}
+
+
+Laufer.prototype.moves = function(){
+	var steps = [
+         [+1, +1],
+         [+1, -1],
+         [-1, +1],
+         [-1, -1]
+    ];
+    return this.moveSteps(steps, true);
+}
+
+
+// ===== Pawn Type ======
+
+Figure.parent(Pawn);
+function Pawn(color, index, pos) {
+	this.init('P', color, index, pos);
+}
+
+Pawn.prototype.moves = function() {
+	
+	 
+	 var steps = [
+	             [+1,  0],
+	     	     [+1, -1],
+	     	     [+1, +1]
+	     ];
+	 return this.moveSteps(steps, false); 
+	
+}
+
+// ===== Demo code ======
+
+var c = new Chessboard();
+console.log("" + c);
+console.log("" + c.moves().join(", "));
+
+

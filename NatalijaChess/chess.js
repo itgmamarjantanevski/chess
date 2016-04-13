@@ -374,7 +374,7 @@ function playGame(c){
 		}, 2000);
 
 }
-
-function makeMove(){
-	
-}
+//
+//function makeMove(){
+//	
+//}

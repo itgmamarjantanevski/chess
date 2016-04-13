@@ -359,7 +359,6 @@ function playGame(c){
 			        return (value.charAt(0) == 'b');
 			    }
 			);
-
 			if(c.turn===true){
 				var nextMove = Math.random() * whiteMoves.length;
 				console.log("Next white move: " + whiteMoves[Math.floor(nextMove)]);

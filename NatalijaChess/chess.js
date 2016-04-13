@@ -1,245 +1,380 @@
-/**
- * http://usejsdoc.org/
- */
+// Chessboard
 
-// var range = 8;
-// // site mozni dvizenja
-// var king = [ [ 1, 0 ], [ 1, 1 ], [ 0, 1 ], [ -1, 1 ], [ -1, 0 ], [ -1, -1 ],
-// [ 0, -1 ], [ 1, -1 ] ];
-// var pawnBlack = [ [ 0, 1 ], [ 0, 2 ], [ 1, 1 ], [ -1, 1 ] ];
-// var pawnWhite = [ [ 0, -1 ], [ 0, -2 ], [ 1, -1 ], [ -1, -1 ] ];
-// var knight = [ [ 2, 1 ], [ 1, 2 ], [ 1, -2 ], [ 2, -1 ], [ -1, -2 ], [ 1, -2
-// ],
-// [ -2, -1 ], [ -2, 1 ] ];
-// var queen = [];
-// var rook = [ [ 0, 1 ], [ 0, 2 ], [ 0, 3 ], [ 0, 4 ], [ 0, 5 ], [ 0, 6 ],
-// [ 0, 7 ], [ 1, 0 ], [ 2, 0 ], [ 3, 0 ], [ 4, 0 ], [ 5, 0 ], [ 6, 0 ],
-// [ 7, 0 ], [ 0, -1 ], [ 0, -2 ], [ 0, -3 ], [ 0, -4 ], [ 0, -5 ],
-// [ 0, -6 ], [ 0, -7 ], [ -1, 0 ], [ -2, 0 ], [ -3, 0 ], [ -4, 0 ],
-// [ -5, 0 ], [ -6, 0 ], [ -7, 0 ] ];
-// var bishop = [];
+// King
+// Queen 
+// Rook x2 (top)
+// Knight x2 (konj)
+// Bishop x2 (laufer)
+// Pawn x8
 
-// podloga
-var podloga = [];
-for (var i = 0; i < 9; i++) {
-	podloga[i] = [];
-	for (var j = 0; j < 9; j++) {
-		podloga[i][j] === null;
+var WHITE = 'w';
+var BLACK = 'b';
+var LETTERS = 'abcdefgh';
+
+// Self-contained instance of a chessboard
+function Chessboard() {
+	this.reset();
+}
+
+Chessboard.prototype.reset = function() {
+	var i;
+	this.turn=true;
+	this.move = 0;
+	this.figures = [];
+	this.board = [];
+	for(i=0; i<8; i++) this.board[i] = [null, null, null, null, null, null, null, null];
+	
+	this.set(0, 0, new Rook(WHITE, 1));
+	this.set(0, 1, new Knight(WHITE, 1));
+	this.set(0, 2, new Laufer(WHITE, 1));
+	this.set(0, 3, new Queen(WHITE));
+	this.set(2, 0, new King(WHITE));
+	this.set(0, 5, new Laufer(WHITE, 2));
+	this.set(0, 6, new Knight(WHITE, 2));
+	this.set(0, 7, new Rook(WHITE, 2));
+	
+	for(i=0; i<8; i++) {
+		this.set(1, i, new Pawn(WHITE, i+1));
+		this.set(6, i, new Pawn(BLACK, i+1));
 	}
+	
+	this.set(7, 0, new Rook(BLACK, 1));
+	this.set(2, 5, new Knight(BLACK, 1));
+	this.set(7, 2, new Laufer(BLACK, 1));
+	this.set(7, 3, new Queen(BLACK));
+	this.set(7, 4, new King(BLACK));
+	this.set(7, 5, new Laufer(BLACK, 2));
+	this.set(7, 6, new Knight(BLACK, 2));
+	this.set(7, 7, new Rook(BLACK, 2));
 }
 
-// constructors for figures
-function Pawn(name, color, shortcut, isInGame, coordinate) {
-	this.name = name;
-	this.color = color;
-	this.shortcut = shortcut;
-	this.isInGame = isInGame;
-	this.coordinates = coordinate;
-	this.isFirstMove = true;
-}
-
-function Rock(name, color, shortcut, isInGame, coordinate) {
-	this.name = name;
-	this.color = color;
-	this.shortcut = shortcut;
-	this.isInGame = isInGame;
-	this.coordinates = coordinate;
-}
-
-function Bishop(name, color, shortcut, isInGame, coordinate) {
-	this.name = name;
-	this.color = color;
-	this.shortcut = shortcut;
-	this.isInGame = isInGame;
-	this.coordinates = coordinate;
-}
-
-function Knight(name, color, shortcut, isInGame, coordinate) {
-	this.name = name;
-	this.color = color;
-	this.shortcut = shortcut;
-	this.isInGame = isInGame;
-	this.coordinates = coordinate;
-}
-
-function King(namee, colorr, short, isInGamee, coordinate) {
-	this.name = namee;
-	this.color = colorr;
-	this.shortcut = short;
-	this.isInGame = isInGamee;
-	this.coordinates = coordinate;
-}
-
-function Queen(name, color, shortcut, isInGame, coordinate) {
-	this.name = name;
-	this.color = color;
-	this.shortcut = shortcut;
-	this.isInGame = isInGame;
-	this.coordinates = coordinate;
-}
-
-// creating pawns
-var pawn1b = new Pawn("Pawn1", "black", "p1b", true, [ 1, 0 ]);
-var pawn2b = new Pawn("Pawn2", "black", "p2b", true, [ 1, 1 ]);
-var pawn3b = new Pawn("Pawn3", "black", "p3b", true, [ 1, 2 ]);
-var pawn4b = new Pawn("Pawn4", "black", "p4b", true, [ 1, 3 ]);
-var pawn5b = new Pawn("Pawn5", "black", "p5b", true, [ 1, 4 ]);
-var pawn6b = new Pawn("Pawn6", "black", "p6b", true, [ 1, 5 ]);
-var pawn7b = new Pawn("Pawn7", "black", "p7b", true, [ 1, 6 ]);
-var pawn8b = new Pawn("Pawn8", "black", "p8b", true, [ 1, 7 ]);
-
-var pawn1w = new Pawn("Pawn1", "white", "p1w", true, [ 6, 0 ]);
-var pawn2w = new Pawn("Pawn2", "white", "p2w", true, [ 6, 1 ]);
-var pawn3w = new Pawn("Pawn3", "white", "p3w", true, [ 6, 2 ]);
-var pawn4w = new Pawn("Pawn4", "white", "p4w", true, [ 6, 3 ]);
-var pawn5w = new Pawn("Pawn5", "white", "p5w", true, [ 6, 4 ]);
-var pawn6w = new Pawn("Pawn6", "white", "p6w", true, [ 6, 5 ]);
-var pawn7w = new Pawn("Pawn7", "white", "p7w", true, [ 6, 6 ]);
-var pawn8w = new Pawn("Pawn8", "white", "p8w", true, [ 6, 7 ]);
-
-// creating rocks
-var rock1b = new Rock("Rock", "black", "r1b", true, [ 0, 0 ]);
-var rock2b = new Rock("Rock", "black", "r2b", true, [ 0, 7 ]);
-var rock1w = new Rock("Rock", "white", "r1w", true, [ 7, 0 ]);
-var rock2w = new Rock("Rock", "white", "r2w", true, [ 7, 7 ]);
-
-// creating knights
-var knight1b = new Knight("Knight", "black", "k1b", true, [ 0, 1 ]);
-var knight2b = new Knight("Knight", "black", "k2b", true, [ 0, 6 ]);
-var knight1w = new Knight("Knight", "white", "k1w", true, [ 7, 1 ]);
-var knight2w = new Knight("Knight", "white", "k2w", true, [ 7, 6 ]);
-
-// creating bishops
-var bishop1b = new Bishop("Bishop", "black", "b1b", true, [ 0, 2 ]);
-var bishop2b = new Bishop("Bishop", "black", "b2b", true, [ 0, 5 ]);
-var bishop1w = new Bishop("Bishop", "white", "b1w", true, [ 7, 2 ]);
-var bishop2w = new Bishop("Bishop", "white", "b2w", true, [ 7, 5 ]);
-
-// creating king
-//smeneta pocetna pozicija na kingb za da mozam dole da hja povikam funkcijata bidejki so pocetnata
-//e zagraden king od site strani i ke nema dozvoleni pozicii za dvizenje
-var kingb = new King("King", "black", "knb", true, [ 5, 1 ]);
-var kingw = new King("King", "white", "knw", true, [ 7, 3 ]);
-
-// creating queen
-var queenb = new Queen("Queen", "black", "qub", true, [ 0, 4 ]);
-var queenw = new Queen("Queen", "white", "quw", true, [ 7, 4 ]);
-
-function startNewGame(){
-	// se polnat 4 nizi so pocetnite pozicii za da se predadat na matricata
-	podloga[0] = [ rock1b, knight1b, bishop1b, kingb, queenb, bishop2b, knight2b,
-			rock2b ];
-	podloga[1] = [ pawn1b, pawn2b, pawn3b, pawn4b, pawn5b, pawn6b, pawn7b, pawn8b ];
-	podloga[6] = [ pawn1w, pawn2w, pawn3w, pawn4w, pawn5w, pawn6w, pawn7w, pawn8w ];
-	podloga[7] = [ rock1w, knight1w, bishop1w, kingw, queenw, bishop2w, knight2w,
-			rock2w ];
-}
-
-startNewGame();
-
-function printMatrix(){
-	// pecatenje na poceten izgled
-	for (var i = 0; i < podloga[0].length; i++) {
-		for (var j = 0; j < podloga[0].length; j++) {
-			if (podloga[i][j] != null){
-				process.stdout.write(podloga[i][j].shortcut + " ");
-			} else {
-				process.stdout.write(" .  ");
-			}
-		}
-		console.log();
+Chessboard.prototype.set = function(row, col, fig) {
+	if (fig.board === undefined) {
+		Object.defineProperty(fig, 'board', {
+			  value: this,
+			  writable: false,
+			  enumerable: false,
+			  configurable: false
+		});
+		this.figures.push(fig);
 	}
-	console.log();
+	this.board[row][col] = fig;
+	fig.pos = new Pos(row, col);
 }
-printMatrix();
 
+Chessboard.prototype.at = function(a, b) {
+	if (a === undefined) return undefined;
+	var pos = a;
+	if (arguments.length == 2) pos = new Pos(a,b);
+	if (!pos.isValid()) return undefined;
+	return this.board[pos.row][pos.col];
+}
 
-
-// ////////TODO funkcii za site figuri posebno
-
-// KRAL
-// mozni poteszi
-function KingMoves(king) {
+Chessboard.prototype.moves = function() {
 	var moves = [];
-	for (var i = 0; i < podloga[0].length; i++) {
-		for (var j = 0; j < podloga[0].length; j++) {
-			// ako se ednakvi znaci deka toa ne e poteg, na istoto mesto e
-			if ((king.coordinates[0] == i) && (king.coordinates[1] == j)) {
-				continue;
-			}
-			if ((Math.abs(i - king.coordinates[0]) <= 1)
-					&& (Math.abs(j - king.coordinates[1]) <= 1)) {
-				if (podloga[i][j] == null) {
-					console.log("Dozvolena pozicija na dvizenje: " + i + " "+ j);
-					moves.push([ i, j ]);
-				} else {
-
-					if (podloga[i][j].color !== king.color) {
-						console.log("Zemanje na figura " + podloga[i][j].name+ " so boja " + podloga[i][j].color+ " so koordinati: " + i + "," + j);
-					} else {
-						console
-								.log("Ne moze da se pridvizi figurata na pozicija: "+ i+ ","+ j+ " bidejki tamu stoi druga tvoja figura");
-					}
-				}
-			}
-		}
-	}
-	console.log("Povikaj funkcija KingMoves() za da kazes na koja pozicija da se pridvizi kralot");
+	this.figures.forEach(function(fig) {
+		var x = fig.moves();
+		if (x && x.length > 0) moves = moves.concat(x);
+	});
 	return moves;
 }
 
-// KingMoves(kingb);
-
-// pravenje na poteg so kral
-function KingMoving(king, newPosition) {
-	var moves = KingMoves(king);
-	// moves.find(function(arr){
-	// return arr[0] == newPosition[0] && arr[1] == newPosition[1];
-	// });
-
-	for (var i = 0; i < moves.length; i++) {
-		if ((moves[i][0] == newPosition[0]) && (moves[i][1] == newPosition[1])) {
-			console.log("Pomesteno");
-			podloga[king.coordinates[0], king.coordinates[1]]=== null;
-			king.coordinates = newPosition;
-			podloga[king.coordinates[0], king.coordinates[1]]=king;
+Chessboard.prototype.toString = function() {
+	var s = '';
+	var i, j;
+	for(i=7; i>=0; i--) {
+		s += (i + 1) + ' ';
+		for(j=0; j<8; j++) {
+			s += (this.board[i][j] || '...') + ' ';
 		}
-
+		s += '\n';
 	}
-	console.log("Novi koordinati na: " + king.name + " se: "+ king.coordinates);
-
+	s += '   A   B   C   D   E   F   G   H\n';
+	return s;
 }
 
-var niza = [ 5, 0 ];
-KingMoving(kingb, niza);
+Chessboard.prototype.play = function(){
+	//
+}
 
-// PIONS
-function PawnMoves(pawn) {
-	var moves = [];
-	for (var i = 0; i < podloga[0].length; i++) {
-		for (var j = 0; j < podloga[0].length; j++) {
-			// ako se ednakvi znaci deka toa ne e poteg, na istoto mesto e
-			if ((pawn.coordinates[0] == i) && (pawn.coordinates[1] == j)) {
-				continue;
-			}
+// ===== Common Types ======
 
-			if (pawn.isFirstMove) {
-				if ((i == pawn.coordinates[0])&& ((Math.abs(j - pawn.coordinates[1]) == 1) || (j - pawn.coordinates[1]) == 2)) {
-					if (podloga[i][j] == " ") {
-						console.log("Dozvolena pozicija na dvizenje: " + i+ " " + j);
-						moves.push([ i, j ]);
-					}					
+function Pos(a, b, c) {
+	if (c === undefined) {
+		this.row = a;
+		this.col = b;
+	} else {
+		this.row = a.row + b;
+		this.col = a.col + c;
+	}
+}
+
+Pos.prototype.off = function(r, c) {
+	return new Pos(this, r, c);
+}
+
+Pos.prototype.toString = function() {
+	return LETTERS[this.col] + (this.row + 1);
+}
+
+Pos.prototype.isValid = function() {
+	return !(this.row < 0 || this.row > 7 || this.col < 0 || this.col > 7);
+}
+
+function Movement(fig, to) {
+	this.fig = fig;
+	this.from = fig.pos;
+	this.to = to;
+}
+
+Movement.prototype.toString = function() {
+	return this.fig.toString() + "/" + this.from + "->" + this.to;
+}
+
+// ===== Figure Type ======
+
+function Figure(type, color, index) {
+	this.type = type;
+	this.color = color;
+	if (index) this.index = index;
+}
+
+Figure.parent = function (d) {
+	var b = this;
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+}
+
+Figure.prototype.moves = function() {
+	return [];
+}
+
+Figure.prototype.moveSteps = function(steps, repeat) {
+		var fig = this;
+	    var moves = [];	   
+	    for(var i=0; i<steps.length; i++) {
+	    	var step = steps[i];
+	    	var tmp = fig.pos.off(step[0], step[1]);
+	
+	    	var at = this.board.at(tmp);
+	        while(at === null || at && at.color != fig.color) {
+	        	moves.push(tmp);
+	        	
+	        	if (at != null || !repeat) break;
+	        	var tmp = tmp.off(step[0], step[1]);
+	        	var at = this.board.at(tmp);
+	        }
+	    }	    
+	    moves = moves.map(function(x) {
+	        return new Movement(fig, x);
+	    });	          
+		return moves;
+}
+
+Figure.prototype.toString = function() {
+	return this.color + this.type + (this.index || ''); 
+}
+
+Figure.prototype.init = function() {
+	Figure.apply(this, arguments);
+}
+
+
+// ===== King Type ======
+
+Figure.parent(King);
+function King(color, pos) {
+	this.init('KG', color, null, pos);
+}
+
+King.prototype.moves = function() {
+	var steps = [
+	    [+1,  0],
+	    [+1, +1],
+	    [ 0, +1],
+	    [-1, +1],
+	    [-1,  0],
+	    [-1, -1],
+	    [ 0, -1],
+	    [+1, -1]
+	 ];
+	 return this.moveSteps(steps, true);
+}
+
+// ===== Queen Type ======
+
+Figure.parent(Queen);
+function Queen(color, pos) {
+	this.init('QN', color, null, pos);
+}
+
+
+Queen.prototype.moves = function() {
+	var steps = [
+		[+1,  0],
+		[ 0, +1],
+		[-1,  0],
+		[ 0, -1],
+		[+1, +1],
+		[+1, -1],
+		[-1, +1],
+		[-1, -1]
+    ];
+    return this.moveSteps(steps, true);
+}
+
+
+// ===== Rook Type ======
+
+Figure.parent(Rook);
+function Rook(color, index, pos) {
+this.init('R', color, index, pos);
+}
+
+Rook.prototype.moves = function(steps) {
+    var steps = [
+         [+1,  0],
+         [ 0, +1],
+         [-1,  0],
+         [ 0, -1]
+    ];
+    return this.moveSteps(steps, true);
+}
+
+
+// ===== Knight Type ======
+
+Figure.parent(Knight);
+function Knight(color, index, pos) {
+	this.init('S', color, index, pos);
+}
+
+Knight.prototype.moves = function() {
+	var steps = [
+		[+2, +1],
+		[+2, -1],
+		[-2, +1],
+		[-2, -1],
+		[+1, +2],
+		[+1, -2],
+		[-1, +2],
+		[-1, -2]
+	];
+	return this.moveSteps(steps, false);
+}
+
+// ===== Laufer Type ======
+
+Figure.parent(Laufer);
+function Laufer(color, index, pos) {
+	this.init('L', color, index, pos);
+}
+
+
+Laufer.prototype.moves = function(){
+	var steps = [
+         [+1, +1],
+         [+1, -1],
+         [-1, +1],
+         [-1, -1]
+    ];
+    return this.moveSteps(steps, true);
+}
+
+
+// ===== Pawn Type ======
+
+Figure.parent(Pawn);
+function Pawn(color, index, pos) {
+	this.init('P', color, index, pos);
+}
+Pawn.prototype.moveSteps = function(steps, turn){
+	var fig = this;
+    var moves = [];
+    if(fig.color==BLACK){
+    	steps = steps.map(function(obj){
+    		obj[0]=obj[0]*(-1);
+    		obj[1]=obj[1]*(-1);
+    		return [obj[0], obj[1]];
+    });
+    }     
+    //da se dvizi
+    var step = steps[0];
+    var tmp = fig.pos.off(step[0], step[1]);
+    var at = this.board.at(tmp);
+    if (at === null ){
+    	moves.push(tmp); 
+    }
+    if(turn == 1 && at===null){	
+        tmp = tmp.off(step[0], step[1]);
+        at = this.board.at(tmp);
+        if (at === null ){
+        	moves.push(tmp); 
+        }        	
+    }           
+    //da zema
+    for(var i=1; i<steps.length; i++) {
+    	step = steps[i];
+    	tmp = fig.pos.off(step[0], step[1]);
+    	at = this.board.at(tmp);
+    	if (at && at.color !== fig.color ){
+    		moves.push(tmp); 
+    	}
+       }        
+    moves = moves.map(function(x) {
+        return new Movement(fig, x);
+    });          
+	return moves;
+}
+
+Pawn.prototype.moves = function() {
+	var fig = this;
+	var board = this.board;
+	var pos = this.pos;
+	var steps = [
+	    [+1,  0],
+	    [+1, -1],
+        [+1, +1]
+    ];
+	return this.moveSteps(steps, 1);	
+}
+
+// ===== Demo code ======
+
+var c = new Chessboard();
+playGame(c);
+function playGame(c){
+	setInterval(function() {
+		console.log("" + c);
+		var availableMoves= ("" + c.moves()).split(",");
+		var whiteMoves = availableMoves.filter(
+				function (value) {
+					return (value.charAt(0) == 'w');
 				}
-				pawn.isFirstMove=false;
-			} 
-					
+			);
 
-		}
-	}
+		var blackMoves = availableMoves.filter(
+			    function (value) {
+			        return (value.charAt(0) == 'b');
+			    }
+			);
+
+			if(c.turn===true){
+				var nextMove = Math.random() * whiteMoves.length;
+				console.log("Next white move: " + whiteMoves[Math.floor(nextMove)]);
+			}
+			else
+				{
+					nextMove = Math.random() * blackMoves.length;
+					console.log("Next black move: " + blackMoves[Math.floor(nextMove)]);
+				}
+			c.turn=!c.turn;
+			
+		}, 2000);
+
 }
-PawnMoves(pawn1w);
-function PawnMoving(pawn, newPosition) {
-	// todo
+
+function makeMove(){
+	
 }
-
-

@@ -155,51 +155,47 @@ Figure.prototype.moveSteps = function(steps, repeat) {
    
     if(arguments[0] && fig instanceof Pawn)
     {
-    	var color = (fig.color == WHITE) ? +1 : -1;
-    	var myTurn = (fig.color == WHITE) ? 0 : 1;
-    	for(var i=0 ; i<4 ; i++)
-    	{
-    		switch (i) 
-    		{
-    			case 0:
-						{ 	
-						tmp = fig.pos.off(color,0);
-						at = this.board.at(tmp);
-						if(at === null) moves.push(tmp);
-						else twoSquares=false;
-						continue;
-						}
-    				        	
-    			case 1:
-						{   
-							if(twoSquares)
-							{
-							tmp = fig.pos.off((2*color),0);
-							at = this.board.at(tmp);
-							if(at === null) moves.push(tmp);
-							}
-						continue;
-						}
-    				  
-    			case 2:
-						{
-						tmp = fig.pos.off(color,1);
-						at = this.board.at(tmp);
-						if ((at != null) && (fig.color != at.color))  moves.push(tmp);
-						continue;
-						}	
-    				
-    			case 3:	
-						{
-						tmp = fig.pos.off(color,-1);
-						at = this.board.at(tmp);
-						if ((at != null) && (fig.color != at.color))  moves.push(tmp);
-						continue;
-						}	
-    		}
-    	}
+      var color = (fig.color == WHITE) ? +1 : -1;
+      var myTurn = (fig.color == WHITE) ? 0 : 1;
+      for(var i=0 ; i<4 ; i++)
+      {
+        switch (i) 
+        {
+          case 0:
+          { 	
+            tmp = fig.pos.off(color,0);
+            at = this.board.at(tmp);
+            if(at === null) moves.push(tmp);
+            else twoSquares=false;
+            continue;
+          }
+          case 1:
+          {   
+            if(twoSquares)
+            {
+              tmp = fig.pos.off((2*color),0);
+              at = this.board.at(tmp);
+              if(at === null) moves.push(tmp);
+            }
+          continue;
+          }
+          case 2:
+          {
+            tmp = fig.pos.off(color,1);
+            at = this.board.at(tmp);
+            if ((at != null) && (fig.color != at.color))  moves.push(tmp);
+            continue;
+          }	
+          case 3:	
+          {
+            tmp = fig.pos.off(color,-1);
+            at = this.board.at(tmp);
+            if ((at != null) && (fig.color != at.color))  moves.push(tmp);
+            continue;
+          }	
+        }
     }
-    
+}
     else 
     {
     	for(var i=0; i<steps.length; i++) 

@@ -148,19 +148,71 @@ Figure.prototype.moves = function() {
 Figure.prototype.moveSteps = function(steps, repeat) {
 	var fig = this;
     var moves = [];
+    var movement = this.board.move;
+    var twoSquares=true;
+    
+    
    
-    for(var i=0; i<steps.length; i++) {
-    	var step = steps[i];
-    	var tmp = fig.pos.off(step[0], step[1]);
-
-    	var at = this.board.at(tmp);
-        while(at === null || at && at.color != fig.color) {
-        	moves.push(tmp);
-        	
-        	if (at != null || !repeat) break;
-        	var tmp = tmp.off(step[0], step[1]);
-        	var at = this.board.at(tmp);
+    if(arguments[0] && fig instanceof Pawn)
+    {
+      var color = (fig.color == WHITE) ? +1 : -1;
+      
+      for(var i=0 ; i<4 ; i++)
+      {
+        switch (i) 
+        {
+          case 0:
+          { 	
+            tmp = fig.pos.off(color,0);
+            at = this.board.at(tmp);
+            if(at === null) moves.push(tmp);
+            else twoSquares=false;
+            continue;
+          }
+          case 1:
+          {   
+            if(twoSquares)
+            {
+              tmp = fig.pos.off((2*color),0);
+              at = this.board.at(tmp);
+              if(at === null) moves.push(tmp);
+            }
+            continue;
+          }
+          case 2:
+          {
+            tmp = fig.pos.off(color,1);
+            at = this.board.at(tmp);
+            if ((at != null) && (fig.color != at.color))  moves.push(tmp);
+            continue;
+          }	
+          case 3:	
+          {
+            tmp = fig.pos.off(color,-1);
+            at = this.board.at(tmp);
+            if ((at != null) && (fig.color != at.color))  moves.push(tmp);
+            continue;
+          }	
         }
+    }
+}
+    else 
+    {
+    	for(var i=0; i<steps.length; i++) 
+    	{
+	    	var step = steps[i];
+	    	var tmp = fig.pos.off(step[0], step[1]);
+	
+	    	var at = this.board.at(tmp);
+	        while(at === null || at && at.color != fig.color) 
+	        {
+	        	moves.push(tmp);
+	        	
+	        	if (at != null || !repeat) break;
+	        	var tmp = tmp.off(step[0], step[1]);
+	        	var at = this.board.at(tmp);
+	        }
+	   }		
     }
     
     moves = moves.map(function(x) {
@@ -197,7 +249,7 @@ King.prototype.moves = function() {
 	    [ 0, -1],
 	    [+1, -1]
 	 ];
-	 return this.moveSteps(steps, true);
+	return this.moveSteps(steps, true);
 }
 
 // ===== Queen Type ======
@@ -219,7 +271,7 @@ Queen.prototype.moves = function() {
 		[-1, +1],
 		[-1, -1]
     ];
-    return this.moveSteps(steps, true);
+   return this.moveSteps(steps, true);
 }
 
 
@@ -277,7 +329,7 @@ Laufer.prototype.moves = function(){
          [-1, +1],
          [-1, -1]
     ];
-    return this.moveSteps(steps, true);
+  return this.moveSteps(steps, true);
 }
 
 
@@ -289,33 +341,9 @@ function Pawn(color, index, pos) {
 }
 
 Pawn.prototype.moves = function() {
-	
-	var fig = this;
-	var board = this.board;
-	var pos = this.pos;
-	var pawnMoves = [
-	             pos.off(+1,0),
-	             pos.off(+2,0),
-	             pos.off(+1,+1),
-	             pos.off(+1,-1),
-	             pos.off(-1,0),
-	             pos.off(-2,0),
-	             pos.off(-1,-1),
-	             pos.off(-1,1)];
-				 
-	
-	pawnMoves=pawnMoves.filter(function(x){
-		var at = board.at(x);
-
-	    if (at === undefined) return false;
-	    return (at == null || at && at.color != fig.color);
-	}).map(function(x) {
-		return new Movement(fig, x);
-	});	
-	
-	return pawnMoves;
-	
+	return this.moveSteps(true);
 }
+
 
 // ===== Demo code ======
 

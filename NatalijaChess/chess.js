@@ -372,7 +372,6 @@ function playGame(c){
 			c.turn=!c.turn;
 			
 		}, 2000);
-
 }
 //
 //function makeMove(){

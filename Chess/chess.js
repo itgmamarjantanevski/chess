@@ -32,16 +32,6 @@ Chessboard.prototype.reset = function() {
 	this.set(0, 6, new Knight(WHITE, 2));
 	this.set(0, 7, new Rook(WHITE, 2));
 	
-	/*this.set(2, 5, new Laufer(BLACK, 2));
-	this.set(2, 6, new Knight(BLACK, 2));
-	this.set(2, 3, new Rook(BLACK, 2));
-	this.set(2, 7, new Rook(WHITE, 2));
-	this.set(3, 5, new Pawn(WHITE, 2));
-	this.set(4, 4, new Rook(BLACK, 2));
-	this.set(4, 6, new Rook(BLACK, 2));
-	this.set(4, 5, new Rook(WHITE, 2));*/
-	
-	
 	for(i=0; i<8; i++) {
 		this.set(1, i, new Pawn(WHITE, i+1));
 		this.set(6, i, new Pawn(BLACK, i+1));
@@ -159,56 +149,53 @@ Figure.prototype.moveSteps = function(steps, repeat) {
 	var fig = this;
     var moves = [];
     var movement = this.board.move;
-    var k=true;
+    var twoSquares=true;
     
-  
+    
    
     if(arguments[0] && fig instanceof Pawn)
     {
-    	var color = (fig.color == WHITE) ? +1 : -1;
-    	for(var i=0 ; i<4 ; i++)
-    	{
-    		switch (i) 
-    		{
-    			case 0:
-    			      { 	
-	    				tmp = fig.pos.off(color,0);
-				        at = this.board.at(tmp);
-				        if(at === null) moves.push(tmp);
-				        else k=false;
-				        continue;
-    			      }
-    				        	
-    			case 1:
-    				  {   
-	    				if(k)
-				   		{
-					   		tmp = fig.pos.off((2*color),0);
-					   		at = this.board.at(tmp);
-					   		if(at === null) moves.push(tmp);
-				   		}
-	    				continue;
-    				  }
-    				  
-    			case 2:
-	    			  {
-						tmp = fig.pos.off(color,1);
-						at = this.board.at(tmp);
-						if ((at != null) && (fig.color != at.color))  moves.push(tmp);
-						continue;
-					  }	
-    				
-    			case 3:	
-	    			  {
-						tmp = fig.pos.off(color,-1);
-						at = this.board.at(tmp);
-						if ((at != null) && (fig.color != at.color))  moves.push(tmp);
-						continue;
-					  }	
-    		}
-    	}
+      var color = (fig.color == WHITE) ? +1 : -1;
+      
+      for(var i=0 ; i<4 ; i++)
+      {
+        switch (i) 
+        {
+          case 0:
+          { 	
+            tmp = fig.pos.off(color,0);
+            at = this.board.at(tmp);
+            if(at === null) moves.push(tmp);
+            else twoSquares=false;
+            continue;
+          }
+          case 1:
+          {   
+            if(twoSquares)
+            {
+              tmp = fig.pos.off((2*color),0);
+              at = this.board.at(tmp);
+              if(at === null) moves.push(tmp);
+            }
+            continue;
+          }
+          case 2:
+          {
+            tmp = fig.pos.off(color,1);
+            at = this.board.at(tmp);
+            if ((at != null) && (fig.color != at.color))  moves.push(tmp);
+            continue;
+          }	
+          case 3:	
+          {
+            tmp = fig.pos.off(color,-1);
+            at = this.board.at(tmp);
+            if ((at != null) && (fig.color != at.color))  moves.push(tmp);
+            continue;
+          }	
+        }
     }
-    
+}
     else 
     {
     	for(var i=0; i<steps.length; i++) 
@@ -262,7 +249,7 @@ King.prototype.moves = function() {
 	    [ 0, -1],
 	    [+1, -1]
 	 ];
-	// return this.moveSteps(steps, true);
+	return this.moveSteps(steps, true);
 }
 
 // ===== Queen Type ======
@@ -284,7 +271,7 @@ Queen.prototype.moves = function() {
 		[-1, +1],
 		[-1, -1]
     ];
-   // return this.moveSteps(steps, true);
+   return this.moveSteps(steps, true);
 }
 
 
@@ -302,7 +289,7 @@ Rook.prototype.moves = function(steps) {
          [-1,  0],
          [ 0, -1]
     ];
-    //return this.moveSteps(steps, true);
+    return this.moveSteps(steps, true);
 }
 
 
@@ -324,7 +311,7 @@ Knight.prototype.moves = function() {
 		[-1, +2],
 		[-1, -2]
 	];
-	//return this.moveSteps(steps, false);
+	return this.moveSteps(steps, false);
 }
 
 // ===== Laufer Type ======
@@ -342,7 +329,7 @@ Laufer.prototype.moves = function(){
          [-1, +1],
          [-1, -1]
     ];
-  //  return this.moveSteps(steps, true);
+  return this.moveSteps(steps, true);
 }
 
 

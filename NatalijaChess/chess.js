@@ -94,7 +94,32 @@ Chessboard.prototype.toString = function() {
 }
 
 Chessboard.prototype.play = function(){
-	//
+	setInterval(function() {
+		console.log("" + c);
+		var availableMoves= ("" + c.moves()).split(",");
+		var whiteMoves = availableMoves.filter(
+				function (value) {
+					return (value.charAt(0) == 'w');
+				}
+			);
+		var blackMoves = availableMoves.filter(
+			    function (value) {
+			        return (value.charAt(0) == 'b');
+			    }
+			);
+			if(c.turn===true){
+				var nextMove = Math.random() * whiteMoves.length;
+				//makeMove(whiteMoves[Math.floor(nextMove)]);
+				console.log("Next white move: " + whiteMoves[Math.floor(nextMove)]);
+			}
+			else{
+				nextMove = Math.random() * blackMoves.length;
+				//makeMove(blackMoves[Math.floor(nextMove)]);
+				console.log("Next black move: " + blackMoves[Math.floor(nextMove)]);
+				}
+			c.turn=!c.turn;
+			
+		}, 2000);
 }
 
 // ===== Common Types ======
@@ -343,36 +368,4 @@ Pawn.prototype.moves = function() {
 // ===== Demo code ======
 
 var c = new Chessboard();
-playGame(c);
-function playGame(c){
-	setInterval(function() {
-		console.log("" + c);
-		var availableMoves= ("" + c.moves()).split(",");
-		var whiteMoves = availableMoves.filter(
-				function (value) {
-					return (value.charAt(0) == 'w');
-				}
-			);
-
-		var blackMoves = availableMoves.filter(
-			    function (value) {
-			        return (value.charAt(0) == 'b');
-			    }
-			);
-			if(c.turn===true){
-				var nextMove = Math.random() * whiteMoves.length;
-				console.log("Next white move: " + whiteMoves[Math.floor(nextMove)]);
-			}
-			else
-				{
-					nextMove = Math.random() * blackMoves.length;
-					console.log("Next black move: " + blackMoves[Math.floor(nextMove)]);
-				}
-			c.turn=!c.turn;
-			
-		}, 2000);
-} 
-
-//function makeMove(){
-//	
-//}
+c.play()

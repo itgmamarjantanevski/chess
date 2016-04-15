@@ -91,6 +91,57 @@ Chessboard.prototype.toString = function() {
 	s += '   A   B   C   D   E   F   G   H\n';
 	return s;
 }
+//random play 
+Chessboard.prototype.play = function() {
+    var currentPlayer;
+    var chessboard = this;
+    var nextMove;
+    var whiteTake=[];
+    var blackTake=[];
+    chessboard.moveCounter = 0;
+    console.log(" " + c);
+    var allMoves = c.moves();
+    setInterval(function () {
+    console.log("" + c);
+    
+    var whitePlayerMoves = allMoves.filter(function (a) {
+        return a.fig.color.charAt(0) == 'w';}); 
+    
+    var blackPlayerMoves = allMoves.filter(function (b) {
+        return b.fig.color.charAt(0) == 'b';});
+        
+    var whiteIndex = Math.floor(Math.random() * whitePlayerMoves.length);
+    var white = whitePlayerMoves[whiteIndex];
+    
+    
+    var blackIndex = Math.floor(Math.random() * blackPlayerMoves.length);
+    var black = blackPlayerMoves[blackIndex];
+    
+   
+         if(c.turn === true) {
+             console.log("white turn" + " " + white.fig + " " + "from" + " " + white.from  + " " + "to" + " "+ white.to);
+             chessboard.board[white.from.col][white.from.row] = null;
+             chessboard.set(white.to.col, white.to.row, white.fig); 
+        } else {
+             console.log("Black turn" + " " + black.fig + " " + "from"+ " " + black.from + " " + "to" + " " + black.to);
+             chessboard.board[black.from.col][black.from.row]= null;
+             chessboard.set(black.to.col, black.to.row, black.fig); 
+        }
+        
+        
+       if(white.length === 0)  {
+        console.log("Black pieces win");
+        return null;
+       };
+    
+       if(black.length === 0) {
+        console.log("Black pieces win");
+        return null;
+       };
+    c.turn = !c.turn;
+    },1000);
+  
+}
 
 // ===== Common Types ======
 
@@ -131,6 +182,8 @@ function Figure(type, color, index) {
 	this.color = color;
 	if (index) this.index = index;
 }
+
+
 
 //===== Figure Type ======
 

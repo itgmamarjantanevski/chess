@@ -19,7 +19,7 @@ function Chessboard() {
 Chessboard.prototype.reset = function() {
 	var i;
 	this.turn=true;
-	this.numMoves = 0;
+	this.numMoves = 1;
 	this.figures = [];
 	this.board = [];
 	for(i=0; i<8; i++) this.board[i] = [null, null, null, null, null, null, null, null];
@@ -93,42 +93,45 @@ Chessboard.prototype.toString = function() {
 	return s;
 }
 
-Chessboard.prototype.play = function(){
-	var chessboard= this;
-	chessboard.numMoves++;
+
+Chessboard.prototype.makeMove = function(nextMove, player){
+	console.log("Next "+ player+" move: " + nextMove.fig+ " from pos: "+ nextMove.from+" to position: " + nextMove.to);
+	console.log();
+	this.board[nextMove.from.row][nextMove.from.col] = null;
+	this.set(nextMove.to.row, nextMove.to.col, nextMove.fig);
+	//TODO za zema figura ako ima za zemanje
+}
+
+Chessboard.prototype.play = function(c){
+	var chessboard= c;
 	setInterval(function() {
 		console.log("" + c);
 		var availableMoves= (c.moves());
 		var whiteMoves = availableMoves.filter(
-				function (value) {
-					return (value.fig.color.charAt(0) == 'w');
-				}
-			);
-
+			function (value) {
+				return (value.fig.color.charAt(0) == 'w');
+			}
+		);
 		var blackMoves = availableMoves.filter(
-			    function (value) {
-			        return (value.fig.color.charAt(0) == 'b');
-			    }
-			);
+			function (value) {
+				return (value.fig.color.charAt(0) == 'b');
+			}
+		);
 		var nextMove;
 		if(c.turn===true){
 			nextMove = Math.floor(Math.random() * whiteMoves.length);
-			console.log("Next white move: " + whiteMoves[nextMove].fig+ " from pos: "+ whiteMoves[nextMove].from+" to position: " + whiteMoves[nextMove].to);
-			chessboard.board[whiteMoves[nextMove].from.row][whiteMoves[nextMove].from.col] = null;
-			chessboard.set(whiteMoves[nextMove].to.row, whiteMoves[nextMove].to.col,whiteMoves[nextMove].fig);
+			chessboard.makeMove(whiteMoves[nextMove], "white");
 		}
 		else{
+			chessboard.numMoves++;
 			nextMove = Math.floor(Math.random() * blackMoves.length);
-			console.log("Next black move: " + blackMoves[nextMove].fig+ " from pos: "+ blackMoves[nextMove].from+" to position: " + blackMoves[nextMove].to);
-			chessboard.board[blackMoves[nextMove].from.row][blackMoves[nextMove].from.col] = null;
-			chessboard.set(blackMoves[nextMove].to.row, blackMoves[nextMove].to.col,blackMoves[nextMove].fig);
+			chessboard.makeMove(blackMoves[nextMove], "black");
 			}
 			c.turn=!c.turn;
 		}, 2000);
 }
 
 // ===== Common Types ======
-
 function Pos(a, b, c) {
 	if (c === undefined) {
 		this.row = a;
@@ -373,4 +376,4 @@ Pawn.prototype.moves = function() {
 // ===== Demo code ======
 
 var c = new Chessboard();
-c.play()
+c.play(c);

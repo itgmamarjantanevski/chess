@@ -105,6 +105,7 @@ Chessboard.prototype.makeMove = function(c, figNextMove, player){
 	}
 	c.set(figNextMove.to.row, figNextMove.to.col, figNextMove.fig);
 }
+ 
 
 Chessboard.prototype.play = function(c){
 	var chessboard= c;

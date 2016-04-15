@@ -124,7 +124,6 @@ Chessboard.prototype.play = function(){
 			chessboard.set(blackMoves[nextMove].to.row, blackMoves[nextMove].to.col,blackMoves[nextMove].fig);
 			}
 			c.turn=!c.turn;
-			
 		}, 2000);
 }
 

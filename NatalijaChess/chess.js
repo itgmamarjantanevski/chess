@@ -19,7 +19,7 @@ function Chessboard() {
 Chessboard.prototype.reset = function() {
 	var i;
 	this.turn=true;
-	this.move = 0;
+	this.numMoves = 0;
 	this.figures = [];
 	this.board = [];
 	for(i=0; i<8; i++) this.board[i] = [null, null, null, null, null, null, null, null];
@@ -28,7 +28,7 @@ Chessboard.prototype.reset = function() {
 	this.set(0, 1, new Knight(WHITE, 1));
 	this.set(0, 2, new Laufer(WHITE, 1));
 	this.set(0, 3, new Queen(WHITE));
-	this.set(2, 0, new King(WHITE));
+	this.set(0, 4, new King(WHITE));
 	this.set(0, 5, new Laufer(WHITE, 2));
 	this.set(0, 6, new Knight(WHITE, 2));
 	this.set(0, 7, new Rook(WHITE, 2));
@@ -39,7 +39,7 @@ Chessboard.prototype.reset = function() {
 	}
 	
 	this.set(7, 0, new Rook(BLACK, 1));
-	this.set(2, 5, new Knight(BLACK, 1));
+	this.set(7, 1, new Knight(BLACK, 1));
 	this.set(7, 2, new Laufer(BLACK, 1));
 	this.set(7, 3, new Queen(BLACK));
 	this.set(7, 4, new King(BLACK));
@@ -94,29 +94,35 @@ Chessboard.prototype.toString = function() {
 }
 
 Chessboard.prototype.play = function(){
+	var chessboard= this;
+	chessboard.numMoves++;
 	setInterval(function() {
 		console.log("" + c);
-		var availableMoves= ("" + c.moves()).split(",");
+		var availableMoves= (c.moves());
 		var whiteMoves = availableMoves.filter(
 				function (value) {
-					return (value.charAt(0) == 'w');
+					return (value.fig.color.charAt(0) == 'w');
 				}
 			);
+
 		var blackMoves = availableMoves.filter(
 			    function (value) {
-			        return (value.charAt(0) == 'b');
+			        return (value.fig.color.charAt(0) == 'b');
 			    }
 			);
-			if(c.turn===true){
-				var nextMove = Math.random() * whiteMoves.length;
-				//makeMove(whiteMoves[Math.floor(nextMove)]);
-				console.log("Next white move: " + whiteMoves[Math.floor(nextMove)]);
+		var nextMove;
+		if(c.turn===true){
+			nextMove = Math.floor(Math.random() * whiteMoves.length);
+			console.log("Next white move: " + whiteMoves[nextMove].fig+ " from pos: "+ whiteMoves[nextMove].from+" to position: " + whiteMoves[nextMove].to);
+			chessboard.board[whiteMoves[nextMove].from.row][whiteMoves[nextMove].from.col] = null;
+			chessboard.set(whiteMoves[nextMove].to.row, whiteMoves[nextMove].to.col,whiteMoves[nextMove].fig);
+		}
+		else{
+			nextMove = Math.floor(Math.random() * blackMoves.length);
+			console.log("Next black move: " + blackMoves[nextMove].fig+ " from pos: "+ blackMoves[nextMove].from+" to position: " + blackMoves[nextMove].to);
+			chessboard.board[blackMoves[nextMove].from.row][blackMoves[nextMove].from.col] = null;
+			chessboard.set(blackMoves[nextMove].to.row, blackMoves[nextMove].to.col,blackMoves[nextMove].fig);
 			}
-			else{
-				nextMove = Math.random() * blackMoves.length;
-				//makeMove(blackMoves[Math.floor(nextMove)]);
-				console.log("Next black move: " + blackMoves[Math.floor(nextMove)]);
-				}
 			c.turn=!c.turn;
 			
 		}, 2000);
@@ -153,7 +159,7 @@ function Movement(fig, to) {
 }
 
 Movement.prototype.toString = function() {
-	return this.fig.toString() + "/" + this.from + "->" + this.to;
+	return this.fig;
 }
 
 // ===== Figure Type ======
@@ -362,7 +368,7 @@ Pawn.prototype.moves = function() {
 	    [+1, -1],
         [+1, +1]
     ];
-	return this.moveSteps(steps, 1);	
+	return this.moveSteps(steps, board.numMoves);	
 }
 
 // ===== Demo code ======

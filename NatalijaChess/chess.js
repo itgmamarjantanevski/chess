@@ -102,14 +102,22 @@ Chessboard.prototype.makeMove = function(c, figNextMove, player){
 		console.log("Zemanje figura: " + zemenaFigura);
 		zemenaFigura.pos.row=null;
 		zemenaFigura.pos.col=null;
+		if(zemenaFigura.type=="KG"){
+			console.log("Igrata zavrsi, pobednikot e igracot so boja: " + player);
+			c.set(figNextMove.to.row, figNextMove.to.col, figNextMove.fig);
+			console.log();
+			console.log("" + c);
+			return false;
+		}		
 	}
 	c.set(figNextMove.to.row, figNextMove.to.col, figNextMove.fig);
-}
- 
+	return true;
+} 
 
 Chessboard.prototype.play = function(c){
+	var flag=true;
 	var chessboard= c;
-	setInterval(function() {
+	timeOut = setInterval(function() {
 		console.log("" + c);
 		var availableMoves= (c.moves());
 		var whiteMoves = availableMoves.filter(
@@ -125,15 +133,18 @@ Chessboard.prototype.play = function(c){
 		var nextMove;
 		if(c.turn===true){
 			nextMove = Math.floor(Math.random() * whiteMoves.length);
-			chessboard.makeMove(c, whiteMoves[nextMove], "white");
+			flag = chessboard.makeMove(c, whiteMoves[nextMove], "white");
 		}
 		else{
 			chessboard.numMoves++;
 			nextMove = Math.floor(Math.random() * blackMoves.length);
-			chessboard.makeMove(c, blackMoves[nextMove], "black");
+			flag = chessboard.makeMove(c, blackMoves[nextMove], "black");
+			}
+			if(!flag){
+				clearTimeout(timeOut);
 			}
 			c.turn=!c.turn;
-		}, 10);
+		}, 100);
 }
 
 // ===== Common Types ======
@@ -238,7 +249,7 @@ King.prototype.moves = function() {
 	    [ 0, -1],
 	    [+1, -1]
 	 ];
-	 return this.moveSteps(steps, true);
+	 return this.moveSteps(steps, false);
 }
 
 // ===== Queen Type ======
@@ -381,6 +392,5 @@ Pawn.prototype.moves = function() {
 }
 
 // ===== Demo code ======
-
 var c = new Chessboard();
 c.play(c);

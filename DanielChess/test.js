@@ -433,7 +433,7 @@ Chessboard.prototype.playEngine = function() {
 // ===== Demo code ======
 
 var c = new Chessboard();
-c.play()
+c.play();
 
 // console.log(c.at(1,0).pos.row);
 // console.log("" + c.moves().join(", "));

@@ -391,6 +391,5 @@ Pawn.prototype.moves = function() {
 }
 
 // ===== Demo code ======
-
 var c = new Chessboard();
 c.play(c);

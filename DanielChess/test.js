@@ -149,9 +149,9 @@ Figure.prototype.moveSteps = function(steps, repeat) {
 	var fig = this;
     var moves = [];
     var movement = this.board.move;
-    var twoSquares=true;
+    var twoSquares;
     
-    
+    if(movement == 0 || movement == 1) twoSquares=true;
    
     if(arguments[0] && fig instanceof Pawn)
     {
@@ -177,7 +177,7 @@ Figure.prototype.moveSteps = function(steps, repeat) {
               at = this.board.at(tmp);
               if(at === null) moves.push(tmp);
             }
-          continue;
+            continue;
           }
           case 2:
           {
@@ -344,11 +344,103 @@ Pawn.prototype.moves = function() {
 	return this.moveSteps(true);
 }
 
+// ===== Play =====
+
+Chessboard.prototype.play = function(){
+	
+	
+	var kings = this.figures.filter(function(x){
+		return (x instanceof King);
+	})
+	
+	while(kings.length == 2){
+	
+	this.playEngine();
+	kings = this.figures.filter(function(x){
+		return (x instanceof King);
+	})
+	}
+
+}
+
+
+Chessboard.prototype.playEngine = function() {
+	
+	 var counter = this.move;
+     var nextColor = (counter % 2) ? BLACK : WHITE;
+     var moves = [];
+
+		// take random figure, based on the number of figures
+     var randomFig = this.figures[Math.floor(Math.random()
+				* this.figures.length)];
+		// possible moves for the figure
+     moves = randomFig.moves();
+		// check whose turn it is
+		if (randomFig.color == nextColor && moves.length != 0) {
+
+			var nextMove = moves[Math.floor(Math.random() * moves.length)];
+			// check if the destination square is not empty
+			var notEmpty = this.at(nextMove.to.row, nextMove.to.col);
+			var tempTakes;
+			// if there is a figure of different color we can take it, then
+			// delete it
+			// from figures array
+			if (notEmpty != null && notEmpty.color != randomFig.color) {
+
+				tempTakes = notEmpty;
+				this.figures = this.figures.filter(function(x) {
+					return (x != notEmpty);
+				})
+			}
+
+			// new position for the figure
+			this.board[nextMove.to.row][nextMove.to.col] = randomFig;
+			randomFig.pos = new Pos(nextMove.to.row, nextMove.to.col);
+			// delete the figure on the previous position
+			this.board[nextMove.from.row][nextMove.from.col] = null;
+			// next color/move
+			this.move++;
+
+			// print
+			console.log("Turn: " + (counter+1));
+			console.log("Figures left: " + this.figures.length);
+			if (tempTakes != null) {
+				console.log(nextColor + randomFig.type + randomFig.index
+						+ " moves from: " + nextMove.from + " to: "
+						+ nextMove.to + " takes: " + tempTakes.color
+						+ tempTakes.type + tempTakes.index);
+			} else
+				console.log(nextColor + randomFig.type + randomFig.index
+						+ " moves from: " + nextMove.from + " to: "
+						+ nextMove.to + " takes: nothing");
+			
+			console.log("");
+			console.log("" + c);
+			// check if the King is taken and if it is print who wins
+			if (tempTakes instanceof King) {
+				if (tempTakes.color == WHITE)
+					console.log("=========> BLACK WINS! <=========");
+				else
+					console.log("=========> WHITE WINS! <=========");
+				
+			
+
+		}
+	}
+}
+
 
 // ===== Demo code ======
 
 var c = new Chessboard();
-console.log("" + c);
-console.log("" + c.moves().join(", "));
+c.play()
+
+// console.log(c.at(1,0).pos.row);
+// console.log("" + c.moves().join(", "));
+// var c = c.playMove(c.at(1,0),"a4");
+
+
+
+// console.log(""+c.playMove());
 
 

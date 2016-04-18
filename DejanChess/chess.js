@@ -99,7 +99,7 @@ Chessboard.prototype.play = function() {
     var whiteTake=[];
     var blackTake=[];
     chessboard.moveCounter = 0;
-    console.log(" " + c);
+   // console.log(" " + c);
     var allMoves = c.moves();
     setInterval(function () {
     console.log("" + c);
@@ -140,7 +140,7 @@ Chessboard.prototype.play = function() {
        };
     c.turn = !c.turn;
     },1000);
-  
+
 }
 
 // ===== Common Types ======

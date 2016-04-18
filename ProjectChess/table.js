@@ -73,6 +73,94 @@ Chessboard.prototype.moves = function() {
 	return moves;
 }
 
+
+Chessboard.prototype.play = function(){
+	
+	var turn = true;
+	
+	
+	var allMoves = c.moves();
+	
+	var allMoves= (c.moves());
+	var whiteTeam = allMoves.filter(
+		function (value) {
+			return (value.fig.color.charAt(0) == 'w');
+		}
+	);
+	var blackTeam = allMoves.filter(
+		function (value) {
+			return (value.fig.color.charAt(0) == 'b');
+		}
+	);
+	
+	setInterval(function(){ 
+	
+	var i ;
+	var allPossibleMoves = c.moves().join(", ");
+	var figures = c.figures;
+	var board = c.board;
+	var moves = c.moves();
+	
+	var randomRow = Math.floor(Math.random() * (7 - 0) + 0);
+	var randomCol = Math.floor(Math.random() * (7 - 0) + 0);
+	
+	
+	var figure = board[randomRow][randomCol];
+	
+	
+	
+	if(figure == null){
+		while(figure == null){
+			var randomRow = Math.floor(Math.random() * (7 - 0) + 0);
+			var randomCol = Math.floor(Math.random() * (7 - 0) + 0);
+			figure = board[randomRow][randomCol];
+		}	
+	}
+		
+	
+		if(figure.index)
+			var nameFigure = figure.color + figure.type + figure.index;
+		else 
+			var nameFigure = figure.color + figure.type;
+
+
+		var possibleMovesFigure = [];
+		
+		for(i = 0 ; i < moves.length ; i++){
+			var m = moves[i];
+			if(m.fig == figure){
+				possibleMovesFigure.push(m);
+			}
+		}
+		
+		if(possibleMovesFigure.length > 0){
+			
+			var randomMoveNumber = Math.floor(Math.random() * (possibleMovesFigure.length - 0) + 0);
+			var myMove = possibleMovesFigure[randomMoveNumber];
+			
+			c.makeMove(figure, myMove);
+			
+			console.log(randomMoveNumber);
+			console.log("" + c);
+		}else {
+			console.log("There is no possible moves for " + nameFigure + " for now");
+		}
+		
+		
+		
+	},1000);
+
+
+}
+
+Chessboard.prototype.makeMove = function(figure, myMove){
+	
+	this.board[figure.pos.row][figure.pos.col] = null;
+	this.set(myMove.to.row,myMove.to.col, figure);
+	
+}
+
+
 Chessboard.prototype.toString = function() {
 	var s = '';
 	var i, j;
@@ -158,9 +246,7 @@ Figure.prototype.moveSteps = function(steps, repeat) {
     	var tmp = fig.pos.off(step[0], step[1]);
     
     	var at = this.board.at(tmp);
-
-		
-    	
+  	
         while(at === null || at && at.color != fig.color) {
         	
         		if(fig instanceof Pawn){
@@ -239,51 +325,6 @@ Figure.prototype.init = function() {
 }
 
 
-Figure.prototype.moveStepsPawn = function(steps,turn) {
-	 	var fig = this;
-	    var moves = [];
-	    
-	    if(fig.color==BLACK){
-	     steps = steps.map(function(obj){
-	      obj[0]=obj[0]*(-1);
-	      obj[1]=obj[1]*(-1);
-	      return [obj[0], obj[1]];
-	    });
-	    } 
-	    
-	    // za gore
-	    var step = steps[0];
-	    var tmp = fig.pos.off(step[0], step[1]);
-	    var at = this.board.at(tmp);
-	    if (at === null ){
-	     moves.push(tmp); 
-	    }
-	    
-	    if(turn == 1 && at===null){ 
-	        tmp = tmp.off(step[0], step[1]);
-	        at = this.board.at(tmp);
-	        if (at === null ){
-	         moves.push(tmp); 
-	        }         
-	    }     
-	    
-	    // za strana
-	    for(var i=1; i<steps.length; i++) {
-	     step = steps[i];
-	     tmp = fig.pos.off(step[0], step[1]);
-	     at = this.board.at(tmp);
-	     
-	     if (at && at.color !== fig.color ){
-	      moves.push(tmp); 
-	     }
-	     
-	    }
-	        
-	    moves = moves.map(function(x) {
-	        return new Movement(fig, x);
-	    });          
-	 return moves;
-	}
 // ===== King Type ======
 
 Figure.parent(King);
@@ -407,8 +448,11 @@ Pawn.prototype.moves = function() {
 
 // ===== Demo code ======
 
+
+
 var c = new Chessboard();
 console.log("" + c);
-console.log("" + c.moves().join(", "));
+c.play();
+
 
 

@@ -93,18 +93,31 @@ Chessboard.prototype.toString = function() {
 	return s;
 }
 
-
-Chessboard.prototype.makeMove = function(nextMove, player){
-	console.log("Next "+ player+" move: " + nextMove.fig+ " from pos: "+ nextMove.from+" to position: " + nextMove.to);
+Chessboard.prototype.makeMove = function(c, figNextMove, player){
+	console.log("Next "+ player +" move: " + figNextMove.fig+ " from pos: "+ figNextMove.from+" to position: " + figNextMove.to);
 	console.log();
-	this.board[nextMove.from.row][nextMove.from.col] = null;
-	this.set(nextMove.to.row, nextMove.to.col, nextMove.fig);
-	//TODO za zema figura ako ima za zemanje
-}
+	c.board[figNextMove.from.row][figNextMove.from.col] = null;
+	if(c.board[figNextMove.to.row][figNextMove.to.col] != null){	
+		var zemenaFigura = c.board[figNextMove.to.row][figNextMove.to.col];
+		console.log("Zemanje figura: " + zemenaFigura);
+		zemenaFigura.pos.row=null;
+		zemenaFigura.pos.col=null;
+		if(zemenaFigura.type=="KG"){
+			console.log("Igrata zavrsi, pobednikot e igracot so boja: " + player);
+			c.set(figNextMove.to.row, figNextMove.to.col, figNextMove.fig);
+			console.log();
+			console.log("" + c);
+			return false;
+		}		
+	}
+	c.set(figNextMove.to.row, figNextMove.to.col, figNextMove.fig);
+	return true;
+} 
 
 Chessboard.prototype.play = function(c){
+	var flag=true;
 	var chessboard= c;
-	setInterval(function() {
+	timeOut = setInterval(function() {
 		console.log("" + c);
 		var availableMoves= (c.moves());
 		var whiteMoves = availableMoves.filter(
@@ -120,15 +133,18 @@ Chessboard.prototype.play = function(c){
 		var nextMove;
 		if(c.turn===true){
 			nextMove = Math.floor(Math.random() * whiteMoves.length);
-			chessboard.makeMove(whiteMoves[nextMove], "white");
+			flag = chessboard.makeMove(c, whiteMoves[nextMove], "white");
 		}
 		else{
 			chessboard.numMoves++;
 			nextMove = Math.floor(Math.random() * blackMoves.length);
-			chessboard.makeMove(blackMoves[nextMove], "black");
+			flag = chessboard.makeMove(c, blackMoves[nextMove], "black");
+			}
+			if(!flag){
+				clearTimeout(timeOut);
 			}
 			c.turn=!c.turn;
-		}, 2000);
+		}, 100);
 }
 
 // ===== Common Types ======
@@ -161,7 +177,7 @@ function Movement(fig, to) {
 }
 
 Movement.prototype.toString = function() {
-	return this.fig;
+	return this.fig.toString() + "/" + this.from + "->" + this.to;
 }
 
 // ===== Figure Type ======
@@ -185,7 +201,8 @@ Figure.prototype.moves = function() {
 
 Figure.prototype.moveSteps = function(steps, repeat) {
 		var fig = this;
-	    var moves = [];	   
+	    var moves = [];	 
+	    if(fig.pos.row===null||fig.pos.col===null){ return moves;}
 	    for(var i=0; i<steps.length; i++) {
 	    	var step = steps[i];
 	    	var tmp = fig.pos.off(step[0], step[1]);
@@ -232,7 +249,7 @@ King.prototype.moves = function() {
 	    [ 0, -1],
 	    [+1, -1]
 	 ];
-	 return this.moveSteps(steps, true);
+	 return this.moveSteps(steps, false);
 }
 
 // ===== Queen Type ======
@@ -325,6 +342,7 @@ function Pawn(color, index, pos) {
 Pawn.prototype.moveSteps = function(steps, turn){
 	var fig = this;
     var moves = [];
+    if(fig.pos.row===null||fig.pos.col===null){ return moves;}
     if(fig.color==BLACK){
     	steps = steps.map(function(obj){
     		obj[0]=obj[0]*(-1);
@@ -374,6 +392,5 @@ Pawn.prototype.moves = function() {
 }
 
 // ===== Demo code ======
-
 var c = new Chessboard();
 c.play(c);

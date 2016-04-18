@@ -14,6 +14,7 @@ function Chessboard() {
 Chessboard.prototype.reset = function() {
 	var i;
 	this.move = 0;
+	this.turn=true;
 	this.figures = [];
 	this.board = [];
 	for(i=0; i<8; i++) this.board[i] = [null, null, null, null, null, null, null, null];
@@ -76,80 +77,48 @@ Chessboard.prototype.moves = function() {
 
 Chessboard.prototype.play = function(){
 	
-	var turn = true;
-	
-	
-	var allMoves = c.moves();
-	
-	var allMoves= (c.moves());
-	var whiteTeam = allMoves.filter(
-		function (value) {
-			return (value.fig.color.charAt(0) == 'w');
-		}
-	);
-	var blackTeam = allMoves.filter(
-		function (value) {
-			return (value.fig.color.charAt(0) == 'b');
-		}
-	);
-	
-	setInterval(function(){ 
-	
-	var i ;
-	var allPossibleMoves = c.moves().join(", ");
-	var figures = c.figures;
-	var board = c.board;
-	var moves = c.moves();
-	
-	var randomRow = Math.floor(Math.random() * (7 - 0) + 0);
-	var randomCol = Math.floor(Math.random() * (7 - 0) + 0);
-	
-	
-	var figure = board[randomRow][randomCol];
-	
-	
-	
-	if(figure == null){
-		while(figure == null){
-			var randomRow = Math.floor(Math.random() * (7 - 0) + 0);
-			var randomCol = Math.floor(Math.random() * (7 - 0) + 0);
-			figure = board[randomRow][randomCol];
-		}	
-	}
 		
-	
-		if(figure.index)
-			var nameFigure = figure.color + figure.type + figure.index;
-		else 
-			var nameFigure = figure.color + figure.type;
-
-
-		var possibleMovesFigure = [];
-		
-		for(i = 0 ; i < moves.length ; i++){
-			var m = moves[i];
-			if(m.fig == figure){
-				possibleMovesFigure.push(m);
-			}
-		}
-		
-		if(possibleMovesFigure.length > 0){
-			
-			var randomMoveNumber = Math.floor(Math.random() * (possibleMovesFigure.length - 0) + 0);
-			var myMove = possibleMovesFigure[randomMoveNumber];
-			
-			c.makeMove(figure, myMove);
-			
-			console.log(randomMoveNumber);
+		var board = c.board;
+		c.turn = true;
+		var myMoveNumber;
+		var myMove;
+		var figure;
+		var whiteTeam;
+		var blackTeam;
+		var allMoves;
+		setInterval(function() {
 			console.log("" + c);
-		}else {
-			console.log("There is no possible moves for " + nameFigure + " for now");
-		}
-		
-		
-		
-	},1000);
-
+			
+			if(c.turn){
+				allMoves = (c.moves());
+				whiteTeam = allMoves.filter(
+						function (value) {
+							return (value.fig.color.charAt(0) == 'w');
+						}
+					);
+				 myMoveNumber = Math.floor(Math.random() * whiteTeam.length);
+				 myMove = whiteTeam[myMoveNumber];
+				 figure = board[myMove.fig.pos.row][myMove.fig.pos.col];
+				if(figure !=null) 
+				 c.makeMove(figure, myMove)
+				
+			}else {
+				allMoves = (c.moves());
+				blackTeam = allMoves.filter(
+						function (value) {
+							return (value.fig.color.charAt(0) == 'b');
+						}
+					);
+				myMoveNumber = Math.floor(Math.random() * blackTeam.length);
+				myMove = blackTeam[myMoveNumber];
+				figure = board[myMove.fig.pos.row][myMove.fig.pos.col];
+				if(figure !=null) 
+				c.makeMove(figure, myMove)
+			}
+			
+			
+			c.turn = !c.turn;
+		}, 10)
 
 }
 
@@ -451,7 +420,6 @@ Pawn.prototype.moves = function() {
 
 
 var c = new Chessboard();
-console.log("" + c);
 c.play();
 
 

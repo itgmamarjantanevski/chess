@@ -430,7 +430,7 @@ Chessboard.prototype.playEngine = function() {
 }
 
 
-// ===== Demo code ======
+// ===== Demo code =======
 
 var c = new Chessboard();
 c.play()

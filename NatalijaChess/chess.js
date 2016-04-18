@@ -104,6 +104,7 @@ Chessboard.prototype.makeMove = function(c, figNextMove, player){
 		zemenaFigura.pos.col=null;
 		if(zemenaFigura.type=="KG"){
 			console.log("Igrata zavrsi, pobednikot e igracot so boja: " + player);
+			c.set(figNextMove.to.row, figNextMove.to.col, figNextMove.fig);
 			console.log();
 			console.log("" + c);
 			return false;
@@ -143,7 +144,7 @@ Chessboard.prototype.play = function(c){
 				clearTimeout(timeOut);
 			}
 			c.turn=!c.turn;
-		}, 10);
+		}, 100);
 }
 
 // ===== Common Types ======
@@ -248,7 +249,7 @@ King.prototype.moves = function() {
 	    [ 0, -1],
 	    [+1, -1]
 	 ];
-	 return this.moveSteps(steps, true);
+	 return this.moveSteps(steps, false);
 }
 
 // ===== Queen Type ======

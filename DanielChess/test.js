@@ -249,7 +249,7 @@ King.prototype.moves = function() {
 	    [ 0, -1],
 	    [+1, -1]
 	 ];
-	return this.moveSteps(steps, true);
+	return this.moveSteps(steps, false);
 }
 
 // ===== Queen Type ======

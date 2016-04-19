@@ -16,6 +16,39 @@ function Chessboard() {
 	this.reset();
 }
 
+//table draw html
+Chessboard.prototype.draw = function() {
+var table = document.createElement('table');
+for (var i = 8 ; i > 0; i--) {
+     var tr = document.createElement('tr');
+     tr.id = i;
+     for (var j = 0; j < 8; j++) {
+         var td = document.createElement('td');
+         var span = document.createElement('span');
+          span.id = String.fromCharCode(j+65) + i;
+         if(i%2 === 0){
+            if(j%2 === 0) {
+                td.className = "white";
+            }else {
+                td.className = "black";
+               
+            }
+            }else {
+             if(j%2 === 0) {
+                td.className = "black";
+             }else {
+                td.className = "white";
+            }
+         }
+         tr.appendChild(td);
+         td.appendChild(span);
+     }
+     table.appendChild(tr);
+}
+document.getElementById("chessBoard").appendChild(table);
+}
+// end of draw
+
 Chessboard.prototype.reset = function() {
 	var i;
 	
@@ -47,7 +80,7 @@ Chessboard.prototype.reset = function() {
 	this.set(7, 7, new Rook(BLACK, 2));
 }
 
-Chessboard.prototype.set = function(row, col, fig) {
+Chessboard.prototype.set = function(row, col, fig , id) {
 	if (fig.board === undefined) {
 		Object.defineProperty(fig, 'board', {
 			  value: this,
@@ -101,23 +134,18 @@ Chessboard.prototype.play = function() {
     chessboard.moveCounter = 0;
    // console.log(" " + c);
     var allMoves = c.moves();
+    
     setInterval(function () {
     console.log("" + c);
-    
     var whitePlayerMoves = allMoves.filter(function (a) {
         return a.fig.color.charAt(0) == 'w';}); 
-    
     var blackPlayerMoves = allMoves.filter(function (b) {
-        return b.fig.color.charAt(0) == 'b';});
-        
+        return b.fig.color.charAt(0) == 'b';}); 
     var whiteIndex = Math.floor(Math.random() * whitePlayerMoves.length);
     var white = whitePlayerMoves[whiteIndex];
-    
-    
     var blackIndex = Math.floor(Math.random() * blackPlayerMoves.length);
     var black = blackPlayerMoves[blackIndex];
     
-   
          if(c.turn === true) {
              console.log("white turn" + " " + white.fig + " " + "from" + " " + white.from  + " " + "to" + " "+ white.to);
              chessboard.board[white.from.col][white.from.row] = null;
@@ -127,8 +155,6 @@ Chessboard.prototype.play = function() {
              chessboard.board[black.from.col][black.from.row]= null;
              chessboard.set(black.to.col, black.to.row, black.fig); 
         }
-        
-        
        if(white.length === 0)  {
         console.log("Black pieces win");
         return null;
@@ -140,7 +166,6 @@ Chessboard.prototype.play = function() {
        };
     c.turn = !c.turn;
     },1000);
-
 }
 
 // ===== Common Types ======
@@ -277,5 +302,7 @@ function Pawn(color, index, pos) {
 //===== Demo code ======
 
 var c = new Chessboard();
-console.log("" + c);
-console.log("" + c.moves().join(", "));
+c.draw();
+c.play();
+// console.log("" + c);
+// console.log("" + c.moves().join(", "));

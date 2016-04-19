@@ -1,0 +1,19 @@
+.white {
+    width: 80px;
+    height: 80px;
+    background-color:#fff;
+  
+}
+
+.black {
+    width: 80px;
+    height: 80px;
+    background-color: #ccc;
+    
+}
+
+#chessBoard {
+    margin-top: 100px;
+    margin-left: 500px;
+    border:5px solid #333; 
+}

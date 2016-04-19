@@ -86,7 +86,9 @@ Chessboard.prototype.play = function(){
 		var whiteTeam;
 		var blackTeam;
 		var allMoves;
-		setInterval(function() {
+		var kingAlive ;
+		var i ;
+		gameOver = setInterval(function() {
 			console.log("" + c);
 			
 			if(c.turn){
@@ -100,7 +102,7 @@ Chessboard.prototype.play = function(){
 				 myMove = whiteTeam[myMoveNumber];
 				 figure = board[myMove.fig.pos.row][myMove.fig.pos.col];
 				if(figure !=null) 
-				 c.makeMove(figure, myMove)
+				 kingAlive = c.makeMove(figure, myMove)
 				
 			}else {
 				allMoves = (c.moves());
@@ -113,20 +115,32 @@ Chessboard.prototype.play = function(){
 				myMove = blackTeam[myMoveNumber];
 				figure = board[myMove.fig.pos.row][myMove.fig.pos.col];
 				if(figure !=null) 
-				c.makeMove(figure, myMove)
+				kingAlive = c.makeMove(figure, myMove);
+				
 			}
-			
-			
+			if(!kingAlive){
+				clearTimeout(gameOver);
+			}
 			c.turn = !c.turn;
-		}, 1000)
-
+		}, 100)
+		
 }
 
 Chessboard.prototype.makeMove = function(figure, myMove){
+	console.log(myMove.from + " " + myMove.to);
+	this.board[figure.pos.row][figure.pos.col] = null;	
+	if(this.board[myMove.to.row][myMove.to.col] != null){
+		var takenFigure = this.board[myMove.to.row][myMove.to.col];
+		if(takenFigure.type == "KG"){
+			this.set(myMove.to.row,myMove.to.col, figure);
+			console.log("Taken figure is King");
+			console.log("Game over");
+			return false;
+		}
+	}
 	
-	this.board[figure.pos.row][figure.pos.col] = null;
 	this.set(myMove.to.row,myMove.to.col, figure);
-	
+	return true;
 }
 
 

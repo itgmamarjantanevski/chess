@@ -118,7 +118,7 @@ Chessboard.prototype.play = function(){
 			
 			
 			c.turn = !c.turn;
-		}, 10)
+		}, 1000)
 
 }
 

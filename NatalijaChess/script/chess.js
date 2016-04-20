@@ -115,6 +115,7 @@ Chessboard.prototype.makeMove = function(c, figNextMove, player) {
 }
 
 Chessboard.prototype.play = function(c) {
+    drawChessboard(c);
     var flag = true;
     var chessboard = c;
     timeOut = setInterval(function() {
@@ -144,7 +145,7 @@ Chessboard.prototype.play = function(c) {
             clearTimeout(timeOut);
         }
         c.turn = !c.turn;
-        draw(c);
+        drawFigures(c);
     }, 3000);
 }
 
@@ -398,14 +399,14 @@ var c = new Chessboard();
 c.play(c);
 
 var id=0;
-function draw(c) {
+function drawChessboard(c) {
     document.getElementById("table").innerHTML="";
     var table = document.createElement('table');
     table.className = 'table';
     var tr, td;
     for (var i = 8; i > 0; i--) {
         tr = document.createElement('tr');
-        for (var j = 0, m=0; j < 8; j++,m++) {
+        for (var j = 0; j < 8; j++) {
             td = document.createElement('td');
             td.className = 'td';
             var span = document.createElement('span');
@@ -416,18 +417,26 @@ function draw(c) {
             }
             else {
                 td.className = 'black';
-            }
-            if(c.at(i-1,m)!=null||c.at(i-1,m)!=undefined){
-                span.innerHTML=c.at(i-1,m).img;
-            }
-            else{
-                span.innerHTML="";
-            }
+            }            
             tr.appendChild(td);
             td.appendChild(span);
         }
         table.appendChild(tr);
     }
-
     document.getElementById('table').appendChild(table);
+    drawFigures(c)
+}
+
+function drawFigures(c){
+    for (var i = 8; i > 0; i--){
+        for (var j = 0; j < 8; j++) {
+            var span = document.getElementById(String.fromCharCode(j + 65) + i);
+            if(c.at(i-1,j)!=null||c.at(i-1,j)!=undefined){
+                span.innerHTML=c.at(i-1,j).img;
+            }
+            else{
+                span.innerHTML="";
+            }
+        }
+    }
 }

@@ -413,7 +413,6 @@ function drawChessboard(c,name) {
     divTable.id = name;
     divTable.className = 'table';
     document.body.appendChild(divTable);
-    divTable.innerHTML="";
     var table = document.createElement('table');
     table.className = 'table';
     var tr, td;

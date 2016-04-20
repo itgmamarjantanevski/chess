@@ -1,0 +1,31 @@
+.white{
+    background-color: white;
+}
+
+.black{
+    background-color: lightgrey
+}
+
+table{
+    width: 400px;
+    height: 400px;
+    margin-left: 30px;
+    margin-top: 30px;
+}
+
+td{
+    width: 50px;
+    height: 50px;
+}
+
+span{
+    padding-left: 7px;
+    align-items: center;
+    text-align: center;
+    font-size: 2em;
+}
+
+
+.table{
+    padding-left: 350px;
+}

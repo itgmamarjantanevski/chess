@@ -116,13 +116,12 @@ Chessboard.prototype.makeMove = function(figNextMove, player, chessboardName) {
 }
 
 Chessboard.prototype.play = function(name) {
-    var c = this;
-    drawChessboard(c,name);
+    var chessboard = this;
+    drawChessboard(chessboard,name);
     var flag = true;
-    var chessboard = c;
     timeOut = setInterval(function() {
         //console.log("" + c);
-        var availableMoves = (c.moves());
+        var availableMoves = chessboard.moves();
         var whiteMoves = availableMoves.filter(
             function(value) {
                 return (value.fig.color.charAt(0) == 'w');
@@ -134,7 +133,7 @@ Chessboard.prototype.play = function(name) {
             }
         );
         var nextMove;
-        if (c.turn === true) {
+        if (chessboard.turn === true) {
             nextMove = Math.floor(Math.random() * whiteMoves.length);
             flag = chessboard.makeMove(whiteMoves[nextMove], "white", name);
         }
@@ -146,9 +145,9 @@ Chessboard.prototype.play = function(name) {
         if (!flag) {
             clearTimeout(timeOut);
         }
-        c.turn = !c.turn;
-        drawFigures(c, name);
-    }, 3000);
+        chessboard.turn = !chessboard.turn;
+        drawFigures(chessboard, name);
+    }, 3);
 }
 
 // ===== Common Types ======
@@ -403,9 +402,9 @@ var c3 = new Chessboard();
 var c4 = new Chessboard();
 
 c1.play('me');
-c2.play('you');
-c3.play('he');
-c4.play('she');
+//c2.play('you');
+//c3.play('he');
+//4.play('she');
 
 var id=0;
 function drawChessboard(c,name) {

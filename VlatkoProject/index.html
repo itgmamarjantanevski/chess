@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Chess</title>
+<link rel="stylesheet" href="mychess.css">
+</head>
+<body>
+
+<h1 class="hCenter">Chess</h1>
+<div id="chessBoard">
+   <div>
+       <div class="offSquare" style="border-bottom: 2px solid #884600;border-left: 2px solid #884600;"></div>
+       <div class="offSquare" style="border-bottom: 2px solid #FFEEBB;">A</div>
+       <div class="offSquare" style="border-bottom: 2px solid #FFEEBB;">B</div>
+       <div class="offSquare" style="border-bottom: 2px solid #FFEEBB;">C</div>
+       <div class="offSquare" style="border-bottom: 2px solid #FFEEBB;">D</div>
+       <div class="offSquare" style="border-bottom: 2px solid #FFEEBB;">E</div>
+       <div class="offSquare" style="border-bottom: 2px solid #FFEEBB;">F</div>
+       <div class="offSquare" style="border-bottom: 2px solid #FFEEBB;">G</div>
+       <div class="offSquare" style="border-bottom: 2px solid #FFEEBB;">H</div>
+       <div class="offSquare" style="border-bottom: 2px solid #884600;border-left: 2px solid #884600;"></div>
+   </div>
+   <div>
+       <div class="offSquare" style="border-right: 2px solid #FFEEBB;">8</div>
+       <div class="whiteSquare" id="A8">&#9820;</div>
+       <div class="blackSquare" id="B8">&#9822;</div>
+       <div class="whiteSquare" id="C8">&#9821;</div>
+       <div class="blackSquare" id="D8">&#9819;</div>
+       <div class="whiteSquare" id="E8">&#9818;</div>
+       <div class="blackSquare" id="F8">&#9821;</div>
+       <div class="whiteSquare" id="G8">&#9822;</div>
+       <div class="blackSquare" id="H8">&#9820;</div>
+       <div class="offSquare" style="border-left: 2px solid #FFEEBB;">8</div>
+   </div>
+   <div>
+      <div class="offSquare" style="border-right: 2px solid #FFEEBB;">7</div>
+       <div class="blackSquare" id="A7">&#9823;</div>
+       <div class="whiteSquare" id="B7">&#9823;</div>
+       <div class="blackSquare" id="C7">&#9823;</div>
+       <div class="whiteSquare" id="D7">&#9823;</div>
+       <div class="blackSquare" id="E7">&#9823;</div>
+       <div class="whiteSquare" id="F7">&#9823;</div>
+       <div class="blackSquare" id="G7">&#9823;</div>
+       <div class="whiteSquare" id="H7">&#9823;</div>
+       <div class="offSquare" style="border-left: 2px solid #FFEEBB;">7</div>
+   </div>
+   <div>
+      <div class="offSquare" style="border-right: 2px solid #FFEEBB;">6</div>
+       <div class="whiteSquare" id="A6"></div>
+       <div class="blackSquare" id="B6"></div>
+       <div class="whiteSquare" id="C6"></div>
+       <div class="blackSquare" id="D6"></div>
+       <div class="whiteSquare" id="E6"></div>
+       <div class="blackSquare" id="F6"></div>
+       <div class="whiteSquare" id="G6"></div>
+       <div class="blackSquare" id="H6"></div> 
+       <div class="offSquare" style="border-left: 2px solid #FFEEBB;">6</div>
+   </div>
+   <div>
+      <div class="offSquare" style="border-right: 2px solid #FFEEBB;">5</div>
+       <div class="blackSquare" id="A5"></div>
+       <div class="whiteSquare" id="B5"></div>
+       <div class="blackSquare" id="C5"></div>
+       <div class="whiteSquare" id="D5"></div>
+       <div class="blackSquare" id="E5"></div>
+       <div class="whiteSquare" id="F5"></div>
+       <div class="blackSquare" id="G5"></div>
+       <div class="whiteSquare" id="H5"></div>
+       <div class="offSquare" style="border-left: 2px solid #FFEEBB;">5</div>
+   </div>
+   <div>
+      <div class="offSquare" style="border-right: 2px solid #FFEEBB;">4</div>
+       <div class="whiteSquare" id="A4"></div>
+       <div class="blackSquare" id="B4"></div>
+       <div class="whiteSquare" id="C4"></div>
+       <div class="blackSquare" id="D4"></div>
+       <div class="whiteSquare" id="E4"></div>
+       <div class="blackSquare" id="F4"></div>
+       <div class="whiteSquare" id="G4"></div>
+       <div class="blackSquare" id="H4"></div>
+       <div class="offSquare" style="border-left: 2px solid #FFEEBB;">4</div>
+   </div>
+   <div>
+      <div class="offSquare" style="border-right: 2px solid #FFEEBB;">3</div>
+       <div class="blackSquare" id="A3"></div>
+       <div class="whiteSquare" id="B3"></div>
+       <div class="blackSquare" id="C3"></div>
+       <div class="whiteSquare" id="D3"></div>
+       <div class="blackSquare" id="E3"></div>
+       <div class="whiteSquare" id="F3"></div>
+       <div class="blackSquare" id="G3"></div>
+       <div class="whiteSquare" id="H3"></div>
+       <div class="offSquare" style="border-left: 2px solid #FFEEBB;">3</div>
+   </div>
+   <div>
+      <div class="offSquare" style="border-right: 2px solid #FFEEBB;">2</div>
+       <div class="whiteSquare" id="A2">&#9817;</div>
+       <div class="blackSquare" id="B2">&#9817;</div>
+       <div class="whiteSquare" id="C2">&#9817;</div>
+       <div class="blackSquare" id="D2">&#9817;</div>
+       <div class="whiteSquare" id="E2">&#9817;</div>
+       <div class="blackSquare" id="F2">&#9817;</div>
+       <div class="whiteSquare" id="G2">&#9817;</div>
+       <div class="blackSquare" id="H2">&#9817;</div>
+       <div class="offSquare" style="border-left: 2px solid #FFEEBB;">2</div>
+   </div>
+   <div>
+      <div class="offSquare" style="border-right: 2px solid #FFEEBB;">1</div>
+       <div class="blackSquare" id="A1">&#9814;</div>
+       <div class="whiteSquare" id="B1">&#9816;</div>
+       <div class="blackSquare" id="C1">&#9815;</div>
+       <div class="whiteSquare" id="D1">&#9813;</div>
+       <div class="blackSquare" id="E1">&#9812;</div>
+       <div class="whiteSquare" id="F1">&#9815;</div>
+       <div class="blackSquare" id="G1">&#9816;</div>
+       <div class="whiteSquare" id="H1">&#9814;</div>
+       <div class="offSquare" style="border-left: 2px solid #FFEEBB;">1</div>
+   </div>
+   <div>
+       <div class="offSquare" style="border-top: 2px solid #884600;border-right: 2px solid #884600;"></div>
+       <div class="offSquare" style="border-top: 2px solid #FFEEBB;">A</div>
+       <div class="offSquare" style="border-top: 2px solid #FFEEBB;">B</div>
+       <div class="offSquare" style="border-top: 2px solid #FFEEBB;">C</div>
+       <div class="offSquare" style="border-top: 2px solid #FFEEBB;">D</div>
+       <div class="offSquare" style="border-top: 2px solid #FFEEBB;">E</div>
+       <div class="offSquare" style="border-top: 2px solid #FFEEBB;">F</div>
+       <div class="offSquare" style="border-top: 2px solid #FFEEBB;">G</div>
+       <div class="offSquare" style="border-top: 2px solid #FFEEBB;">H</div>
+       <div class="offSquare" style="border-top: 2px solid #884600;border-right: 2px solid #884600;"></div>
+   </div>
+    
+</div>
+<div class="BtnDiv"><button class="btn">START!</button></div>
+<!--<table>
+ <thead>
+  <tr><th><th>a<th>b<th>c<th>d<th>e<th>f<th>g<th>h
+ <tbody>
+  <tr><th>8<td class="whiteSquare" id="A8">&#9820;
+           <td class="blackSquare" id="B8">&#9822;
+           <td class="whiteSquare" id="C8">&#9821;
+           <td class="blackSquare" id="D8">&#9819;
+           <td class="whiteSquare" id="E8">&#9818;
+           <td class="blackSquare" id="F8">&#9821;
+           <td class="whiteSquare" id="G8">&#9822;
+           <td class="blackSquare" id="H8">&#9820;
+  <tr><th>7<td class="blackSquare" id="A7">&#9823;
+           <td class="whiteSquare" id="B7">&#9823;
+           <td class="blackSquare" id="C7">&#9823;
+           <td class="whiteSquare" id="D7">&#9823;
+           <td class="blackSquare" id="E7">&#9823;
+           <td class="whiteSquare" id="F7">&#9823;
+           <td class="blackSquare" id="G7">&#9823;
+           <td class="whiteSquare" id="H7">&#9823;
+  <tr><th>6<td class="whiteSquare" id="A6">
+           <td class="blackSquare" id="B6">
+           <td class="whiteSquare" id="C6">
+           <td class="blackSquare" id="D6">
+           <td class="whiteSquare" id="E6">
+           <td class="blackSquare" id="F6">
+           <td class="whiteSquare" id="G6">
+           <td class="blackSquare" id="H6">
+  <tr><th>5<td class="blackSquare" id="A5">
+           <td class="whiteSquare" id="B5">
+           <td class="blackSquare" id="C5">
+           <td class="whiteSquare" id="D5">
+           <td class="blackSquare" id="E5">
+           <td class="whiteSquare" id="F5">
+           <td class="blackSquare" id="G5">
+           <td class="whiteSquare" id="H5">
+  <tr><th>4<td class="whiteSquare" id="A4">
+           <td class="blackSquare" id="B4">
+           <td class="whiteSquare" id="C4">
+           <td class="blackSquare" id="D4">
+           <td class="whiteSquare" id="E4">
+           <td class="blackSquare" id="F4">
+           <td class="whiteSquare" id="G4">
+           <td class="blackSquare" id="H4">
+  <tr><th>3<td class="blackSquare" id="A3">
+           <td class="whiteSquare" id="B3">
+           <td class="blackSquare" id="C3">
+           <td class="whiteSquare" id="D3">
+           <td class="blackSquare" id="E3">
+           <td class="whiteSquare" id="F3">
+           <td class="blackSquare" id="G3">
+           <td class="whiteSquare" id="H3">
+  <tr><th>2<td class="whiteSquare" id="A2">&#9817;
+           <td class="blackSquare" id="B2">&#9817;
+           <td class="whiteSquare" id="C2">&#9817;
+           <td class="blackSquare" id="D2">&#9817;
+           <td class="whiteSquare" id="E2">&#9817;
+           <td class="blackSquare" id="F2">&#9817;
+           <td class="whiteSquare" id="G2">&#9817;
+           <td class="blackSquare" id="H2">&#9817;
+  <tr><th>1<td class="blackSquare" id="A1">&#9814;
+           <td class="whiteSquare" id="B1">&#9816;
+           <td class="blackSquare" id="C1">&#9815;
+           <td class="whiteSquare" id="D1">&#9813;
+           <td class="blackSquare" id="E1">&#9812;
+           <td class="whiteSquare" id="F1">&#9815;
+           <td class="blackSquare" id="G1">&#9816;
+           <td class="whiteSquare" id="H1">&#9814;
+</table> -->
+
+<script src="mychess.js"></script>
+</body>
+</html>

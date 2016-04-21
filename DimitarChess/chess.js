@@ -331,7 +331,7 @@ Laufer.prototype.moves = function(){
     ];
 	
   return this.moveSteps(steps, true);
-  
+   
 }
 
 

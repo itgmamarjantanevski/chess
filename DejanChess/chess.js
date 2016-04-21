@@ -1,4 +1,4 @@
-// Chessboard
+//chessboard
 
 // King
 // Queen 
@@ -18,6 +18,7 @@ function Chessboard() {
 
 //table draw html
 function drawTable(chessboard) {
+	//get div in html
 	var div = document.getElementById("chessBoard");
 	div.innerHTML = "";
 	var table = document.createElement('table');
@@ -28,14 +29,13 @@ function drawTable(chessboard) {
 			var td = document.createElement('td');
 			//console.log(chessboard.at(i-1,j));
 			var span = document.createElement('span');
+			// add images at board
 			if (chessboard.at(i - 1, j) != null) {
 				span.innerHTML = chessboard.at(i - 1, j).img;
 			} else {
 				span.innerHTML = "";
 			}
-
 			span.id = String.fromCharCode(j + 65) + i;
-
 			if (i % 2 === 0) {
 				if (j % 2 === 0) {
 					td.className = "white";
@@ -153,31 +153,35 @@ Chessboard.prototype.play = function () {
 			return b.fig.color.charAt(0) == 'b';
 		});
 
-
 		if (c.turn) {
+			//white movments
 			var whiteIndex = Math.floor(Math.random() * whitePlayerMoves.length);
+			//random from white moves
 			var white = whitePlayerMoves[whiteIndex];
 			console.log("white turn" + " " + white.fig + " " + "from" + " " + white.from + " " + "to" + " " + white.to);
-			chessboard.board[white.from.col][white.from.row] = null;
-			if (chessboard.board[white.to.col][white.to.row] != null) {
+			//clerar current position
+			chessboard.board[white.from.row][white.from.col] = null;
+			
+			if (chessboard.board[white.to.row][white.to.col] != null) {
 				//console.log(chessboard.board);
-				var takenFigure = chessboard.board[white.to.col][white.to.row];
+				var takenFigure = chessboard.board[white.to.row][white.to.col];
 				takenFigure.pos.col = null;
 				takenFigure.pos.row = null;
+				//king still alive
 				if (takenFigure.type === "KG") {
-					chessboard.set(white.to.col, white.to.row, white.fig);
+					chessboard.set(white.to.row, white.to.col, white.fig);
 					console.log("Game over");
 					return false;
 				}
 			}
-			chessboard.set(white.to.col, white.to.row, white.fig);
+			chessboard.set(white.to.row, white.to.col, white.fig);
         } else {
 			var blackIndex = Math.floor(Math.random() * blackPlayerMoves.length);
 			var black = blackPlayerMoves[blackIndex];
 			console.log("Black turn" + " " + black.fig + " " + "from" + " " + black.from + " " + "to" + " " + black.to);
-			chessboard.board[black.from.col][black.from.row] = null;
-			if (chessboard.board[black.to.col][black.to.row] != null) {
-				var takenFigure = chessboard.board[black.to.col][black.to.row];
+			chessboard.board[black.from.row][black.from.col] = null;
+			if (chessboard.board[black.to.row][black.to.col] != null) {
+				var takenFigure = chessboard.board[black.to.row][black.to.col];
 				takenFigure.pos.col = null;
 				takenFigure.pos.row = null;
 
@@ -189,7 +193,7 @@ Chessboard.prototype.play = function () {
 					return false;
 				}
 			}
-			chessboard.`set`(black.to.col, black.to.row, black.fig);
+			chessboard.set(black.to.row, black.to.col, black.fig);
         }
 		c.turn = !c.turn;
 		drawTable(c);
@@ -237,8 +241,6 @@ function Figure(type, color, img, index) {
 	this.img = img;
 }
 
-
-
 // ===== Figure Type ======
 
 function Figure(type, color, img, index) {
@@ -259,69 +261,27 @@ Figure.prototype.moves = function () {
 	return [];
 }
 
-Figure.prototype.moveSteps = function (steps, repeat) {
-	var fig = this;
+Figure.prototype.moveSteps = function(steps, repeat) {
+    var fig = this;
     var moves = [];
-    var moveCounter = 0;
-    if (fig.color == BLACK) {
-		steps = steps.map(function (obj) {
-			obj[0] = obj[0] * (-1);
-			obj[1] = obj[1] * (-1);
-			return [obj[0], obj[1]];
-		});
-	} 
-
+    if (fig.pos.row === null || fig.pos.col === null) { return moves; }
     for (var i = 0; i < steps.length; i++) {
-		//all steps in pawn
-		var step = steps[i];
-		//current positon
-		var tmp = fig.pos.off(step[0], step[1]);
+        var step = steps[i];
+        var tmp = fig.pos.off(step[0], step[1]);
 
-		var at = this.board.at(tmp);
-
+        var at = this.board.at(tmp);
         while (at === null || at && at.color != fig.color) {
-			if (fig instanceof Pawn) {
-				if (at === null) {
-					if (fig.movePawn(step)) {
-						if (moveCounter < 2) {
-							var pown = fig.pos;
-							if (pown.row == 1) {
-								var tmp2 = fig.pos.off(step[0] + 1, step[1]);
-								moves.push(tmp2);
-							} if (pown.row == 6) {
-								var tmp3 = fig.pos.off(step[0] - 1, step[1]);
-								moves.push(tmp3);
-							}
-							moveCounter++;
-						}
-						moves.push(tmp);
-					}
-				} else if (at != null && at.color != fig.color) {
-					if (fig.pawnAttack(step))
-						moves.push(tmp);
-				}
-			}
-			else moves.push(tmp);
-			if (at != null || !repeat) break;
-			var tmp = tmp.off(step[0], step[1]);
-			var at = this.board.at(tmp);
+            moves.push(tmp);
+
+            if (at != null || !repeat) break;
+            var tmp = tmp.off(step[0], step[1]);
+            var at = this.board.at(tmp);
         }
     }
-
-    moves = moves.map(function (x) {
+    moves = moves.map(function(x) {
         return new Movement(fig, x);
     });
-	return moves;
-}
-Figure.prototype.movePawn = function (tmp) {
-	if ((tmp[0] == 1 && tmp[1] == 0) || (tmp[0] == -1 && tmp[1] == 0)) {
-		return true;
-	} else return false;
-}
-Figure.prototype.pawnAttack = function (tmp) {
-	if ((tmp[0] == 1 && tmp[1] == -1) || (tmp[0] == 1 && tmp[1] == 1) || (tmp[0] == -1 && tmp[1] == 1) || (tmp[0] == -1 && tmp[1] == -1)) {
-		return true;
-	} else return false;
+    return moves;
 }
 
 Figure.prototype.toString = function () {
@@ -450,6 +410,3 @@ Pawn.prototype.moves = function () {
 var c = new Chessboard();
 drawTable(c)
 c.play();
-
-
-

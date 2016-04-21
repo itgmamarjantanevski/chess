@@ -1,0 +1,14 @@
+cmd GitHub commands:
+* dir -> Display a list of files and folders
+* mkdir -> MKDIR creates any intermediate directories in the path
+* cd -> Change Directory - move to a specific Folder
+* git clone name_repository -> clone a repository / Makes a Git repository copy from a remote source.
+* git status -> Shows you the status of files in the index versus the working directory
+* git log -> Shows a listing of commits on a branch including the corresponding details
+* git add nameProject/ -> Adds files changes in your working directory to your index. Example: git add
+* git commit -m "Some message" -> Takes all of the changes written in the index, creates a new commit object pointing to it and sets the branch to point to that new commit
+* git pull -> Fetches the files from the remote repository and merges it with your local one.
+* git push -> Pushes all the modified local objects to the remote repository and advances its branches
+* git add . stages new and modified, without deleted
+
+All commands: https://www.siteground.com/tutorials/git/commands.htm

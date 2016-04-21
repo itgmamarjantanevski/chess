@@ -1,0 +1,75 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>Chess</title>
+    <meta name="description" content="Chess project">
+    <meta name="author" content="Daniel N">
+
+    <link rel="stylesheet" href="css/chessboard-0.3.0.css">
+
+    <!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+    <div id="boardDraw" style="width: 800px"></div>
+
+    <input type="button" id="startPositionBtn" value="Start Position" />
+    <input type="button" id="move1Btn" value="Play loop" />
+    <input type="button" id="move3Btn" value="Stop" />
+    <input type="button" id="move2Btn" value="Next move" />
+    <input type="text" id="fen" size="65px" value="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"/>
+    
+
+    <script src="js/chessboard-0.3.0.js"></script>
+    <script src="js/json3.min.js"></script>
+    <script src="js/jquery-1.10.1.min.js"></script>
+    <script src="js/test.js"></script>
+
+
+    <script>
+        var boardDraw = ChessBoard('boardDraw', 'start');
+        var engine = new Chessboard();
+        var nextMove;
+        var playing;
+
+
+        $('#startPositionBtn').on('click', function () {
+
+            boardDraw = ChessBoard('boardDraw', 'start');
+        });
+
+        $('#move1Btn').on('click', function playLoop() {
+            playing = setInterval(function () {
+                nextMove = engine.playEngine();
+                boardDraw.move(nextMove);
+                
+                document.getElementById('fen').value = engine.fen();
+                
+                (function () {
+                    if (engine.stopPlayingCondition()) {
+                        clearInterval(playing);
+                        alert("THE END");
+                    }
+                })();
+
+            }, 3000);
+        });
+        $('#move3Btn').on('click', function () {
+
+            clearInterval(playing);
+        });
+
+        $('#move2Btn').on('click', function () {
+            nextMove = engine.playEngine();
+            boardDraw.move(nextMove);
+        });
+    </script>
+</body>
+
+</html>

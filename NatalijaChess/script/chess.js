@@ -93,8 +93,9 @@ Chessboard.prototype.toString = function() {
     return s;
 }
 
-Chessboard.prototype.makeMove = function(c, figNextMove, player) {
-    console.log("Next " + player + " move: " + figNextMove.fig + " from pos: " + figNextMove.from + " to position: " + figNextMove.to);
+Chessboard.prototype.makeMove = function(figNextMove, player, chessboardName) {
+    var c= this;
+    console.log("Next " + player + " move on chessboard "+chessboardName+": " + figNextMove.fig + " from pos: " + figNextMove.from + " to position: " + figNextMove.to);
     console.log();
     c.board[figNextMove.from.row][figNextMove.from.col] = null;
     if (c.board[figNextMove.to.row][figNextMove.to.col] != null) {
@@ -105,8 +106,8 @@ Chessboard.prototype.makeMove = function(c, figNextMove, player) {
         if (zemenaFigura.type == "KG") {
             console.log("Igrata zavrsi, pobednikot e igracot so boja: " + player);
             c.set(figNextMove.to.row, figNextMove.to.col, figNextMove.fig);
-            console.log();
-            console.log("" + c);
+            //console.log();
+            //console.log("" + c);
             return false;
         }
     }
@@ -114,12 +115,13 @@ Chessboard.prototype.makeMove = function(c, figNextMove, player) {
     return true;
 }
 
-Chessboard.prototype.play = function(c) {
+Chessboard.prototype.play = function(name) {
+    var chessboard = this;
+    drawChessboard(chessboard,name);
     var flag = true;
-    var chessboard = c;
     timeOut = setInterval(function() {
-        console.log("" + c);
-        var availableMoves = (c.moves());
+        //console.log("" + c);
+        var availableMoves = chessboard.moves();
         var whiteMoves = availableMoves.filter(
             function(value) {
                 return (value.fig.color.charAt(0) == 'w');
@@ -131,21 +133,21 @@ Chessboard.prototype.play = function(c) {
             }
         );
         var nextMove;
-        if (c.turn === true) {
+        if (chessboard.turn === true) {
             nextMove = Math.floor(Math.random() * whiteMoves.length);
-            flag = chessboard.makeMove(c, whiteMoves[nextMove], "white");
+            flag = chessboard.makeMove(whiteMoves[nextMove], "white", name);
         }
         else {
             chessboard.numMoves++;
             nextMove = Math.floor(Math.random() * blackMoves.length);
-            flag = chessboard.makeMove(c, blackMoves[nextMove], "black");
+            flag = chessboard.makeMove(blackMoves[nextMove], "black", name);
         }
         if (!flag) {
             clearTimeout(timeOut);
         }
-        c.turn = !c.turn;
-        draw(c);
-    }, 3000);
+        chessboard.turn = !chessboard.turn;
+        drawFigures(chessboard, name);
+    }, 3);
 }
 
 // ===== Common Types ======
@@ -394,21 +396,31 @@ Pawn.prototype.moves = function() {
 }
 
 // ===== Demo code ======
-var c = new Chessboard();
-c.play(c);
+var c1 = new Chessboard();
+var c2 = new Chessboard();
+var c3 = new Chessboard();
+var c4 = new Chessboard();
+
+c1.play('me');
+//c2.play('you');
+//c3.play('he');
+//4.play('she');
 
 var id=0;
-function draw(c) {
-    document.getElementById("table").innerHTML="";
+function drawChessboard(c,name) {
+    var divTable = document.createElement('div');
+    divTable.id = name;
+    divTable.className = 'table';
+    document.body.appendChild(divTable);
     var table = document.createElement('table');
     table.className = 'table';
     var tr, td;
     for (var i = 8; i > 0; i--) {
         tr = document.createElement('tr');
-        for (var j = 0, m=0; j < 8; j++,m++) {
+        for (var j = 0; j < 8; j++) {
             td = document.createElement('td');
             td.className = 'td';
-            var span = document.createElement('span');
+            var span = document.createElement('span');            
             id= String.fromCharCode(j + 65) + i;
             span.id = id;
             if (i % 2 == j % 2) {
@@ -416,18 +428,27 @@ function draw(c) {
             }
             else {
                 td.className = 'black';
-            }
-            if(c.at(i-1,m)!=null||c.at(i-1,m)!=undefined){
-                span.innerHTML=c.at(i-1,m).img;
-            }
-            else{
-                span.innerHTML="";
-            }
+            }            
             tr.appendChild(td);
             td.appendChild(span);
         }
         table.appendChild(tr);
     }
+    divTable.appendChild(table);
+    drawFigures(c, name);
+}
 
-    document.getElementById('table').appendChild(table);
+function drawFigures(c, name){
+    for (var i = 8; i > 0; i--){
+        for (var j = 0; j < 8; j++) {
+            var q = '#' + name + '>table>tr>td>#' + (String.fromCharCode(j + 65) + i);
+            var span = document.querySelectorAll(q)[0];
+            if(c.at(i-1,j)!=null||c.at(i-1,j)!=undefined){
+                span.innerHTML=c.at(i-1,j).img;
+            }
+            else{
+                span.innerHTML="";
+            }
+        }
+    }
 }

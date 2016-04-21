@@ -269,7 +269,7 @@ Figure.prototype.moveSteps = function (steps, repeat) {
 			obj[1] = obj[1] * (-1);
 			return [obj[0], obj[1]];
 		});
-	}
+	} 
 
     for (var i = 0; i < steps.length; i++) {
 		//all steps in pawn

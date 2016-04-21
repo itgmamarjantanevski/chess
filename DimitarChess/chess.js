@@ -328,10 +328,11 @@ Laufer.prototype.moves = function(){
          [+1, -1],
          [-1, +1],
          [-1, -1]
+		 
     ];
-	
+	 
   return this.moveSteps(steps, true);
-   
+    
 }
 
 

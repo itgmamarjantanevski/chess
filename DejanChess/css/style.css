@@ -1,3 +1,7 @@
+body {
+    background-color: lightgray;
+}
+
 .white {
     width: 80px;
     height: 80px;
@@ -22,4 +26,25 @@ span {
     font-size: 50px;
     position: relative;
     left:15px;
+ }
+ #nextPlayer{
+     font-size: 20px;
+ }
+ #random{
+     margin-top: 10px;
+     width:120px;
+     height: 40px;
+     margin-left: 50px;
+     background-color: dodgerblue;
+     color: white;
+     font-size: 15px;
+ }
+ #newGame{
+     background-color:cornflowerblue;
+     margin-top: 10px;
+     width:120px;
+     height: 40px;
+     margin-left: 50px;
+     color: white;
+     font-size: 15px;
  }

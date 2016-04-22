@@ -16,7 +16,7 @@ function Chessboard() {
 	this.reset();
 }
 
-//table draw html
+//table draw html dynamicly
 function drawTable(chessboard) {
 	//get div in html
 	var div = document.getElementById("chessBoard");
@@ -59,6 +59,7 @@ function drawTable(chessboard) {
 //end of draw
 Chessboard.prototype.reset = function () {
 	var i;
+	this.turn = true;
 	this.figures = [];
 	this.board = [];
 	for (i = 0; i < 8; i++) this.board[i] = [null, null, null, null, null, null, null, null];
@@ -139,10 +140,6 @@ Chessboard.prototype.play = function () {
     var nextMove;
     var whiteTake = [];
     var blackTake = [];
-
-    chessboard.moveCounter = 0;
-	// console.log(" " + c);
-	//all mooves
 	var randomPlay = setInterval(function () {
 		var allMoves = c.moves();
 		//console.log("" + c);
@@ -158,36 +155,50 @@ Chessboard.prototype.play = function () {
 			var whiteIndex = Math.floor(Math.random() * whitePlayerMoves.length);
 			//random from white moves
 			var white = whitePlayerMoves[whiteIndex];
-			console.log("white turn" + " " + white.fig + " " + "from" + " " + white.from + " " + "to" + " " + white.to);
-			//clerar current position
-			chessboard.board[white.from.row][white.from.col] = null;
+			//div to write current movement
+			var divResult = document.getElementById("nextPlayer");
+			divResult.innerHTML=("WHITE turn" + " " + white.fig + " " + "from" + " " + white.from + " " + "to" + " " + white.to);
+			//////////////////////
 			
+			//clear current position
+			chessboard.board[white.from.row][white.from.col] = null;
 			if (chessboard.board[white.to.row][white.to.col] != null) {
 				//console.log(chessboard.board);
 				var takenFigure = chessboard.board[white.to.row][white.to.col];
 				takenFigure.pos.col = null;
 				takenFigure.pos.row = null;
-				//king still alive
-				if (takenFigure.type === "KG") {
+				
+				 //check if king is still alive?
+			    //if is not end of game.
+				if (takenFigure instanceof King) {
 					chessboard.set(white.to.row, white.to.col, white.fig);
-					console.log("Game over");
+					alert("Game Over");
+					clearInterval(randomPlay);
 					return false;
 				}
 			}
+			//set the new position of piece
 			chessboard.set(white.to.row, white.to.col, white.fig);
         } else {
+			//black movements
 			var blackIndex = Math.floor(Math.random() * blackPlayerMoves.length);
+			//random from black moves
 			var black = blackPlayerMoves[blackIndex];
-			console.log("Black turn" + " " + black.fig + " " + "from" + " " + black.from + " " + "to" + " " + black.to);
+			//div in html to write whitch turn is
+			var divResult = document.getElementById("nextPlayer");
+			divResult.innerHTML=("BLACK turn" + " " + black.fig + " " + "from" + " " + black.from + " " + "to" + " " + black.to);
+			//////////////////////
+			//clear old position
 			chessboard.board[black.from.row][black.from.col] = null;
 			if (chessboard.board[black.to.row][black.to.col] != null) {
 				var takenFigure = chessboard.board[black.to.row][black.to.col];
 				takenFigure.pos.col = null;
 				takenFigure.pos.row = null;
-
-				if (takenFigure.type === "KG") {
+				
+              //check if king is still alive?
+			  //if is not end of game.
+				if (takenFigure instanceof King) {
 					chessboard.set(black.to.row, black.to.col, black.fig);
-					console.log("Game over");
 					alert("Game Over");
 					clearInterval(randomPlay);
 					return false;
@@ -321,14 +332,14 @@ function Queen(color, img, pos) {
 
 Queen.prototype.moves = function () {
 	var steps = [
-		[+1, 0],
-		[0, +1],
-		[-1, 0],
-		[0, -1],
-		[+1, +1],
-		[+1, -1],
-		[-1, +1],
-		[-1, -1]
+		[+1,+0],
+		[+0,+1],
+		[-1,+0],
+		[+0,-1],
+		[+1,+1],
+		[+1,-1],
+		[-1,+1],
+		[-1,-1]
     ];
     return this.moveSteps(steps, true);
 }
@@ -341,10 +352,10 @@ function Rook(color, img, index, pos) {
 
 Rook.prototype.moves = function (steps) {
     var steps = [
-		[+1, 0],
-		[0, +1],
-		[-1, 0],
-		[0, -1]
+		[+1,+0],
+		[+0,+1],
+		[-1,+0],
+		[+0,-1]
     ];
     return this.moveSteps(steps, true);
 }
@@ -359,14 +370,14 @@ function Knight(color, img, index, pos) {
 
 Knight.prototype.moves = function () {
 	var steps = [
-		[+2, +1],
-		[+2, -1],
-		[-2, +1],
-		[-2, -1],
-		[+1, +2],
-		[+1, -2],
-		[-1, +2],
-		[-1, -2]
+		[+2,+1],
+		[+2,-1],
+		[-2,+1],
+		[-2,-1],
+		[+1,+2],
+		[+1,-2],
+		[-1,+2],
+		[-1,-2]
 	];
 	return this.moveSteps(steps, false);
 }
@@ -378,13 +389,12 @@ function Laufer(color, img, index, pos) {
 	this.init('L', color, img, index, pos);
 }
 
-
 Laufer.prototype.moves = function () {
 	var steps = [
-		[+1, +1],
-		[+1, -1],
-		[-1, +1],
-		[-1, -1]
+		[+1,+1],
+		[+1,-1],
+		[-1,+1],
+		[-1,-1]
     ];
     return this.moveSteps(steps, true);
 }
@@ -399,14 +409,59 @@ function Pawn(color, img, index, pos) {
 
 Pawn.prototype.moves = function () {
 	var steps = [
-		[+1, 0],
-		[+1, -1],
-		[+1, +1]
+		[+1,+0],
+		[+1,-1],
+		[+1,+1]
 	];
 	return this.moveSteps(steps, false);
 
 }
+//move pawn
+Pawn.prototype.moveSteps = function (steps,turn) {
+    var fig = this;
+   var moves = [];
+   if (fig.pos.row === null || fig.pos.col === null) { return moves; }
+    if (fig.color == BLACK) {
+        steps = steps.map(function(obj) {
+            obj[0] = obj[0] * (-1);
+            obj[1] = obj[1] * (-1);
+            return [obj[0], obj[1]];
+        });
+    }
+    var step = steps[0];
+   var tmp = fig.pos.off(step[0], step[1]);
+   var at = this.board.at(tmp);
+   if (at === null) {
+       moves.push(tmp);
+   }
+    if (turn == 1 && at === null) {
+        tmp = tmp.off(step[0], step[1]);
+        at = this.board.at(tmp);
+        if (at === null) {
+            moves.push(tmp);
+        }
+    }
+
+    for (var i = 1; i < steps.length; i++) {
+        step = steps[i];
+        tmp = fig.pos.off(step[0], step[1]);
+        at = this.board.at(tmp);
+        if (at && at.color !== fig.color) {
+            moves.push(tmp);
+        }
+    }
+   moves = moves.map(function(x) {
+       return new Movement(fig, x);
+   });
+    return moves;
+}
 // ===== Demo code ======
-var c = new Chessboard();
-drawTable(c)
-c.play();
+ var c = new Chessboard();
+  drawTable(c);
+  //random play on click
+  document.getElementById("random").addEventListener("click", function(){
+   c.play()
+  });
+// document.getElementById("newGame").addEventListener("click" , function(){
+//    reset();
+// });

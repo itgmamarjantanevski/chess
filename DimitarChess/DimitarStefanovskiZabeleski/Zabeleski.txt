@@ -1,0 +1,23 @@
+fuction delcaration:
+	* Obicna funkcija
+	* Ne mozi da bidi nasted
+	* Primer: fuction f(){};
+
+fuction expression:
+	* Nasted fuctions
+	* 3 tipa na refinirajne:
+	//anonymous function expression
+	var a = function() {
+		return 3;
+	}
+	 
+	//named function expression
+	var a = function bar() {
+		return 3;
+	}
+	 
+	//self invoking function expression
+	(function sayHello() {
+		alert("hello!");
+	})();
+	

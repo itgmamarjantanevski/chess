@@ -23,6 +23,7 @@ Chessboard.prototype.reset = function() {
     this.numMoves = 1;
     this.figures = [];
     this.board = [];
+    this.figura=null;
     for (i = 0; i < 8; i++) this.board[i] = [null, null, null, null, null, null, null, null];
 
     this.set(0, 0, new Rook(WHITE, "&#9814", 1));
@@ -94,65 +95,161 @@ Chessboard.prototype.toString = function() {
     return s;
 }
 
-Chessboard.prototype.makeMove = function(figNextMove, player, chessboardName) {
-    var c= this;
-    console.log("Next " + player + " move on chessboard "+chessboardName+": " + figNextMove.fig + " from pos: " + figNextMove.from + " to position: " + figNextMove.to);
-    console.log();
-    c.board[figNextMove.from.row][figNextMove.from.col] = null;
-    if (c.board[figNextMove.to.row][figNextMove.to.col] != null) {
-        var zemenaFigura = c.board[figNextMove.to.row][figNextMove.to.col];
-        console.log("Zemanje figura: " + zemenaFigura);
-        zemenaFigura.pos.row = null;
-        zemenaFigura.pos.col = null;
-        if (zemenaFigura.type == "KG") {
-            console.log("Igrata zavrsi, pobednikot e igracot so boja: " + player);
-            c.set(figNextMove.to.row, figNextMove.to.col, figNextMove.fig);
-            //console.log();
-            //console.log("" + c);
-            return false;
+
+Chessboard.prototype.hover = function(i,j){
+    var currentMoves = getElementByCoordinates(i,j);
+    if(currentMoves && currentMoves.length!=0){
+        for(var j=0;j<currentMoves.length;j++){
+            var m =  document.getElementById(String.fromCharCode(currentMoves[j].to.col + 65) + (currentMoves[j].to.row+1));
+            m.parentElement.classList.add('hovered');    
         }
-    }
-    c.set(figNextMove.to.row, figNextMove.to.col, figNextMove.fig);
-    return true;
+    }        
 }
 
-Chessboard.prototype.play = function(name) {
-    var chessboard = this;
-    drawChessboard(chessboard,name);
-    var flag = true;
-    timeOut = setInterval(function() {
-        //console.log("" + chessboard);
-        var availableMoves = chessboard.moves();
-        var whiteMoves = availableMoves.filter(
-            function(value) {
-                return (value.fig.color.charAt(0) == 'w');
-            }
-        );
-        var blackMoves = availableMoves.filter(
-            function(value) {
-                return (value.fig.color.charAt(0) == 'b');
-            }
-        );
-        var nextMove;
-        if (chessboard.turn === true) {
-            nextMove = Math.floor(Math.random() * whiteMoves.length);
-            flag = chessboard.makeMove(whiteMoves[nextMove], "white", name);
+Chessboard.prototype.notHover= function(i,j){
+    var currentMoves = getElementByCoordinates(i,j);
+    if(currentMoves && currentMoves.length!=0){
+        for(var j=0;j<currentMoves.length;j++){
+            var m =  document.getElementById(String.fromCharCode(currentMoves[j].to.col + 65) + (currentMoves[j].to.row+1));
+            m.parentElement.classList.remove('hovered')
         }
-        else {
-            chessboard.numMoves++;
-            nextMove = Math.floor(Math.random() * blackMoves.length);
-            flag = chessboard.makeMove(blackMoves[nextMove], "black", name);
-        }
-        drawFigures(chessboard, name, flag);
-        if (!flag) {
-            clearTimeout(timeOut);
-            var gameOver= document.createElement('p');
-        gameOver.innerHTML="Game Over";
-        document.body.appendChild(gameOver);
-        }
-        chessboard.turn = !chessboard.turn;
-    }, 5000);
+    }        
 }
+
+Chessboard.prototype.getElementByCoordinates= function(i,j){
+    var currentFigure = this.at(i,j);
+    var currentMoves = getAvaliableMovesFromAllMoves(currentFigure);
+        if(currentMoves.length!=0){
+            return currentMoves;
+        }       
+}
+
+Chessboard.prototype.getAvaliableMovesFromAllMoves= function(fig){
+    var avaliableMoves=this.moves();
+    avaliableMoves= avaliableMoves.filter(function(value){
+        var str = value.fig+"";
+        if(str == fig){
+            return fig;
+        }
+     });   
+    return avaliableMoves;    
+}
+
+Chessboard.prototype.selectFigure= function(i,j) {    
+    if(figura===null){
+        if((this.turn&&this.at(i,j).color=='w')||(!this.turn&&this.at(i,j).color=='b')){
+            var currentPosition = this.at(i,j);
+            if(currentPosition!==null){
+                figura=currentPosition;
+            }
+            else{
+                alert("Kliknavte na prazno krvadratce");
+                figura=null;
+                }    
+            this.turn=!this.turn;
+        }
+        else{
+            alert("Cekaj, ne si ti na red!")
+        }
+    }
+    else{
+        placeFigure(i,j);
+    }   
+}
+
+Chessboard.prototype.placeFigure= function(i,j) {
+    var currentPosition = this.at(i,j);
+    var availableMoves = getAvaliableMovesFromAllMoves(figura);
+    //console.log(availableMoves[0].to.col);
+    //console.log(i,j)
+    var isok=false;
+    for(var m = 0; m<availableMoves.length;m++){
+       if(availableMoves[m].to.col==j&&availableMoves[m].to.row==i){
+          isok=true;
+       }}
+       
+    if(isok){
+        this.board[figura.pos.row][figura.pos.col]=null;
+        figura.pos.col=i;
+        figura.pos.row=j;
+        if(this.board[figura.pos.col][figura.pos.row]!=null){
+            if(this.at(figura.pos.col,figura.pos.row).type='kg'){
+                alert("Game over")
+            }
+        }
+        c.set(figura.pos.col, figura.pos.row,figura);
+        drawFigures("me");
+        figura=null; 
+    } 
+    else {
+        figura=null;
+        this.turn=!this.turn;
+        }    
+}
+Chessboard.prototype.drawFigures= function(name){
+    for (var i = 8; i > 0; i--){
+        for (var j = 0; j < 8; j++) {
+            var q = '#' + name + '>table>tr>td>#' + (String.fromCharCode(j + 65) + i);
+            var span = document.querySelectorAll(q)[0];
+            if(this.at(i-1,j)!=null||this.at(i-1,j)!=undefined){
+                span.innerHTML=this.at(i-1,j).img;
+            }
+            else{
+                span.innerHTML="";
+            }
+        }
+    }
+}
+
+Chessboard.prototype.drawChessboard = function(name) {
+    var divTable = document.createElement('div');
+    divTable.id = name;
+    divTable.className = 'table';
+    document.body.appendChild(divTable);
+    var table = document.createElement('table');
+    table.className = 'table';
+    var tr, td;
+    for (var i = 8; i > 0; i--) {
+        tr = document.createElement('tr');
+        for (var j = 0; j < 8; j++) {
+            td = document.createElement('td');
+            td.className = 'td';
+            var span = document.createElement('span');            
+            id= String.fromCharCode(j + 65) + i;
+            span.id = id;            
+            td.onmouseover = function(i,j){
+                return function() {
+                    hover(i-1, j);                    
+                };
+            }(i,j);
+            td.onmouseout = function(i,j){
+                return function() {
+                    notHover(i-1, j);
+                    
+                };
+            }(i,j);
+            td.onclick= function(i,j){
+                return function() {
+                    selectFigure(i-1, j);                    
+                };
+            }(i,j);
+            
+            if (i % 2 == j % 2) {
+                td.className = 'white';
+            }
+            else {
+                td.className = 'black';
+            }            
+            tr.appendChild(td);
+            td.appendChild(span);
+        }
+        table.appendChild(tr);
+    }
+    divTable.appendChild(table);
+    this.drawFigures(name);
+}
+
+
 
 // ===== Common Types ======
 function Pos(a, b, c) {
@@ -405,105 +502,8 @@ var c2 = new Chessboard();
 var c3 = new Chessboard();
 var c4 = new Chessboard();
 
-c1.play('me');
+//c1.play('me');
 //c2.play('you');
 //c3.play('he');
 //4.play('she');
-// drawChessboard(c1, "me");
-
-var id=0;
-function drawChessboard(c,name) {
-    var divTable = document.createElement('div');
-    divTable.id = name;
-    divTable.className = 'table';
-    document.body.appendChild(divTable);
-    var table = document.createElement('table');
-    table.className = 'table';
-    var tr, td;
-    for (var i = 8; i > 0; i--) {
-        tr = document.createElement('tr');
-        for (var j = 0; j < 8; j++) {
-            td = document.createElement('td');
-            td.className = 'td';
-            var span = document.createElement('span');            
-            id= String.fromCharCode(j + 65) + i;
-            span.id = id;            
-            td.onmouseover = function(i,j,id){
-                return function() {
-                    hover(i-1, j, c);
-                    
-                };
-            }(i,j,id);
-            td.onmouseout = function(i,j,id){
-                return function() {
-                    notHover(i-1, j, c);
-                    
-                };
-            }(i,j,id);
-            if (i % 2 == j % 2) {
-                td.className = 'white';
-            }
-            else {
-                td.className = 'black';
-            }            
-            tr.appendChild(td);
-            td.appendChild(span);
-        }
-        table.appendChild(tr);
-    }
-    divTable.appendChild(table);
-    drawFigures(c, name);
-}
-
-function hover(i,j, c){
-    var currentMoves = c.moves();
-    var currentFigure = c.at(i,j);
-   
-    var currentMoves = currentMoves.filter(function(value) {
-    var str = value.fig+"";
-        if(str == currentFigure){
-            return currentFigure;
-        }
-    });
-        if(currentMoves.length!=0){
-            //console.log(currentMoves[0])
-            for(var j=0;j<currentMoves.length;j++){
-               var m =  document.getElementById(String.fromCharCode(currentMoves[j].to.col + 65) + (currentMoves[j].to.row+1));
-               m.parentElement.className = 'hovered';    
-        }
-        }
-        
-}
-
-function notHover(i,j, c){
-    var currentMoves = c.moves();
-    var currentFigure = c.at(i,j);   
-    var currentMoves = currentMoves.filter(function(value) {
-    var str = value.fig+"";
-        if(str == currentFigure){
-            return currentFigure;
-        }
-    });
-        if(currentMoves.length!=0){
-            for(var j=0;j<currentMoves.length;j++){
-               var m =  document.getElementById(String.fromCharCode(currentMoves[j].to.col + 65) + (currentMoves[j].to.row+1));
-             // alert(m.parentElement.classList);
-            }
-        }
-        
-}
-
-function drawFigures(c, name, flag){
-    for (var i = 8; i > 0; i--){
-        for (var j = 0; j < 8; j++) {
-            var q = '#' + name + '>table>tr>td>#' + (String.fromCharCode(j + 65) + i);
-            var span = document.querySelectorAll(q)[0];
-            if(c.at(i-1,j)!=null||c.at(i-1,j)!=undefined){
-                span.innerHTML=c.at(i-1,j).img;
-            }
-            else{
-                span.innerHTML="";
-            }
-        }
-    }
-}
+c1.drawChessboard("me");

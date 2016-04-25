@@ -10,19 +10,142 @@
 var WHITE = 'w';
 var BLACK = 'b';
 var LETTERS = 'abcdefgh';
+var lettersPossition = [];
+var flagClickElement = false;
+var br = 0;
+for(var i = 0; i < 8; i++){
+	lettersPossition.push(LETTERS[i]);
+}
+
+function drawChessTable(c, xA, yA){
+	var i = 0;
+	var j = 0;
+	var table = document.createElement("table");
+	for(i=0;i<8;i++){
+		var tr = document.createElement("tr");
+		for(j=0;j<8;j++){
+			var td = document.createElement("td");
+			if(i%2 == j%2)
+				td.style.backgroundColor = "white";
+			else
+				td.style.backgroundColor = "gray";
+			//Gledame dali na odredena pozicija postoj figura 
+			//Ako postoj ispecatija
+			if(c.board[i][j] != null){
+				// console.log(figure.type);
+				// console.log(figure.color);
+				var figure = c.board[i][j];
+				var img = drawImagesTable(figure);
+				img.onclick = (function ime(figure, i, j) {
+					//console.log(i + " " + j );
+					return function(){
+						flagClickElement = true;
+						showEnablePossitions(figure.moves()); 
+						//console.log('Figura=' + figure.moves());
+					};
+				})(figure, i ,j);
+				// img.onclick = function(){ 
+				// 		console.log('Figura=' + figure.moves());
+				// };
+				// (function(){ 
+				// 		console.log('Figura=' + figure.moves());
+				// })();
+			 	td.appendChild(img);
+			}
+			if(flagClickElement && xA[0]-1 == i && yA[0] == j){
+				console.log("xa[0]=" + xA[0] + " i=" + i);
+				console.log("ya[0]=" + yA[0] + " j=" + j);
+				td.style.backgroundColor = "green";
+			}
+			if(flagClickElement && xA[1]-1 == i && yA[1] == j){
+				console.log("xa0=" + xA[1] + " i=" + i);
+				console.log("xa0=" + yA[1] + " j=" + j);
+				td.style.backgroundColor = "green";
+			}
+			tr.appendChild(td);
+		}				
+		table.appendChild(tr);
+	}
+	
+	flagClickElement = false;
+	
+	document.getElementById("chessTable").innerHTML = "";
+	document.getElementById("chessTable").appendChild(table);
+}
+
+//Prikaz na slobodni pozicii
+function showEnablePossitions(possition){
+	console.log('Figura=' + possition);
+	// console.log('FiguraL=' + possition.length);
+	// console.log('Figura[0]=' + possition[0]);
+	// console.log('Figura[1]=' + possition[1]);
+	var possitionParts = [];
+	var realPossitionParts = [];
+	
+	//Go vadam posebno site mozno pozicii za da mozam da mu ja zemam pozicijata
+	for(var i = 0; i < possition.length; i++){
+		var s = "" + possition[i];		
+		realPossitionParts.push(getRealPossitions(s));
+	}
+	// console.log('Real=' + realPossitionParts);
+	
+	colorPossitions(realPossitionParts);
+};
+
+//Ja zemam pozicijata samo so mi e potrebna primer od "g8" ja zema samo "8"
+function getRealPossitions(s){
+	var p = s.split(">");
+	//console.log('P=' + p[0] + "----" + p[1]);	
+	return p[1];
+};
+
+//Tuka gi vadam pozicite so treba da se obojat i gi pustam vo drawColorPossition
+//I gi pustame vo glavnata f-ja drawChessTable
+function colorPossitions(realP){
+	console.log('realP0=' + realP);			
+	// console.log('realP=' + realP[0][1] + "----" + realP[1][1]);		
+	// console.log('realP1=' + lettersPossition.indexOf(realP[0][0]) + "----" + lettersPossition.indexOf(realP[1][0]));		
+		
+	var realPArrayX = [];
+	var realPArrayY = [];
+	for(var i = 0; i < realP.length; i++){	
+		console.log('realP=' + realP[i][1]);		
+		console.log('realP1=' + lettersPossition.indexOf(realP[i][0]));		
+		realPArrayX.push(realP[i][1]);
+		realPArrayY.push(lettersPossition.indexOf(realP[i][0]));
+		console.log(realPArrayX + " " + realPArrayY);
+	}
+	drawChessTable(c, realPArrayX, realPArrayY);
+};
+
+
+//Pecatenje na sliki tuka primam argument od slika
+function drawImagesTable(nameFigure){
+	// console.log(nameFigure.color+nameFigure.type);
+	var img = document.createElement("img");
+	img.src = "images/" + nameFigure.color+nameFigure.type + ".png";
+	return	img;
+};
 
 // Self-contained instance of a chessboard
 function Chessboard() {
 	this.reset();
-}
+}	
 
 Chessboard.prototype.reset = function() {
 	var i;
 	this.move = 0;
 	this.figures = [];
 	this.board = [];
-	for(i=0; i<8; i++) this.board[i] = [null, null, null, null, null, null, null, null];
-	
+
+//borad[] na pocetok ni e inicijalizirana cela na null
+	for(i=0; i<8; i++) 
+		this.board[i] = [null, null, null, null, null, null, null, null];
+
+//figure[] na pocetok ni e inicijalizirana cela na null
+//Tuka figure[] ja polnime
+//Za sekoja figura se povikva funkcija kaj so se deklarira/inicijalizira
+//Tuka ni se belite, vo sredina pionite, a dolu crnite
 	this.set(0, 0, new Rook(WHITE, 1));
 	this.set(0, 1, new Knight(WHITE, 1));
 	this.set(0, 2, new Laufer(WHITE, 1));
@@ -47,6 +170,8 @@ Chessboard.prototype.reset = function() {
 	this.set(7, 7, new Rook(BLACK, 2));
 }
 
+//Tuka pustame redica, kolona i figura
+//Se civat vo matrica t.e. od tablata na ke mesto koja figura se naoga
 Chessboard.prototype.set = function(row, col, fig) {
 	if (fig.board === undefined) {
 		Object.defineProperty(fig, 'board', {
@@ -93,7 +218,6 @@ Chessboard.prototype.toString = function() {
 }
 
 // ===== Common Types ======
-
 function Pos(a, b, c) {
 	if (c === undefined) {
 		this.row = a;
@@ -131,7 +255,8 @@ Movement.prototype.toString = function() {
 function Figure(type, color, index) {
 	this.type = type;
 	this.color = color;
-	if (index) this.index = index;
+	if (index) 
+		this.index = index;
 }
 
 Figure.parent = function (d) {
@@ -194,8 +319,8 @@ Figure.prototype.moveSteps = function(steps, repeat) {
             continue;
           }	
         }
-    }
-}
+   	}
+	}
     else 
     {
     	for(var i=0; i<steps.length; i++) 
@@ -230,6 +355,22 @@ Figure.prototype.init = function() {
 	Figure.apply(this, arguments);
 }
 
+// ===== Rook Type ======
+
+Figure.parent(Rook);
+function Rook(color, index, pos) {
+	this.init('R', color, index, pos);
+}
+
+Rook.prototype.moves = function(steps) {
+    var steps = [
+         [+1,  0],
+         [ 0, +1],
+         [-1,  0],
+         [ 0, -1]
+    ];
+    return this.moveSteps(steps, true);
+}
 
 // ===== King Type ======
 
@@ -273,25 +414,6 @@ Queen.prototype.moves = function() {
     ];
    return this.moveSteps(steps, true);
 }
-
-
-// ===== Rook Type ======
-
-Figure.parent(Rook);
-function Rook(color, index, pos) {
-this.init('R', color, index, pos);
-}
-
-Rook.prototype.moves = function(steps) {
-    var steps = [
-         [+1,  0],
-         [ 0, +1],
-         [-1,  0],
-         [ 0, -1]
-    ];
-    return this.moveSteps(steps, true);
-}
-
 
 // ===== Knight Type ======
 
@@ -351,7 +473,12 @@ Pawn.prototype.moves = function() {
 // ===== Demo code ======
 
 var c = new Chessboard();
-console.log("" + c);
-console.log("" + c.moves().join(", "));
+drawChessTable(c);
+// console.log("" + c);
+// console.log("" + c.moves().join(", "));
+// console.log("-->" + c.figures);
+// console.log("---->" + c.board[1][1].moves());
+// console.log("---->" + c.board[4][4]);
+
 
 

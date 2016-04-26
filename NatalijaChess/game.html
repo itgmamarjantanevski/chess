@@ -3,9 +3,13 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <button onclick="randomGame()">Play random</button>
-    <button onclick="manualGame()">Play manually</button>
-    
+    <button onclick="randomGame()" id="randomGameBtn">Play random</button>
+    <button onclick="manualGame()" id="manualGameBtn">Play manually</button>
+    <section>
+        <div id="takenwFigures"></div>
+        <div id="board"></div>
+        <div id="takenbFigures"></div>
+    </section>
     <script src="script/chess.js"></script>
 </body>
 </html>

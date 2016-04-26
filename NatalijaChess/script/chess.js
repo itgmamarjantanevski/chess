@@ -48,6 +48,13 @@ Chessboard.prototype.reset = function() {
     this.set(7, 5, new Laufer(BLACK, "&#9821;", 2));
     this.set(7, 6, new Knight(BLACK, "&#9822;", 2));
     this.set(7, 7, new Rook(BLACK, "&#9820;", 2));
+    
+    
+    //reset timer, div for takend figures
+    document.getElementById('board').innerHTML="";
+    document.getElementById('takenwFigures').innerHTML="";
+    document.getElementById('takenbFigures').innerHTML="";
+    clearTimeout(this.timeOut);
 }
 
 Chessboard.prototype.set = function(row, col, fig) {
@@ -95,28 +102,6 @@ Chessboard.prototype.toString = function() {
     return s;
 }
 //functions for playing random
-Chessboard.prototype.makeMove = function(figNextMove, player, chessboardName) {
-    var c= this;
-    console.log("Next " + player + " move on chessboard "+chessboardName+": " + figNextMove.fig + " from pos: " + figNextMove.from + " to position: " + figNextMove.to);
-    console.log();
-    c.board[figNextMove.from.row][figNextMove.from.col] = null;
-    if (c.board[figNextMove.to.row][figNextMove.to.col] != null) {
-        var zemenaFigura = c.board[figNextMove.to.row][figNextMove.to.col];
-        console.log("Zemanje figura: " + zemenaFigura);
-        zemenaFigura.pos.row = null;
-        zemenaFigura.pos.col = null;
-        if (zemenaFigura.type == "KG") {
-            console.log("Igrata zavrsi, pobednikot e igracot so boja: " + player);
-            c.set(figNextMove.to.row, figNextMove.to.col, figNextMove.fig);
-            //console.log();
-            //console.log("" + c);
-            return false;
-        }
-    }
-    c.set(figNextMove.to.row, figNextMove.to.col, figNextMove.fig);
-    return true;
-}
-
 Chessboard.prototype.play = function(name) {
     var chessboard = this;
     this.drawChessboard(name);
@@ -145,14 +130,34 @@ Chessboard.prototype.play = function(name) {
         }
         chessboard.drawFigures(name, flag);
         if (!flag) {
-            clearTimeout(this.timeOut);
+            clearTimeout(chessboard.timeOut);
             var gameOver= document.createElement('p');
-        gameOver.innerHTML="Game Over";
-        document.body.appendChild(gameOver);
+            gameOver.innerHTML="Game Over";
+            document.body.appendChild(gameOver);
         }
         chessboard.turn = !chessboard.turn;
     }, 500);
 }
+
+Chessboard.prototype.makeMove = function(figNextMove, player, chessboardName) {
+    var chessboard= this;
+    console.log("Next " + player + " move on chessboard "+chessboardName+": " + figNextMove.fig + " from pos: " + figNextMove.from + " to position: " + figNextMove.to);
+    chessboard.board[figNextMove.from.row][figNextMove.from.col] = null;
+    if (chessboard.board[figNextMove.to.row][figNextMove.to.col] != null) {
+        var zemenaFigura = chessboard.board[figNextMove.to.row][figNextMove.to.col];
+        document.getElementById('taken' + zemenaFigura.color+'Figures').innerHTML+=zemenaFigura.img;      
+        zemenaFigura.pos.row = null;
+        zemenaFigura.pos.col = null;
+        if (zemenaFigura.type == "KG") {
+            console.log("Igrata zavrsi, pobednikot e igracot so boja: " + player);
+            chessboard.set(figNextMove.to.row, figNextMove.to.col, figNextMove.fig);
+            return false;
+        }
+    }
+    chessboard.set(figNextMove.to.row, figNextMove.to.col, figNextMove.fig);
+    return true;
+}
+
 //end of functions for playing random
 
 //function for playing manually
@@ -231,8 +236,10 @@ Chessboard.prototype.placeFigure= function(i,j) {
         this.board[this.figura.pos.row][this.figura.pos.col]=null;
         this.figura.pos.col=i;
         this.figura.pos.row=j;
-        if(this.board[this.figura.pos.col][this.figura.pos.row]!=null){
-            if(this.at(this.figura.pos.col,this.figura.pos.row).type=='KG'){
+        if(this.board[i][j]!=null){  
+           var div=document.getElementById('taken'+this.board[i][j].color+'Figures');   
+           div.innerHTML+=this.board[i][j].img;      
+            if(this.at(i,j).type=='KG'){
                 alert("Game over")
             }
         }
@@ -247,12 +254,13 @@ Chessboard.prototype.placeFigure= function(i,j) {
 }
 // end of functions for plaing manually
 
+//common functions (for playin mannualy and random)
 Chessboard.prototype.drawChessboard = function(name) {
     var chessboard=this;
     var divTable = document.createElement('div');
     divTable.id = name;
     divTable.className = 'table';
-    document.body.appendChild(divTable);
+    document.getElementById('board').appendChild(divTable);
     var table = document.createElement('table');
     table.className = 'table';
     var tr, td;
@@ -309,7 +317,7 @@ Chessboard.prototype.drawFigures= function(name, flag){
         }
     }
 }
-
+//end of common functions(for playin mannualy and random)
 
 // ===== Common Types ======
 function Pos(a, b, c) {
@@ -565,13 +573,11 @@ var c1 = new Chessboard();
 //c3.play('he');
 //4.play('she');
 function randomGame(){
-    clearTimeout(c1.timeOut);
     c1.reset();
     c1.play("me");
 }
 
 function manualGame(){
-    clearTimeout(c1.timeOut);
     c1.reset();
     c1.drawChessboard("me");
 }

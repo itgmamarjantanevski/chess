@@ -532,5 +532,5 @@ document.getElementById("random").addEventListener("click", function () {
 });
 //new game 
 document.getElementById("newGame").addEventListener("click", function () {
-	
+
 });

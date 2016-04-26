@@ -16,12 +16,13 @@ body {
     
 }
 
-#chessBoard {
-    margin-left: 500px;
+#board {
+    margin-left:30%;
     border:5px solid #333; 
 }
 .select {
-    background-color: lightcoral;
+    color: lightcoral;
+    
 }
 span {
     font-size: 50px;
@@ -29,36 +30,33 @@ span {
     left:15px;
  }
  #nextPlayer{
-     font-size: 20px;
+     font-size: 15px;
  }
  #random{
-     margin-top: 10px;
-     width:120px;
-     height: 40px;
-     margin-left: 50px;
-     background-color: dodgerblue;
-     color: white;
-     font-size: 15px;
+     font-size: 20px;
  }
  #newGame{
-     background-color:cornflowerblue;
-     margin-top: 10px;
-     width:120px;
-     height: 40px;
-     margin-left: 50px;
-     color: white;
-     font-size: 15px;
+     font-size: 20px;
  }
  
  #whiteTaken {
-    margin-top: 50px;
-    margin-left: 500px;
+    height: 70px;
+    margin-top: 10px;
+    margin-left:30%;
     font-size: 50px;
+    position:relative;
  }
   #blackTaken {
-    margin-top: 10px;
-    margin-left: 500px;
+    height: 70px;
+    margin-left:30%;
     font-size: 50px;
+    position:relative;
  }
-   
-   
+ 
+.greenSelect {
+   background-color: lightgreen;
+}
+
+.selected-figure {
+    border: 3px dashed purple;
+}

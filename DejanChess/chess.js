@@ -16,11 +16,17 @@ function Chessboard() {
 	this.reset();
 }
 
+function moveFigure(clickFig, i, j, chessboard) {
+	chessboard.board[clickFig.pos.row][clickFig.pos.col] = null;
+	chessboard.board[i - 1][j] = clickFig;
+	//drawTable(chessboard);
+};
 
 //table draw html dynamicly
 function drawTable(chessboard) {
+	var clickFig;
 	//get div in html
-	var div = document.getElementById("chessBoard");
+	var div = document.getElementById("board");
 	div.innerHTML = "";
 	var table = document.createElement('table');
 	for (var i = 8; i > 0; i--) {
@@ -29,9 +35,18 @@ function drawTable(chessboard) {
 		for (var j = 0; j < 8; j++) {
 			var td = document.createElement('td');
 			//console.log(chessboard.at(i-1,j));
-			td.addEventListener("click", function () {
-				alert(this)
-			});
+			td.addEventListener("click", (function (i, j) {
+                return function () {
+					if (!clickFig) {
+						clickFig = (c.at(i - 1, j));
+						posibleMoves(clickFig);
+					} else {
+						moveFigure(clickFig, i, j, chessboard);
+						drawTable(chessboard);
+					}
+					//console.log(clickFig);
+                };
+			})(i, j));
 			// alert(this.getElementsByTagName('span')[i].id);
 			var span = document.createElement('span');
 			// add images at board
@@ -47,7 +62,7 @@ function drawTable(chessboard) {
 				} else {
 					td.className = "black";
 				}
-            } else {
+			} else {
 				if (j % 2 === 0) {
 					td.className = "black";
 				} else {
@@ -59,9 +74,50 @@ function drawTable(chessboard) {
 		}
 		table.appendChild(tr);
 	}
-	document.getElementById("chessBoard").appendChild(table);
+	document.getElementById("board").appendChild(table);
+}
+//print on chessboard all possosible moves.
+// input paramerter is clicked figure at chessboard
+function posibleMoves(clickFig) {
+	var col;
+	var row;
+	//get all possible moves from figure
+	if (clickFig != null) {
+		toggleSelectedFigure(clickFig);
+		var legalMoves = clickFig.moves();
+		for (var i = 0; i < legalMoves.length; i++) {
+			// current figure next posible position
+			colTo = legalMoves[i].to.col;
+			rowTo = legalMoves[i].to.row;
+			var span = String.fromCharCode(colTo + 65) + (rowTo + 1);
+			//change class of span in chessboard
+			spanTmp = document.getElementById(span);
+			spanTmp.parentElement.classList.toggle('greenSelect');
+			//console.log(spanTmp);
+		}
+		//append the figure to new position in chessboard
+		if (spanTmp.classList.contains('greenSelect')) {
+			spanTmp.addEventListener('click', function () {
+				alert();
+				c.board[colTo][rowTo].innerHTML = clickFig;
+			});
+
+		}
+	} else return false;
+	console.log(legalMoves);
+	return legalMoves;
 }
 
+//toogle class for selection figure
+function toggleSelectedFigure(clickFig) {
+	var classList = document.getElementById(String.fromCharCode(clickFig.pos.col + 65) + (clickFig.pos.row + 1)).parentNode.classList;
+	if (classList.contains('selected-figure')) {
+		document.getElementById(String.fromCharCode(clickFig.pos.col + 65) + (clickFig.pos.row + 1)).parentNode.classList.remove('selected-figure');
+	} else {
+		document.getElementById(String.fromCharCode(clickFig.pos.col + 65) + (clickFig.pos.row + 1)).parentNode.classList.add('selected-figure');
+	}
+
+};
 //end of draw
 Chessboard.prototype.reset = function () {
 	var i;
@@ -141,11 +197,11 @@ Chessboard.prototype.toString = function () {
 
 Chessboard.prototype.play = function () {
 	c.turn = true;
-    var currentPlayer;
-    var chessboard = this;
-    var nextMove;
-    var whiteTake = [];
-    var blackTake = [];
+	var currentPlayer;
+	var chessboard = this;
+	var nextMove;
+	var whiteTake = [];
+	var blackTake = [];
 	var randomPlay = setInterval(function () {
 		var allMoves = c.moves();
 		//console.log("" + c);
@@ -188,7 +244,7 @@ Chessboard.prototype.play = function () {
 			}
 			//set the new position of piece
 			chessboard.set(white.to.row, white.to.col, white.fig);
-        } else {
+		} else {
 			//black movements
 			var blackIndex = Math.floor(Math.random() * blackPlayerMoves.length);
 			//random from black moves
@@ -216,10 +272,10 @@ Chessboard.prototype.play = function () {
 				}
 			}
 			chessboard.set(black.to.row, black.to.col, black.fig);
-        }
+		}
 		c.turn = !c.turn;
 		drawTable(c);
-    }, 500);
+	}, 500);
 }
 
 
@@ -274,9 +330,9 @@ function Figure(type, color, img, index) {
 
 Figure.parent = function (d) {
 	var b = this;
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	function __() { this.constructor = d; }
+	d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 }
 
 Figure.prototype.moves = function () {
@@ -284,26 +340,26 @@ Figure.prototype.moves = function () {
 }
 
 Figure.prototype.moveSteps = function (steps, repeat) {
-    var fig = this;
-    var moves = [];
-    if (fig.pos.row === null || fig.pos.col === null) { return moves; }
-    for (var i = 0; i < steps.length; i++) {
-        var step = steps[i];
-        var tmp = fig.pos.off(step[0], step[1]);
+	var fig = this;
+	var moves = [];
+	if (fig.pos.row === null || fig.pos.col === null) { return moves; }
+	for (var i = 0; i < steps.length; i++) {
+		var step = steps[i];
+		var tmp = fig.pos.off(step[0], step[1]);
 
-        var at = this.board.at(tmp);
-        while (at === null || at && at.color != fig.color) {
-            moves.push(tmp);
+		var at = this.board.at(tmp);
+		while (at === null || at && at.color != fig.color) {
+			moves.push(tmp);
 
-            if (at != null || !repeat) break;
-            var tmp = tmp.off(step[0], step[1]);
-            var at = this.board.at(tmp);
-        }
-    }
-    moves = moves.map(function (x) {
-        return new Movement(fig, x);
-    });
-    return moves;
+			if (at != null || !repeat) break;
+			var tmp = tmp.off(step[0], step[1]);
+			var at = this.board.at(tmp);
+		}
+	}
+	moves = moves.map(function (x) {
+		return new Movement(fig, x);
+	});
+	return moves;
 }
 
 Figure.prototype.toString = function () {
@@ -351,8 +407,8 @@ Queen.prototype.moves = function () {
 		[+1, -1],
 		[-1, +1],
 		[-1, -1]
-    ];
-    return this.moveSteps(steps, true);
+	];
+	return this.moveSteps(steps, true);
 }
 // ===== Rook Type ======
 
@@ -362,13 +418,13 @@ function Rook(color, img, index, pos) {
 }
 
 Rook.prototype.moves = function (steps) {
-    var steps = [
+	var steps = [
 		[+1, +0],
 		[+0, +1],
 		[-1, +0],
 		[+0, -1]
-    ];
-    return this.moveSteps(steps, true);
+	];
+	return this.moveSteps(steps, true);
 }
 
 
@@ -406,8 +462,8 @@ Laufer.prototype.moves = function () {
 		[+1, -1],
 		[-1, +1],
 		[-1, -1]
-    ];
-    return this.moveSteps(steps, true);
+	];
+	return this.moveSteps(steps, true);
 }
 
 
@@ -429,50 +485,52 @@ Pawn.prototype.moves = function () {
 }
 //move pawn
 Pawn.prototype.moveSteps = function (steps, turn) {
-    var fig = this;
+	var fig = this;
 	var moves = [];
 	if (fig.pos.row === null || fig.pos.col === null) { return moves; }
-    if (fig.color == BLACK) {
-        steps = steps.map(function (obj) {
-            obj[0] = obj[0] * (-1);
-            obj[1] = obj[1] * (-1);
-            return [obj[0], obj[1]];
-        });
-    }
-    var step = steps[0];
+	if (fig.color == BLACK) {
+		steps = steps.map(function (obj) {
+			obj[0] = obj[0] * (-1);
+			obj[1] = obj[1] * (-1);
+			return [obj[0], obj[1]];
+		});
+	}
+	var step = steps[0];
 	var tmp = fig.pos.off(step[0], step[1]);
 	var at = this.board.at(tmp);
 	if (at === null) {
 		moves.push(tmp);
 	}
-    if (turn == 1 && at === null) {
-        tmp = tmp.off(step[0], step[1]);
-        at = this.board.at(tmp);
-        if (at === null) {
-            moves.push(tmp);
-        }
-    }
+	if (turn == 1 && at === null) {
+		tmp = tmp.off(step[0], step[1]);
+		at = this.board.at(tmp);
+		if (at === null) {
+			moves.push(tmp);
+		}
+	}
 
-    for (var i = 1; i < steps.length; i++) {
-        step = steps[i];
-        tmp = fig.pos.off(step[0], step[1]);
-        at = this.board.at(tmp);
-        if (at && at.color !== fig.color) {
-            moves.push(tmp);
-        }
-    }
+	for (var i = 1; i < steps.length; i++) {
+		step = steps[i];
+		tmp = fig.pos.off(step[0], step[1]);
+		at = this.board.at(tmp);
+		if (at && at.color !== fig.color) {
+			moves.push(tmp);
+		}
+	}
 	moves = moves.map(function (x) {
 		return new Movement(fig, x);
 	});
-    return moves;
+	return moves;
 }
 // ===== Demo code ======
 var c = new Chessboard();
+var c1 = new Chessboard();
 drawTable(c);
 //random play on click
 document.getElementById("random").addEventListener("click", function () {
 	c.play()
 });
-// document.getElementById("newGame").addEventListener("click" , function(){
-//    reset();
-// });
+//new game 
+document.getElementById("newGame").addEventListener("click", function () {
+	
+});

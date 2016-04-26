@@ -97,7 +97,7 @@ Chessboard.prototype.toString = function() {
 
 
 Chessboard.prototype.hover = function(i,j){
-    var currentMoves = getElementByCoordinates(i,j);
+    var currentMoves = this.getElementByCoordinates(i,j);
     if(currentMoves && currentMoves.length!=0){
         for(var j=0;j<currentMoves.length;j++){
             var m =  document.getElementById(String.fromCharCode(currentMoves[j].to.col + 65) + (currentMoves[j].to.row+1));
@@ -107,7 +107,7 @@ Chessboard.prototype.hover = function(i,j){
 }
 
 Chessboard.prototype.notHover= function(i,j){
-    var currentMoves = getElementByCoordinates(i,j);
+    var currentMoves = this.getElementByCoordinates(i,j);
     if(currentMoves && currentMoves.length!=0){
         for(var j=0;j<currentMoves.length;j++){
             var m =  document.getElementById(String.fromCharCode(currentMoves[j].to.col + 65) + (currentMoves[j].to.row+1));
@@ -118,7 +118,7 @@ Chessboard.prototype.notHover= function(i,j){
 
 Chessboard.prototype.getElementByCoordinates= function(i,j){
     var currentFigure = this.at(i,j);
-    var currentMoves = getAvaliableMovesFromAllMoves(currentFigure);
+    var currentMoves = this.getAvaliableMovesFromAllMoves(currentFigure);
         if(currentMoves.length!=0){
             return currentMoves;
         }       
@@ -136,32 +136,31 @@ Chessboard.prototype.getAvaliableMovesFromAllMoves= function(fig){
 }
 
 Chessboard.prototype.selectFigure= function(i,j) {    
-    if(figura===null){
+    if(this.figura===null){
         if((this.turn&&this.at(i,j).color=='w')||(!this.turn&&this.at(i,j).color=='b')){
             var currentPosition = this.at(i,j);
             if(currentPosition!==null){
-                figura=currentPosition;
+                this.figura=currentPosition;
             }
             else{
                 alert("Kliknavte na prazno krvadratce");
-                figura=null;
+                this.figura=null;
                 }    
             this.turn=!this.turn;
         }
         else{
             alert("Cekaj, ne si ti na red!")
+            this.figura=null;
         }
     }
     else{
-        placeFigure(i,j);
+        this.placeFigure(i,j);
     }   
 }
 
 Chessboard.prototype.placeFigure= function(i,j) {
     var currentPosition = this.at(i,j);
-    var availableMoves = getAvaliableMovesFromAllMoves(figura);
-    //console.log(availableMoves[0].to.col);
-    //console.log(i,j)
+    var availableMoves = this.getAvaliableMovesFromAllMoves(this.figura);
     var isok=false;
     for(var m = 0; m<availableMoves.length;m++){
        if(availableMoves[m].to.col==j&&availableMoves[m].to.row==i){
@@ -169,20 +168,20 @@ Chessboard.prototype.placeFigure= function(i,j) {
        }}
        
     if(isok){
-        this.board[figura.pos.row][figura.pos.col]=null;
-        figura.pos.col=i;
-        figura.pos.row=j;
-        if(this.board[figura.pos.col][figura.pos.row]!=null){
-            if(this.at(figura.pos.col,figura.pos.row).type='kg'){
+        this.board[this.figura.pos.row][this.figura.pos.col]=null;
+        this.figura.pos.col=i;
+        this.figura.pos.row=j;
+        if(this.board[this.figura.pos.col][this.figura.pos.row]!=null){
+            if(this.at(this.figura.pos.col,this.figura.pos.row).type=='KG'){
                 alert("Game over")
             }
         }
-        c.set(figura.pos.col, figura.pos.row,figura);
-        drawFigures("me");
-        figura=null; 
+        this.set(this.figura.pos.col, this.figura.pos.row,this.figura);
+        this.drawFigures("me");
+        this.figura=null; 
     } 
     else {
-        figura=null;
+        this.figura=null;
         this.turn=!this.turn;
         }    
 }
@@ -202,6 +201,7 @@ Chessboard.prototype.drawFigures= function(name){
 }
 
 Chessboard.prototype.drawChessboard = function(name) {
+    var chessboard=this;
     var divTable = document.createElement('div');
     divTable.id = name;
     divTable.className = 'table';
@@ -219,18 +219,17 @@ Chessboard.prototype.drawChessboard = function(name) {
             span.id = id;            
             td.onmouseover = function(i,j){
                 return function() {
-                    hover(i-1, j);                    
+                    chessboard.hover(i-1, j);                    
                 };
             }(i,j);
             td.onmouseout = function(i,j){
                 return function() {
-                    notHover(i-1, j);
-                    
+                    chessboard.notHover(i-1, j);                    
                 };
             }(i,j);
             td.onclick= function(i,j){
                 return function() {
-                    selectFigure(i-1, j);                    
+                    chessboard.selectFigure(i-1, j);                    
                 };
             }(i,j);
             
@@ -248,8 +247,6 @@ Chessboard.prototype.drawChessboard = function(name) {
     divTable.appendChild(table);
     this.drawFigures(name);
 }
-
-
 
 // ===== Common Types ======
 function Pos(a, b, c) {

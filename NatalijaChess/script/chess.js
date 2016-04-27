@@ -196,19 +196,18 @@ Chessboard.prototype.selectFigure= function(i,j) {
         if(currentPosition!==null){
             if(currentPosition!=null&&((this.turn&&currentPosition.color=='w')||(!this.turn&&currentPosition.color=='b'))){
                  this.figura=currentPosition;
-                 //TODO stavi klasa za border
                  document.getElementById(String.fromCharCode(currentPosition.pos.col + 65) + (currentPosition.pos.row+1)).parentElement.classList.add('bordered')
                  this.turn=!this.turn;
             }
             else{
-                document.getElementById('stats').innerHTML+="Pocekaj, ne si ti na red!!!<br />";
+                document.getElementById('stats').innerHTML+="Wait, it's not your turn!!!<br />";
                 this.figura=null
             }
         }
         else{
-                document.getElementById('stats').innerHTML+="Kliknavte na prazno krvadratce<br />";
+                document.getElementById('stats').innerHTML+="You clicked on empty space<br />";
                 this.figura=null;
-        }
+            }
     }    
     else{
         this.placeFigure(i,j);
@@ -225,13 +224,13 @@ Chessboard.prototype.placeFigure= function(i,j) {
           isok=true;
        }}       
     if(isok){
-            var color;
-    if(this.turn){
-       color='White'; 
-    }else{
-        color='Black';
-    }    
-    document.getElementById('stats').innerHTML+=color+ " player turn!<br />";
+        var color;
+        if(this.turn){
+            color='White'; 
+        }else{
+            color='Black';
+        }    
+        document.getElementById('stats').innerHTML+=color+ " player turn!<br />";
         this.board[this.figura.pos.row][this.figura.pos.col]=null;
         this.figura.pos.col=i;
         this.figura.pos.row=j;
@@ -247,7 +246,7 @@ Chessboard.prototype.placeFigure= function(i,j) {
         this.figura=null; 
     } 
     else {
-        document.getElementById('stats').innerHTML+="Klikanvte na nedozvolena pozicija!<br />";
+        document.getElementById('stats').innerHTML+="This position is not allowed!<br />";
         this.figura=null;
         this.turn=!this.turn;
     }   
@@ -255,7 +254,6 @@ Chessboard.prototype.placeFigure= function(i,j) {
     if(this.at(i,j)&&this.at(i,j).color=='b'){
         this.numMoves++;
     }     
-
 }
 // end of functions for plaing manually
 
@@ -307,7 +305,7 @@ Chessboard.prototype.drawChessboard = function(name) {
     this.drawFigures(name);
 }
 
-Chessboard.prototype.drawFigures= function(name, flag){
+Chessboard.prototype.drawFigures= function(name){
     for (var i = 8; i > 0; i--){
         for (var j = 0; j < 8; j++) {
             var q = '#' + name + '>table>tr>td>#' + (String.fromCharCode(j + 65) + i);
@@ -570,12 +568,7 @@ Pawn.prototype.moves = function() {
 
 // ===== Demo code ======
 var c1 = new Chessboard();
-// var c2 = new Chessboard();
-// var c3 = new Chessboard();
-// var c4 = new Chessboard();
-//c2.play('you');
-//c3.play('he');
-//4.play('she');
+
 function randomGame(){
     c1.reset();
     c1.play("me");

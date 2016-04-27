@@ -17,11 +17,25 @@ function Chessboard() {
 }
 
 function moveFigure(clickFig, i, j, chessboard) {
-	chessboard.board[clickFig.pos.row][clickFig.pos.col] = null;
-	chessboard.board[i - 1][j] = clickFig;
-	//drawTable(chessboard);
-};
+	var flag = false;
+	var legalmoves = clickFig.moves();
+	if (legalmoves != null) {
+		for (var n = 0; n < legalmoves.length; n++) {
+			console.log(legalmoves[n].to.col);
+			console.log(legalmoves[n].to.row);
+			console.log(i, j);
+			if (legalmoves[n].to.col == j && legalmoves[n].to.row == i - 1) {
+				flag = true;
+			}
+		} if (flag) {
+			chessboard.board[clickFig.pos.row][clickFig.pos.col] = null;
+			chessboard.board[i - 1][j] = clickFig;
+			clickFig.pos.row = i - 1;
+			clickFig.pos.col = j;
+		}
+	}
 
+};
 //table draw html dynamicly
 function drawTable(chessboard) {
 	var clickFig;
@@ -34,27 +48,30 @@ function drawTable(chessboard) {
 		tr.id = i;
 		for (var j = 0; j < 8; j++) {
 			var td = document.createElement('td');
-			//console.log(chessboard.at(i-1,j));
+			//	td onclick event for showing posible moves
 			td.addEventListener("click", (function (i, j) {
                 return function () {
 					if (!clickFig) {
-						clickFig = (c.at(i - 1, j));
-						posibleMoves(clickFig);
+						if (chessboard.at(i - 1, j) !== null)
+							if ((chessboard.turn && chessboard.at(i - 1, j).color == 'w') || (!chessboard.turn && chessboard.at(i - 1, j).color == 'b')) {
+								clickFig = (chessboard.at(i - 1, j));
+								chessboard.turn = !chessboard.turn;
+								posibleMoves(clickFig);
+							}
 					} else {
 						moveFigure(clickFig, i, j, chessboard);
 						drawTable(chessboard);
 					}
-					//console.log(clickFig);
                 };
 			})(i, j));
-			// alert(this.getElementsByTagName('span')[i].id);
 			var span = document.createElement('span');
-			// add images at board
+			        // add images at board
 			if (chessboard.at(i - 1, j) != null) {
 				span.innerHTML = chessboard.at(i - 1, j).img;
 			} else {
 				span.innerHTML = "";
 			}
+			//color square black/white with adding class
 			span.id = String.fromCharCode(j + 65) + i;
 			if (i % 2 === 0) {
 				if (j % 2 === 0) {
@@ -76,6 +93,7 @@ function drawTable(chessboard) {
 	}
 	document.getElementById("board").appendChild(table);
 }
+
 //print on chessboard all possosible moves.
 // input paramerter is clicked figure at chessboard
 function posibleMoves(clickFig) {
@@ -85,6 +103,7 @@ function posibleMoves(clickFig) {
 	if (clickFig != null) {
 		toggleSelectedFigure(clickFig);
 		var legalMoves = clickFig.moves();
+		console.log(legalMoves);
 		for (var i = 0; i < legalMoves.length; i++) {
 			// current figure next posible position
 			colTo = legalMoves[i].to.col;
@@ -96,15 +115,8 @@ function posibleMoves(clickFig) {
 			//console.log(spanTmp);
 		}
 		//append the figure to new position in chessboard
-		if (spanTmp.classList.contains('greenSelect')) {
-			spanTmp.addEventListener('click', function () {
-				alert();
-				c.board[colTo][rowTo].innerHTML = clickFig;
-			});
-
-		}
 	} else return false;
-	console.log(legalMoves);
+	// console.log(legalMoves);
 	return legalMoves;
 }
 
@@ -121,6 +133,7 @@ function toggleSelectedFigure(clickFig) {
 //end of draw
 Chessboard.prototype.reset = function () {
 	var i;
+	this.randomPlay;
 	this.turn = true;
 	this.figures = [];
 	this.board = [];
@@ -202,7 +215,7 @@ Chessboard.prototype.play = function () {
 	var nextMove;
 	var whiteTake = [];
 	var blackTake = [];
-	var randomPlay = setInterval(function () {
+	this.randomPlay = setInterval(function () {
 		var allMoves = c.moves();
 		//console.log("" + c);
 		var whitePlayerMoves = allMoves.filter(function (a) {
@@ -226,7 +239,6 @@ Chessboard.prototype.play = function () {
 			chessboard.board[white.from.row][white.from.col] = null;
 			if (chessboard.board[white.to.row][white.to.col] != null) {
 				//console.log(chessboard.board);
-
 				// append takenFigure to div
 				var takenFigure = chessboard.board[white.to.row][white.to.col];
 				var divWhiteTaken = document.getElementById("whiteTaken");
@@ -238,7 +250,7 @@ Chessboard.prototype.play = function () {
 				if (takenFigure.type === "KG") {
 					chessboard.set(white.to.row, white.to.col, white.fig);
 					alert("Game Over");
-					clearInterval(randomPlay);
+					clearInterval(this.randomPlay);
 					return false;
 				}
 			}
@@ -524,13 +536,15 @@ Pawn.prototype.moveSteps = function (steps, turn) {
 }
 // ===== Demo code ======
 var c = new Chessboard();
-var c1 = new Chessboard();
 drawTable(c);
 //random play on click
 document.getElementById("random").addEventListener("click", function () {
+	c.reset();
 	c.play()
 });
 //new game 
 document.getElementById("newGame").addEventListener("click", function () {
-
+    clearInterval(c.randomPlay);
+	c.reset();
+	drawTable(c);
 });

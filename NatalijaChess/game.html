@@ -1,14 +1,25 @@
 <html>
 <head>
     <link rel="stylesheet" href="css/style.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 </head>
 <body>
-    <button onclick="randomGame()" id="randomGameBtn">Play random</button>
-    <button onclick="manualGame()" id="manualGameBtn">Play manually</button>
-    <section>
-        <div id="takenwFigures"></div>
-        <div id="board"></div>
-        <div id="takenbFigures"></div>
+    <section class="row">
+        <div class="col-md-5 col-lg-5">
+            <button onclick="randomGame()" id="randomGameBtn" class="btn btn-lg btn-success">Play random</button>
+            <button onclick="manualGame()" id="manualGameBtn" class="btn btn-lg btn-info">Play manually</button>
+            <hr />
+        </div>
+    </section>
+    
+    <section class="row">
+        <div class="col-lg-5 col-md-5">
+            <div id="takenwFigures"></div>
+            <div id="board"></div>
+            <div id="takenbFigures"></div>
+        </div>
+        <div class="col-lg-7 col-md-7" id="stats"></div>
     </section>
     <script src="script/chess.js"></script>
 </body>

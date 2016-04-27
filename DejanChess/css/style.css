@@ -20,10 +20,7 @@ body {
     margin-left:30%;
     border:5px solid #333; 
 }
-.select {
-    color: lightcoral;
-    
-}
+
 span {
     font-size: 50px;
     position: relative;
@@ -58,5 +55,5 @@ span {
 }
 
 .selected-figure {
-    border: 3px dashed purple;
+    border: 3px dashed lightcoral;
 }

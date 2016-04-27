@@ -16,42 +16,52 @@ function Chessboard() {
 	this.reset();
 }
 
+//Function for moves the figures at single play 
 function moveFigure(clickFig, i, j, chessboard) {
+	//tmp flag variable boolean value
 	var flag = false;
+	//all posible moves for clicked figure
 	var legalmoves = clickFig.moves();
 	if (legalmoves != null) {
 		for (var n = 0; n < legalmoves.length; n++) {
-			console.log(legalmoves[n].to.col);
-			console.log(legalmoves[n].to.row);
-			console.log(i, j);
+			// console.log(legalmoves[n].to.col);
+			// console.log(legalmoves[n].to.row);
+			// console.log(i, j);
 			if (legalmoves[n].to.col == j && legalmoves[n].to.row == i - 1) {
 				flag = true;
 			}
 		} if (flag) {
+			//set the prevision position position to null
 			chessboard.board[clickFig.pos.row][clickFig.pos.col] = null;
 			chessboard.board[i - 1][j] = clickFig;
+			//set the new position
 			clickFig.pos.row = i - 1;
 			clickFig.pos.col = j;
 		}
 	}
-
 };
+
+
 //table draw html dynamicly
 function drawTable(chessboard) {
 	var clickFig;
-	//get div in html
+	//div board in DOM
 	var div = document.getElementById("board");
 	div.innerHTML = "";
+	//get table from DOM
 	var table = document.createElement('table');
 	for (var i = 8; i > 0; i--) {
 		var tr = document.createElement('tr');
 		tr.id = i;
 		for (var j = 0; j < 8; j++) {
 			var td = document.createElement('td');
-			//	td onclick event for showing posible moves
+			//	 onclick event on current td(figure)
+			//   draw with green color all posible moves for this figure
 			td.addEventListener("click", (function (i, j) {
                 return function () {
 					if (!clickFig) {
+						//check wich turn is start with white Figures turn
+						//make movement two times at the same figure is not possible
 						if (chessboard.at(i - 1, j) !== null)
 							if ((chessboard.turn && chessboard.at(i - 1, j).color == 'w') || (!chessboard.turn && chessboard.at(i - 1, j).color == 'b')) {
 								clickFig = (chessboard.at(i - 1, j));
@@ -59,13 +69,15 @@ function drawTable(chessboard) {
 								posibleMoves(clickFig);
 							}
 					} else {
+						//function for move figure to new position
 						moveFigure(clickFig, i, j, chessboard);
+						//draw a new position of table
 						drawTable(chessboard);
 					}
                 };
 			})(i, j));
 			var span = document.createElement('span');
-			        // add images at board
+			// add images at squares board
 			if (chessboard.at(i - 1, j) != null) {
 				span.innerHTML = chessboard.at(i - 1, j).img;
 			} else {
@@ -94,33 +106,34 @@ function drawTable(chessboard) {
 	document.getElementById("board").appendChild(table);
 }
 
-//print on chessboard all possosible moves.
-// input paramerter is clicked figure at chessboard
+
+//select with green color  on chessboard all possosible moves.
+// input paramerter is which figure am clicked at the moment
 function posibleMoves(clickFig) {
 	var col;
 	var row;
-	//get all possible moves from figure
 	if (clickFig != null) {
 		toggleSelectedFigure(clickFig);
+		//get all possible moves from figure
 		var legalMoves = clickFig.moves();
-		console.log(legalMoves);
+		// console.log(legalMoves);
 		for (var i = 0; i < legalMoves.length; i++) {
-			// current figure next posible position
+			// this figure , next posible moves
 			colTo = legalMoves[i].to.col;
 			rowTo = legalMoves[i].to.row;
 			var span = String.fromCharCode(colTo + 65) + (rowTo + 1);
 			//change class of span in chessboard
+			//add greeen color of all posible moves fir this figure
 			spanTmp = document.getElementById(span);
 			spanTmp.parentElement.classList.toggle('greenSelect');
-			//console.log(spanTmp);
 		}
-		//append the figure to new position in chessboard
 	} else return false;
-	// console.log(legalMoves);
 	return legalMoves;
 }
 
 //toogle class for selection figure
+//here add scuare border for selected figure
+//toogle selection add classs / remove class
 function toggleSelectedFigure(clickFig) {
 	var classList = document.getElementById(String.fromCharCode(clickFig.pos.col + 65) + (clickFig.pos.row + 1)).parentNode.classList;
 	if (classList.contains('selected-figure')) {
@@ -128,9 +141,9 @@ function toggleSelectedFigure(clickFig) {
 	} else {
 		document.getElementById(String.fromCharCode(clickFig.pos.col + 65) + (clickFig.pos.row + 1)).parentNode.classList.add('selected-figure');
 	}
-
 };
-//end of draw
+
+
 Chessboard.prototype.reset = function () {
 	var i;
 	this.randomPlay;
@@ -208,6 +221,7 @@ Chessboard.prototype.toString = function () {
 	return s;
 }
 
+//Random play function
 Chessboard.prototype.play = function () {
 	c.turn = true;
 	var currentPlayer;
@@ -215,34 +229,37 @@ Chessboard.prototype.play = function () {
 	var nextMove;
 	var whiteTake = [];
 	var blackTake = [];
+	//set interval for random play
 	this.randomPlay = setInterval(function () {
 		var allMoves = c.moves();
-		//console.log("" + c);
+		//get all posible moves from white figures
 		var whitePlayerMoves = allMoves.filter(function (a) {
 			return a.fig.color.charAt(0) == 'w';
 		});
+		//get all posible moves from black figures
 		var blackPlayerMoves = allMoves.filter(function (b) {
 			return b.fig.color.charAt(0) == 'b';
 		});
 
 		if (c.turn) {
-			//white movments
+			//white move index
 			var whiteIndex = Math.floor(Math.random() * whitePlayerMoves.length);
 			//random from white moves
 			var white = whitePlayerMoves[whiteIndex];
 			//div to write current movement
+			//which turn is....
 			var divResult = document.getElementById("nextPlayer");
 			divResult.innerHTML = ("WHITE turn" + " " + white.fig + " " + "from" + " " + white.from + " " + "to" + " " + white.to);
-			//////////////////////
-
 			//clear current position
 			chessboard.board[white.from.row][white.from.col] = null;
 			if (chessboard.board[white.to.row][white.to.col] != null) {
-				//console.log(chessboard.board);
-				// append takenFigure to div
+				//picked figure
 				var takenFigure = chessboard.board[white.to.row][white.to.col];
+				//display picked white figures
 				var divWhiteTaken = document.getElementById("whiteTaken");
+				// show picked figures to div
 				divWhiteTaken.innerHTML += takenFigure.img;
+				//set old position to null
 				takenFigure.pos.col = null;
 				takenFigure.pos.row = null;
 				//check if king is still alive?
@@ -257,19 +274,20 @@ Chessboard.prototype.play = function () {
 			//set the new position of piece
 			chessboard.set(white.to.row, white.to.col, white.fig);
 		} else {
-			//black movements
+			//black move index
 			var blackIndex = Math.floor(Math.random() * blackPlayerMoves.length);
 			//random from black moves
 			var black = blackPlayerMoves[blackIndex];
 			//div in html to write whitch turn is
 			var divResult = document.getElementById("nextPlayer");
 			divResult.innerHTML = ("BLACK turn" + " " + black.fig + " " + "from" + " " + black.from + " " + "to" + " " + black.to);
-			//////////////////////
+
 			//clear old position
 			chessboard.board[black.from.row][black.from.col] = null;
 			if (chessboard.board[black.to.row][black.to.col] != null) {
-				// append taken figure to div
+				//picked figure
 				var takenFigure = chessboard.board[black.to.row][black.to.col];
+				//display picked figures 
 				var divBlackTaken = document.getElementById("blackTaken");
 				divBlackTaken.innerHTML += takenFigure.img;
 				takenFigure.pos.col = null;
@@ -283,6 +301,7 @@ Chessboard.prototype.play = function () {
 					return false;
 				}
 			}
+			//set new position
 			chessboard.set(black.to.row, black.to.col, black.fig);
 		}
 		c.turn = !c.turn;
@@ -439,7 +458,6 @@ Rook.prototype.moves = function (steps) {
 	return this.moveSteps(steps, true);
 }
 
-
 // ===== Knight Type ======
 
 Figure.parent(Knight);
@@ -495,7 +513,7 @@ Pawn.prototype.moves = function () {
 	return this.moveSteps(steps, false);
 
 }
-//move pawn
+// ===== Pawn Moves ======
 Pawn.prototype.moveSteps = function (steps, turn) {
 	var fig = this;
 	var moves = [];
@@ -520,7 +538,6 @@ Pawn.prototype.moveSteps = function (steps, turn) {
 			moves.push(tmp);
 		}
 	}
-
 	for (var i = 1; i < steps.length; i++) {
 		step = steps[i];
 		tmp = fig.pos.off(step[0], step[1]);
@@ -537,6 +554,8 @@ Pawn.prototype.moveSteps = function (steps, turn) {
 // ===== Demo code ======
 var c = new Chessboard();
 drawTable(c);
+// =====================
+
 //random play on click
 document.getElementById("random").addEventListener("click", function () {
 	c.reset();

@@ -1,0 +1,417 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>Chess</title>
+    <meta name="description" content="Chess project">
+    <meta name="author" content="Daniel Najdenovski">
+
+    <link rel="stylesheet" href="css/css.css">
+    <script src="js/json3.min.js"></script>
+    <script src="js/jquery-1.10.1.min.js"></script>
+
+
+    <!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+    <table id="chess_board" cellpadding="0" cellspacing="0">
+        <tr>
+            <!--<td><a href="#">8</a></td>-->
+            <td id="A8"><a href="#" class="b">&#9820;</a></td>
+            <td id="B8"><a href="#" class="b">&#9822;</a></td>
+            <td id="C8"><a href="#" class="b">&#9821;</a></td>
+            <td id="D8"><a href="#" class="b">&#9819;</a></td>
+            <td id="E8"><a href="#" class="b">&#9818;</a></td>
+            <td id="F8"><a href="#" class="b">&#9821;</a></td>
+            <td id="G8"><a href="#" class="b">&#9822;</a></td>
+            <td id="H8"><a href="#" class="b">&#9820;</a></td>
+        </tr>
+        <tr>
+            <!--<td><a href="#">7</a></td>-->
+            <td id="A7"><a href="#" class="b">&#9823;</a></td>
+            <td id="B7"><a href="#" class="b">&#9823;</a></td>
+            <td id="C7"><a href="#" class="b">&#9823;</a></td>
+            <td id="D7"><a href="#" class="b">&#9823;</a></td>
+            <td id="E7"><a href="#" class="b">&#9823;</a></td>
+            <td id="F7"><a href="#" class="b">&#9823;</a></td>
+            <td id="G7"><a href="#" class="b">&#9823;</a></td>
+            <td id="H7"><a href="#" class="b">&#9823;</a></td>
+        </tr>
+        <tr>
+            <!--<td><a href="#">6</a></td>-->
+            <td id="A6"></td>
+            <td id="B6"></td>
+            <td id="C6"></td>
+            <td id="D6"></td>
+            <td id="E6"></td>
+            <td id="F6"></td>
+            <td id="G6"></td>
+            <td id="H6"></td>
+        </tr>
+        <tr>
+            <!--<td><a href="#">5</a></td>-->
+            <td id="A5"></td>
+            <td id="B5"></td>
+            <td id="C5"></td>
+            <td id="D5"></td>
+            <td id="E5"></td>
+            <td id="F5"></td>
+            <td id="G5"></td>
+            <td id="H5"></td>
+        </tr>
+        <tr>
+            <!--<td><a href="#">4</a></td>-->
+            <td id="A4"></td>
+            <td id="B4"></td>
+            <td id="C4"></td>
+            <td id="D4"></td>
+            <td id="E4"></td>
+            <td id="F4"></td>
+            <td id="G4"></td>
+            <td id="H4"></td>
+        </tr>
+        <tr>
+            <!--<td><a href="#">3</a></td>-->
+            <td id="A3"></td>
+            <td id="B3"></td>
+            <td id="C3"></td>
+            <td id="D3"></td>
+            <td id="E3"></td>
+            <td id="F3"></td>
+            <td id="G3"></td>
+            <td id="H3"></td>
+        </tr>
+        <tr>
+            <!--<td><a href="#">2</a></td>-->
+            <td id="A2"><a href="#" class="w">&#9817;</a></td>
+            <td id="B2"><a href="#" class="w">&#9817;</a></td>
+            <td id="C2"><a href="#" class="w">&#9817;</a></td>
+            <td id="D2"><a href="#" class="w">&#9817;</a></td>
+            <td id="E2"><a href="#" class="w">&#9817;</a></td>
+            <td id="F2"><a href="#" class="w">&#9817;</a></td>
+            <td id="G2"><a href="#" class="w">&#9817;</a></td>
+            <td id="H2"><a href="#" class="w">&#9817;</a></td>
+        </tr>
+        <tr>
+            <!--<td><a href="#">1</a></td>-->
+            <td id="A1"><a href="#" class="w">&#9814;</a></td>
+            <td id="B1"><a href="#" class="w">&#9816;</a></td>
+            <td id="C1"><a href="#" class="w">&#9815;</a></td>
+            <td id="D1"><a href="#" class="w">&#9813;</a></td>
+            <td id="E1"><a href="#" class="w">&#9812;</a></td>
+            <td id="F1"><a href="#" class="w">&#9815;</a></td>
+            <td id="G1"><a href="#" class="w">&#9816;</a></td>
+            <td id="H1"><a href="#" class="w">&#9814;</a></td>
+        </tr>
+
+        <!--<input type="button" id="startPositionBtn" value="Start Position" />-->
+        <input type="button" id="move1Btn" value="Play loop" />
+        <input type="button" id="move2Btn" value="Stop" />
+        <input type="button" id="move3Btn" value="Next move" />
+        <input type="button" id="move4Btn" value="Get positions" />
+        <input type="text" id="fen" size="65px" value="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR" />
+        <input type="text" id="move" size="20px" value="" />
+        <!--<tr>
+            <td></td>
+            <td><a href="#">A</a></td>
+            <td><a href="#">B</a></td>
+            <td><a href="#">C</a></td>
+            <td><a href="#">D</a></td>
+            <td><a href="#">E</a></td>
+            <td><a href="#">F</a></td>
+            <td><a href="#">G</a></td>
+            <td><a href="#">H</a></td>
+        </tr>-->
+
+
+        <script src="js/Chess.js"></script>
+        <script src="js/coordinates.js"></script>
+
+
+        <script>
+            var engine = new Chessboard();
+            var playing;
+            var figureMoves;
+            var selected = false;
+            var selectedFigureMoves;
+            var selectedFigure, selectedPosition;
+            
+            LETTERS = 'ABCDEFGH';
+
+            function drawSelectedFigure(figureTd) {
+                if (!figureTd.classList.contains('selected-figure'))
+                    figureTd.classList.add('selected-figure');
+            };
+
+            function eraseSelectedFigure(figureTd) {
+                if (figureTd.classList.contains('selected-figure'))
+                    figureTd.classList.remove('selected-figure');
+            };
+
+            function drawAvailMove(availMove) {
+                if (!availMove.classList.contains('available-move'))
+                    availMove.classList.add('available-move');
+            };
+
+            function eraseAvailMove(availMove) {
+                if (availMove.classList.contains('available-move'))
+                    availMove.classList.remove('available-move');
+            };
+
+            function eraseAvailMovesAndBorder(moves, figure) {
+                eraseSelectedFigure(figure);
+                for (var i = 0; i < moves.length; i++) {
+                    eraseAvailMove($("#" + moves[i])[0]);
+                }
+
+            };
+
+
+            function returnDiffArrays(array1, array2) {
+
+                var one = array2.filter(function(x) {
+                    return array1.filter(function(y) {
+                        return (x === y);
+                    }).length == 0
+                })
+
+                return one;
+            };
+
+            function getSelectedFigure() {
+                return document.querySelectorAll('#chess_board > tbody > tr > td > a[data-selected="true"]')[0];
+            }
+
+            function makeElementsUnclickableBy(color) {
+                var temp;
+                var disableThisColor = 'b';
+                
+                if(color === 'b') disableThisColor = 'w'; 
+                
+                var figuresByColor = engine.figures.filter(function(x) {
+                    return (x.color !== disableThisColor);
+                })
+              
+                
+                for(var i=0; i<figuresByColor.length;i++) {
+                temp = document.querySelectorAll('#chess_board > tbody > tr > td > a[class~='+disableThisColor+']')[i];
+                $(temp).click(function(){
+                    return false;
+                });
+                }
+                  
+            }
+
+            function makeElementsClickableBy(enableThiscolor) {
+                var figuresByColor = engine.figures.filter(function(x) {
+                    return (x.color === enableThiscolor);
+                })
+              
+                
+                for(var i=0; i<figuresByColor.length;i++) {
+                temp = document.querySelectorAll('#chess_board > tbody > tr > td > a[class~='+enableThiscolor+']')[i];
+                $(temp).click(function(){
+                    return true;
+                });
+                } 
+            }
+
+            $('#chess_board td').click(function() {
+                    
+                    var nextColor = engine.nextColor();
+                    //makeElementsUnclickableBy(nextColor);
+                    
+                    var targetFigure = $(this).find('a').is(':empty') ? null : $(this).find('a')[0];
+                    var targetSquare = ($(this).attr('id'));
+
+                    // var color = engine.getColor(targetSquare);
+                    //var nextColor = engine.nextColor();
+
+                    var selectedFigure = getSelectedFigure();
+                    var selectedSquare = ($(selectedFigure).parent().attr('id'));
+
+                    var targetMoves = engine.getMoves(targetSquare);
+                    var selectedFigureMoves = engine.getMoves(selectedSquare);
+
+                    if (selectedFigure && (selectedFigure !== targetFigure)) {
+                        eraseAvailMovesAndBorder(selectedFigureMoves, selectedFigure);
+                    }
+
+
+
+
+                    if (targetFigure && !selectedFigure) {
+                        console.log(engine.getColor(targetSquare));
+                        if (targetMoves.length !== 0) {
+
+                            drawSelectedFigure(targetFigure);
+                            selectedPosition = targetSquare;
+
+                            for (var i = 0; i < targetMoves.length; i++)
+                                drawAvailMove($("#" + targetMoves[i])[0]);
+
+
+                            targetFigure.dataset.selected = true;
+                            selectedFigure = getSelectedFigure();
+                        }
+
+
+                    } else if (targetFigure && selectedFigure) {
+
+
+
+                        if (targetFigure === selectedFigure) {
+                            eraseAvailMovesAndBorder(selectedFigureMoves, targetFigure);
+                            targetFigure.dataset.selected = '';
+
+                        } else {
+                           // if( targetFigure.classList.contains('w') && selectedFigure.classList.contains('w')  ){
+                            eraseAvailMovesAndBorder(selectedFigureMoves, selectedFigure);
+                            selectedFigure.dataset.selected = '';
+
+                            targetFigure.dataset.selected = true;
+                            drawSelectedFigure(targetFigure);
+
+                            for (var i = 0; i < targetMoves.length; i++)
+                                drawAvailMove($("#" + targetMoves[i])[0]);
+
+                            selectedFigure = targetFigure;}
+                        //}
+                    } else if (!targetFigure && selectedFigure) {
+                        var flag;
+                        var canImove = selectedFigureMoves.filter(function(x) {
+                            return (x === targetSquare);
+                        })
+
+                        for (var i = 0; i < canImove.length; i++)
+                            if (canImove[i] === targetSquare) flag = true;
+
+                        if (flag) {
+                            $('#' + targetSquare).html(selectedFigure);
+                            $('#' + selectedSquare).html('');
+
+                            selectedFigure.dataset.selected = '';
+                            eraseAvailMovesAndBorder(selectedFigureMoves, selectedFigure);
+                            engine.fenMove(targetSquare, selectedSquare);
+                            engine.move++;
+                           // makeElementsClickableBy(nextColor);
+                            console.log(" " + engine);
+                        } else {
+                            console.log('That move is not allowed');
+                        }
+
+                        // TODO 
+                    } else if (!targetFigure && !selectedFigure) {
+
+                        // TODO 
+                        console.log('Clicked on empty target square. Nothing happens');
+                    } else {
+                        //TODO
+                        console.log('Situation not handled. SHOULD NOT GO HERE.');
+                    }
+                    /* } else {
+                         console.log('Please choose ' + nextColor + ' figure');
+                         alert('Please choose ' + nextColor + ' figure'); */
+
+
+                }
+
+            );
+
+
+            $('#chess_board td').mouseover(function() {
+                var square = ($(this).attr('id'));
+
+                var figure = $(this).find('a').is(':empty') ? null : $(this).find('a')[0];
+                if (figure) {
+                    figureMoves = engine.getMoves(square);
+
+                    console.log(figureMoves);
+                    for (var i = 0; i < figureMoves.length; i++) {
+                        console.log(figureMoves[i]);
+                        drawAvailMove($("#" + figureMoves[i])[0]);
+                    }
+                }
+            });
+
+
+            $('#chess_board td').mouseout(function() {
+                var square = ($(this).attr('id'));
+                var figure = $(this).find('a').is(':empty') ? null : $(this).find('a')[0];
+
+                var selectedFigure = getSelectedFigure();
+                var selectedSquare = ($(selectedFigure).parent().attr('id'));
+                var selectedFigureMoves = engine.getMoves(selectedSquare);
+
+                if (figure && !figure.classList.contains('selected-figure')) {
+                    figureMoves = engine.getMoves(square);
+
+
+                    if (selectedFigure) {
+
+                        figureMoves = returnDiffArrays(selectedFigureMoves, figureMoves);
+                    }
+
+                    console.log(figureMoves);
+                    for (var i = 0; i < figureMoves.length; i++) {
+                        console.log(figureMoves[i]);
+                        eraseAvailMove($("#" + figureMoves[i])[0]);
+
+                    }
+
+                }
+            });
+
+
+
+
+
+
+
+
+            $('#startPositionBtn').on('click', function() {
+
+                //engine = new Chessboard();
+            });
+
+            $('#move1Btn').on('click', function playLoop() {
+                playing = setInterval(function() {
+                    var nextMove = engine.playEngine();
+
+                    document.getElementById('move').value = "Move: " + nextMove;
+
+                    document.getElementById('fen').value = engine.fen();
+
+                    (function() {
+                        if (engine.stopPlayingCondition()) {
+                            clearInterval(playing);
+                            alert("THE END");
+                        }
+                    })();
+
+                }, 3000);
+            });
+
+            $('#move2Btn').on('click', function() {
+
+                clearInterval(playing);
+            });
+
+            $('#move3Btn').on('click', function() {
+                engine.playEngine();
+
+            });
+
+            $('#move4Btn').on('click', function() {
+                alert(engine.fen());
+            });
+        </script>
+</body>
+
+</html>

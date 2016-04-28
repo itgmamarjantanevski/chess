@@ -143,7 +143,6 @@ function toggleSelectedFigure(clickFig) {
 	}
 };
 
-
 Chessboard.prototype.reset = function () {
 	var i;
 	this.randomPlay;
@@ -222,6 +221,7 @@ Chessboard.prototype.toString = function () {
 }
 
 //Random play function
+// var play = ... ;
 Chessboard.prototype.play = function () {
 	c.turn = true;
 	var currentPlayer;
@@ -267,7 +267,7 @@ Chessboard.prototype.play = function () {
 				if (takenFigure.type === "KG") {
 					chessboard.set(white.to.row, white.to.col, white.fig);
 					alert("Game Over");
-					clearInterval(this.randomPlay);
+					clearInterval(c.randomPlay);
 					return false;
 				}
 			}
@@ -297,7 +297,7 @@ Chessboard.prototype.play = function () {
 				if (takenFigure.type === "KG") {
 					chessboard.set(black.to.row, black.to.col, black.fig);
 					alert("Game Over");
-					clearInterval(randomPlay);
+					clearInterval(c.randomPlay);
 					return false;
 				}
 			}
@@ -306,7 +306,7 @@ Chessboard.prototype.play = function () {
 		}
 		c.turn = !c.turn;
 		drawTable(c);
-	}, 500);
+	}, 100);
 }
 
 

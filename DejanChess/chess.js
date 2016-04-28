@@ -221,6 +221,7 @@ Chessboard.prototype.toString = function () {
 }
 
 //Random play function
+// var play = ... ;
 Chessboard.prototype.play = function () {
 	c.turn = true;
 	var currentPlayer;

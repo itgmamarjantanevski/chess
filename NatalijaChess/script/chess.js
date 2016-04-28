@@ -26,28 +26,28 @@ Chessboard.prototype.reset = function() {
     this.board = [];
     for (i = 0; i < 8; i++) this.board[i] = [null, null, null, null, null, null, null, null];
 
-    this.set(0, 0, new Rook(WHITE, "&#9814", 1));
-    this.set(0, 1, new Knight(WHITE, "&#9816;", 1));
-    this.set(0, 2, new Laufer(WHITE, "&#9815;", 1));
-    this.set(0, 3, new Queen(WHITE, "&#9813"));
-    this.set(0, 4, new King(WHITE, "&#9812"));
-    this.set(0, 5, new Laufer(WHITE, "&#9815;", 2));
-    this.set(0, 6, new Knight(WHITE, "&#9816;", 2));
-    this.set(0, 7, new Rook(WHITE, "&#9814", 2));
+    this.set(0, 0, new Rook(WHITE, "&#9814", 5, 5, 1));
+    this.set(0, 1, new Knight(WHITE, "&#9816;", 3, 3, 1));
+    this.set(0, 2, new Laufer(WHITE, "&#9815;", 3, 3, 1));
+    this.set(0, 3, new Queen(WHITE, "&#9813", 9, 9));
+    this.set(0, 4, new King(WHITE, "&#9812", 1, 10));
+    this.set(0, 5, new Laufer(WHITE, "&#9815;", 3, 3, 2));
+    this.set(0, 6, new Knight(WHITE, "&#9816;", 3, 3, 2));
+    this.set(0, 7, new Rook(WHITE, "&#9814", 5, 5, 2));
 
     for (i = 0; i < 8; i++) {
-        this.set(1, i, new Pawn(WHITE, "&#9817;", i + 1));
-        this.set(6, i, new Pawn(BLACK, "&#9823;", i + 1));
+        this.set(1, i, new Pawn(WHITE, "&#9817;", 1, 1, i + 1));
+        this.set(6, i, new Pawn(BLACK, "&#9823;", 1, 1, i + 1));
     }
 
-    this.set(7, 0, new Rook(BLACK, "&#9820;", 1));
-    this.set(7, 1, new Knight(BLACK, "&#9822;", 1));
-    this.set(7, 2, new Laufer(BLACK, "&#9821;", 1));
-    this.set(7, 3, new Queen(BLACK, "&#9819;"));
-    this.set(7, 4, new King(BLACK, "&#9818;"));
-    this.set(7, 5, new Laufer(BLACK, "&#9821;", 2));
-    this.set(7, 6, new Knight(BLACK, "&#9822;", 2));
-    this.set(7, 7, new Rook(BLACK, "&#9820;", 2));
+    this.set(7, 0, new Rook(BLACK, "&#9820;", 5, 5, 1));
+    this.set(7, 1, new Knight(BLACK, "&#9822;", 3, 5, 1));
+    this.set(7, 2, new Laufer(BLACK, "&#9821;", 3, 3, 1));
+    this.set(7, 3, new Queen(BLACK, "&#9819;", 9, 9));
+    this.set(7, 4, new King(BLACK, "&#9818;", 1, 10));
+    this.set(7, 5, new Laufer(BLACK, "&#9821;", 3, 3, 2));
+    this.set(7, 6, new Knight(BLACK, "&#9822;", 3, 3, 2));
+    this.set(7, 7, new Rook(BLACK, "&#9820;", 5, 5, 2));
    
     //reset timer, div for takend figures
     document.getElementById('board').innerHTML="";
@@ -101,7 +101,10 @@ Chessboard.prototype.toString = function() {
     s += '   A   B   C   D   E   F   G   H\n';
     return s;
 }
-//functions for playing random
+// ===== functions for playing random ======
+
+//get available moves for white and black player
+//and play alternately in order
 Chessboard.prototype.play = function(name) {
     var chessboard = this;
     this.drawChessboard(name);
@@ -119,23 +122,66 @@ Chessboard.prototype.play = function(name) {
             }
         );
         var nextMove;
-        if (chessboard.turn === true) {
-            nextMove = Math.floor(Math.random() * whiteMoves.length);
-            flag = chessboard.makeMove(whiteMoves[nextMove], "white", name);
+        if (chessboard.turn === true) {     
+            nextMove=chessboard.findNextMove(whiteMoves);   
+            flag = chessboard.makeMove(nextMove, "white", name);
         }
         else {
             chessboard.numMoves++;
-            nextMove = Math.floor(Math.random() * blackMoves.length);
-            flag = chessboard.makeMove(blackMoves[nextMove], "black", name);
+            nextMove = chessboard.findNextMove(blackMoves);
+            flag = chessboard.makeMove(nextMove, "black", name);
         }
         chessboard.drawFigures(name, flag);
         if (!flag) {
             clearTimeout(chessboard.timeOut);
         }
         chessboard.turn = !chessboard.turn;
-    }, 500);
+    }, 1000);
+}
+//find the best move(serach of all posiblle moves there is only one move that can take opposite fugure, that move is returned,
+//if there are more than one move, then check the vale of figure that will be taken, adn return move with max value,
+//if there are more that one moves with the same max value, then random move of them is returned
+//if there are no moves that can take samo opposite figure, then random move from the list of all possible moves is returned
+Chessboard.prototype.findNextMove= function(possibleMoves){
+    var valueNextMove = [];
+    var valueTakenFigure = [];
+    var finalMoves=[];    
+    var nextMove;        
+    //if playing next move some figure will be taken
+    for(var tmp = 0;tmp<possibleMoves.length;tmp++){
+        if(this.at(possibleMoves[tmp].to.row,possibleMoves[tmp].to.col)!==null){
+         valueNextMove.push(possibleMoves[tmp]);
+        }
+    }
+    nextMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];  
+    //if in array is only one element then make that move
+    if(valueNextMove.length==1){
+        nextMove = valueNextMove[0];  
+    }
+    //if in array there are more moves put the value of figures that will be taken in array
+    else if(valueNextMove.length>1){
+            for(tmp=0; tmp<valueNextMove.length;tmp++){
+                valueTakenFigure.push(valueNextMove[tmp].fig.valueForTaking);
+            }
+            //sort and reverse the array to get the max value od figure that acn be taken
+            valueTakenFigure.sort();
+            valueTakenFigure.reverse();
+            //get the max value
+            var mostValued = valueTakenFigure[0];
+            //find the figures with that value(there can me more than one figure with the same value)
+            for(tmp = 0 ; tmp<valueNextMove.length;tmp++){
+                if(mostValued==valueNextMove[tmp].fig.valueForTaking)  {
+                finalMoves.push(valueNextMove[tmp]);
+                }
+            } 
+            //take random(if there are more than one)
+            nextMove = finalMoves[Math.floor(Math.random() * finalMoves.length)];  
+         }
+    return nextMove;
 }
 
+//pritn stats, and check if the next position od the figure is not null, that figure is deleted from chessboard,
+//and check if that figure is King - the Game is over
 Chessboard.prototype.makeMove = function(figNextMove, player, chessboardName) {
     var chessboard= this;
     document.getElementById('stats').innerHTML+="Next " + player + " move on chessboard "+chessboardName+": " + figNextMove.fig + " from pos: " + figNextMove.from + " to position: " + figNextMove.to + "<br />";
@@ -154,10 +200,11 @@ Chessboard.prototype.makeMove = function(figNextMove, player, chessboardName) {
     chessboard.set(figNextMove.to.row, figNextMove.to.col, figNextMove.fig);
     return true;
 }
+// ===== end of functions for playing random ======
 
-//end of functions for playing random
+// ===== function for playing manually ======
 
-//function for playing manually
+//hovers the posiblle moves for hovered figure
 Chessboard.prototype.hover = function(i,j){
     var currentMoves = this.getElementByCoordinates(i,j);
     if(currentMoves && currentMoves.length!=0){
@@ -168,6 +215,7 @@ Chessboard.prototype.hover = function(i,j){
     }        
 }
 
+//return to original condition positions for pervios hovered figure
 Chessboard.prototype.notHover= function(i,j){
     var currentMoves = this.getElementByCoordinates(i,j);
     if(currentMoves && currentMoves.length!=0){
@@ -178,6 +226,7 @@ Chessboard.prototype.notHover= function(i,j){
     }        
 }
 
+//return posiblle movements for the figure witch is placed on postion i and j
 Chessboard.prototype.getElementByCoordinates= function(i,j){
     var currentFigure = this.at(i,j);
     if(currentFigure!=null){
@@ -188,7 +237,7 @@ Chessboard.prototype.getElementByCoordinates= function(i,j){
     }   
 }
 
-
+//select the figure that is clicked, and check possible clicks on postions that are not allowed
 Chessboard.prototype.selectFigure= function(i,j) { 
     this.notHover(i,j);
     if(this.figura===null){
@@ -214,6 +263,8 @@ Chessboard.prototype.selectFigure= function(i,j) {
     }
 }
 
+//place the figure on clicked place, pritn stats, and check if the next position od the figure is not null, that figure is deleted from chessboard,
+//and check if that figure is King - the Game is over 
 Chessboard.prototype.placeFigure= function(i,j) {
     document.getElementById(String.fromCharCode(this.figura.pos.col + 65) + (this.figura.pos.row+1)).parentElement.classList.remove('bordered')
     var currentPosition = this.at(i,j);
@@ -255,9 +306,11 @@ Chessboard.prototype.placeFigure= function(i,j) {
         this.numMoves++;
     }     
 }
-// end of functions for plaing manually
+// ===== end of functions for plaing manually ======
 
-//common functions (for playin mannualy and random)
+// ===== common functions (for playin mannualy and random) ======
+
+//drawing chessboard(function is called only the first time)
 Chessboard.prototype.drawChessboard = function(name) {
     var chessboard=this;
     var divTable = document.createElement('div');
@@ -305,6 +358,7 @@ Chessboard.prototype.drawChessboard = function(name) {
     this.drawFigures(name);
 }
 
+//drawing figures on chessboard(function is called everytime some postion of figure is changed)
 Chessboard.prototype.drawFigures= function(name){
     for (var i = 8; i > 0; i--){
         for (var j = 0; j < 8; j++) {
@@ -356,10 +410,12 @@ Movement.prototype.toString = function() {
 
 // ===== Figure Type ======
 
-function Figure(type, color, img, index) {
+function Figure(type, color, img, valueforPlaying, valueForTaking, index) {
     this.type = type;
     this.color = color;
     this.img = img;
+    this.valueforPlaying = valueforPlaying;
+    this.valueForTaking = valueForTaking;
     if (index) this.index = index;
 }
 
@@ -511,9 +567,11 @@ Laufer.prototype.moves = function() {
 // ===== Pawn Type ======
 
 Figure.parent(Pawn);
-function Pawn(color, img, index, pos) {
-    this.init('P', color, img, index, pos);
+function Pawn(color, img, valueforPlaying, valueForTaking, index, pos) {
+    this.init('P', color, img, valueforPlaying, valueForTaking, index, pos);
 }
+
+//possible moves for Pawn
 Pawn.prototype.moveSteps = function(steps, numMoves) {
     var fig = this;
     var moves = [];
@@ -525,7 +583,7 @@ Pawn.prototype.moveSteps = function(steps, numMoves) {
             return [obj[0], obj[1]];
         });
     }
-    //da se dvizi
+    //for moving on emty postion
     var step = steps[0];
     var tmp = fig.pos.off(step[0], step[1]);
     var at = this.board.at(tmp);
@@ -539,7 +597,7 @@ Pawn.prototype.moveSteps = function(steps, numMoves) {
             moves.push(tmp);
         }
     }
-    //da zema
+    //for taking opposite figure
     for (var i = 1; i < steps.length; i++) {
         step = steps[i];
         tmp = fig.pos.off(step[0], step[1]);
@@ -569,11 +627,13 @@ Pawn.prototype.moves = function() {
 // ===== Demo code ======
 var c1 = new Chessboard();
 
+//button for random game
 function randomGame(){
     c1.reset();
     c1.play("me");
 }
 
+//button for manual game
 function manualGame(){
     c1.reset();
     c1.drawChessboard("me");

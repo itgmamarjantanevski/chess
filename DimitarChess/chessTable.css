@@ -2,3 +2,10 @@ td{
     width: 80px;
     height: 80px;  
 }
+
+.available-moves {
+    background-color: green !important;
+}
+.available-moves-take-figure {
+    background-color: red !important;
+}

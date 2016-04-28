@@ -12,139 +12,69 @@ var BLACK = 'b';
 var LETTERS = 'abcdefgh';
 var lettersPossition = [];
 var br = 0;
-var figureToMove = null;
-var figureMoveColor = true;
-var brW = 0;
-var brB = 0;
+var figureToMove;
 
 for(var i = 0; i < 8; i++){
 	lettersPossition.push(LETTERS[i]);
 }
 
-//Pomestuvanje na figurata
-//Vo figureToMove ja imam figurata
-function movingYourFiugre(tr, td){
-	// console.log(tr);
-	// console.log(tr.dataset.row);
-	// console.log(td);
-	// console.log(td.dataset.col);
-	// console.log(figureToMove.pos.row);
-	// console.log(figureToMove.pos.col);
-	// console.log(figureToMove.moves());	
-	// console.log(figureToMove.pos);
-	// console.log(figureToMove.moves()[0].to);
+function showEnablePossitions(possition){
+	// console.log('show=' + possition);
+	var possitionParts = [];
+	var realPossitionParts = [];
+	//Go vadam posebno site mozno pozicii za da mozam da mu ja zemam pozicijata
+	var s = "" + possition[0];		
+	var f = s.substring(0,3);
+	for(var i = 0; i < possition.length; i++){
+		var s = "" + possition[i];		
+		var p = s.split(">");
+		realPossitionParts.push(p[1]);
+	}
+	console.log('Real=' + realPossitionParts);
+	console.log('F=' + f);
 	
-	if(figureMoveColor){
-		if(figureToMove.color == "w"){
-			for(var i = 0; i < figureToMove.moves().length; i++){
-				// console.log("---" + figureToMove.moves()[i].to.row);
-				// console.log("---" + figureToMove.moves()[i].to.col);
-				// console.log("---" + tr.dataset.row);
-				// console.log("---" + td.dataset.col);
-				if(figureToMove.moves()[i].to.row == tr.dataset.row && figureToMove.moves()[i].to.col == td.dataset.col){
-					var pom1 = figureToMove.pos.row;
-					var pom2 = figureToMove.pos.col;
-					c.set(Number.parseInt(tr.dataset.row), Number.parseInt(td.dataset.col), figureToMove);
-					c.board[pom1][pom2] = null;
-					c.drawChessTable();
-					if(figureMoveColor){
-						figureMoveColor = false;
-					}else{
-						figureMoveColor = true;
-					}
+	var realPArrayX = [];
+	var realPArrayY = [];	
+	for(var i = 0; i < realPossitionParts.length; i++){			
+		realPArrayX.push(realPossitionParts[i][1]-1);
+		realPArrayY.push(lettersPossition.indexOf(realPossitionParts[i][0]));
+	}
+	// console.log(realPArrayX + " " + realPArrayY);
+	return realPArrayX.concat(realPArrayY);		
+};
+
+//Proverka dali kliknatata figura ima mozni potezi	
+function checkAveliable(kor){
+	if(kor.length == 0){
+		alert("Your figure doesn't have available moves!");
+	}	
+};
+
+//Dvizenje na figurata + brisenje na starata 
+function movingYourFiugre(x, y){
+	// console.log("FigTM->" + figToM);
+	// console.log("I->" + x);	
+	// console.log("J->" + y);	
+	if(figureToMove != null){
+		for(var i=0;i<8;i++){
+			for(var j=0;j<8;j++){
+				// console.log(c.board[i][j]);
+				// console.log(figureToMove);
+				if(c.board[i][j] == figureToMove){
+					console.log(c.board[i][j]);
+					console.log(figureToMove);
+					c.board[i][j] = null;
 				}
 			}
-		}else{
-			alert("Figure white it's your turn!");
-		}	
-	}else{
-		if(figureToMove.color == "b"){
-			for(var i = 0; i < figureToMove.moves().length; i++){
-				// console.log("---" + figureToMove.moves()[i].to.row);
-				// console.log("---" + figureToMove.moves()[i].to.col);
-				// console.log("---" + tr.dataset.row);
-				// console.log("---" + td.dataset.col);
-				if(figureToMove.moves()[i].to.row == tr.dataset.row && figureToMove.moves()[i].to.col == td.dataset.col){
-					var pom1 = figureToMove.pos.row;
-					var pom2 = figureToMove.pos.col;
-					c.set(Number.parseInt(tr.dataset.row), Number.parseInt(td.dataset.col), figureToMove);
-					c.board[pom1][pom2] = null;
-					c.drawChessTable();
-					if(figureMoveColor){
-						figureMoveColor = false;
-					}else{
-						figureMoveColor = true;
-					}
-				}	
-			}	
-		}else{
-			alert("Figure black it's your turn!");
-		}	
+		}
+		c.set(x, y, figureToMove);
+		c.drawChessTable();
 	}
 	figureToMove = null;
 };
 
-//Tuka ja zema figurata
-function takeFigure(figure){
-	if(figureToMove.color == figure.color){
-		console.log(figureToMove);
-		c.board[figureToMove.pos.row][figureToMove.pos.col] = null;
-					
-	}
-};
-
-//Funkcija od gi oboj zeleni polinjata so se available za odredena figura
-function drawAvailableMoves(availableMoves){
-	//Boja zelena na site available pozici
-	for(var i=0; i < availableMoves.length; i++){
-		var movement = availableMoves[i];
-		var q = '#chessboard tr[data-row="' + movement.to.row + '"] td[data-col="' +  movement.to.col + '"]';
-		var td = document.querySelectorAll(q)[0];
-//		console.log(td);
-		
-		if(!td.classList.contains('available-moves'))
-			td.classList.add('available-moves');
-	}
-	
-	//Boja crvena na site available pozici za zemanje na figura
-	for(var i=0; i < availableMoves.length; i++){
-		var movement = availableMoves[i];
-		var q = '#chessboard tr[data-row="' + movement.to.row + '"] td[data-col="' +  movement.to.col + '"]';
-		var td = document.querySelectorAll(q)[0];
-		//console.log(td);
-		
-		if(td.innerHTML != "")
-			td.classList.add('available-moves-take-figure');
-	}
-	
-};
-
-function drawDisableAvailableMoves(availableMoves){
-	//Brisenje na boja zelena na site available pozici
-	for(var i=0; i < availableMoves.length; i++){
-		var movement = availableMoves[i];
-		var q = '#chessboard tr[data-row="' + movement.to.row + '"] td[data-col="' + movement.to.col + '"]';
-		var td = document.querySelectorAll(q)[0];
-		//console.log(td);
-		
-		if(td.classList.contains('available-moves'))
-			td.classList.remove('available-moves');
-	}
-
-	//Brisenje na boja crvena na site available pozici za zemanje na figura
-	for(var i=0; i < availableMoves.length; i++){
-		var movement = availableMoves[i];
-		var q = '#chessboard tr[data-row="' + movement.to.row + '"] td[data-col="' +  movement.to.col + '"]';
-		var td = document.querySelectorAll(q)[0];
-		//console.log(td);
-		
-		if(td.innerHTML != "")
-			td.classList.remove('available-moves-take-figure');
-	}
-};
-
 //Pecatenje na tablata celo/griavo + sliki
-Chessboard.prototype.drawChessTable = function(){
+Chessboard.prototype.drawChessTable = function(kor){
 	var i = 0;
 	var j = 0;	
 	var table = document.createElement("table");
@@ -152,10 +82,10 @@ Chessboard.prototype.drawChessTable = function(){
 	//Pecatenje na cela tabla so available moves
 	for(i=0;i<9;i++){
 		var tr = document.createElement("tr");
-		tr.dataset.row = i;
+		tr.dataset.row = (i + 1);
 		for(j=0;j<8;j++){
 			var td = document.createElement("td");
-			td.dataset.col = j;
+			td.dataset.col = String.fromCharCode(64 + (j+1));
 			if(i == 8){
 				td.style.backgroundColor = "white";
 				td.innerHTML = LETTERS[j].toUpperCase();
@@ -173,57 +103,65 @@ Chessboard.prototype.drawChessTable = function(){
 					img.src = "images/" + figure.color+figure.type + ".png";
 					var poss = img.src;
 					
-					img.addEventListener('mouseenter', (function (figure) {
+					img.addEventListener('click', (function (figure) {
 						return function(){
+							var colorP = [];
 							var availMoves = figure.moves();
-							if(availMoves.length > 0 )
-								drawAvailableMoves(figure.moves());
-							else
+							if(availMoves.length > 0 ){
+								colorP = showEnablePossitions(figure.moves()); 
+								console.log(colorP);
+								c.drawChessTable(colorP);
+								checkAveliable(colorP);
+								figureToMove = figure;
+							}
+							else{
 								console.log('No moves: null');
+							}
 						};
 					})(figure));
 					
 					img.addEventListener('mouseout', (function (figure) {
 						return function(){
-							var availMoves = figure.moves();
-							if(availMoves.length > 0 )
-								drawDisableAvailableMoves(figure.moves());
-							else
-								console.log('No moves: null');
+							// console.log('Figura=' + figure.moves());
+							// console.log("asd");
+							//c.drawChessTable(null);
 						};
 					})(figure));
-					
-					img.addEventListener('click', (function (figure, tr, td) {
-						return function(){
-							var availMoves = figure.moves();
-							if(availMoves.length > 0 ){
-								// console.log("---" + c.board[Number.parseInt(tr.dataset.row)][Number.parseInt(td.dataset.col)]);
-								// if(c.board[Number.parseInt(tr.dataset.row)][Number.parseInt(td.dataset.col)]){
-								figureToMove = figure;									
-							}
-							else{
-								console.log('No moves: null');
-								figureToMove = null;
-							}
-						};
-					})(figure, tr, td));
 					
 					td.appendChild(img);
 				}else{
 					//Tuka ako se klikni na prazna pozicija tuka vidi dali mozi da 
 					//se pomesti figurata so ti se naoga vo figureToMove
 				    // console.log("---------------" + this.board[i][j]);
-					td.addEventListener('click', (function (tr, td) {
+					td.onclick = (function (i, j) {
 						return function(){
 							if(figureToMove != null){
-								var availMoves = figureToMove.moves();
-								if(availMoves.length > 0 )
-									movingYourFiugre(tr, td);
-								else
-									console.log('No moves: null');
+								//alert("Selektirana e figurata " + figureToMove);								
+								movingYourFiugre(i, j);
 							}
 						};
-					})(tr, td));
+					})(i, j);
+					
+				}
+				//Tuka ja pustame cela niza so koordinati so ni se 
+				//Prajme deleno so 2 posto preku eden element zemame
+				// console.log("---------------" + kor);
+				if(kor != null){
+					if(kor.length == 2){
+						//Vo slucaj da vrati edna pozicija togas nemame preku eden
+						if(kor[0] == i && kor[1] == j){
+							td.style.backgroundColor = "green";
+						}
+					}else{
+						for(var k = 0; k < kor.length/2; k++){
+							//console.log("-" + kor[k] + " = " + kor[k+2]);
+							if(kor[k] == i && kor[k+2] == j){
+								console.log("-" + kor[k]);
+								console.log("-" + kor[k+2]);
+								td.style.backgroundColor = "green";
+							}
+						}	
+					}
 				}
 			}
 			tr.appendChild(td);
@@ -237,7 +175,7 @@ Chessboard.prototype.drawChessTable = function(){
 // Self-contained instance of a chessboard
 function Chessboard() {
 	this.reset();
-};	
+}	
 
 Chessboard.prototype.reset = function() {
 	var i;
@@ -384,28 +322,9 @@ Figure.prototype.moveSteps = function(steps, repeat) {
     var moves = [];
     var movement = this.board.move;
     var twoSquares=true;
-   	var twoSquares1=true;
-   	var twoSquares2=true;
    
     if(arguments[0] && fig instanceof Pawn)
     {
-		//Tuka ako pozicijata na Pawn e ednakvo nekoe pole na null
-		//od redica 1 ili redica 6 togas smej samo 1 zeleno pole	
-		for(var k = 0; k < 8; k++){
-			if(fig.color == "w")
-				if(c.board[1][k] == null){
-					twoSquares1 = false;
-					twoSquares2 = false;
-					break;
-				}
-			if(fig.color == "b")
-				if(c.board[6][k] == null){
-					twoSquares1 = false;
-					twoSquares2 = false;
-					break;
-				}
-		}
-		
       var color = (fig.color == WHITE) ? +1 : -1;
       for(var i=0 ; i<4 ; i++)
       {
@@ -421,18 +340,13 @@ Figure.prototype.moveSteps = function(steps, repeat) {
           }
           case 1:
           {   
-			if(twoSquares && twoSquares1)
-			{
-				tmp = fig.pos.off((2*color),0);
-				at = this.board.at(tmp);
-				if(at === null) moves.push(tmp);
-			}else if(twoSquares && twoSquares2)
-			{
-				tmp = fig.pos.off((2*color),0);
-				at = this.board.at(tmp);
-				if(at === null) moves.push(tmp);
-			}
-			continue;
+            if(twoSquares)
+            {
+              tmp = fig.pos.off((2*color),0);
+              at = this.board.at(tmp);
+              if(at === null) moves.push(tmp);
+            }
+            continue;
           }
           case 2:
           {
@@ -520,7 +434,7 @@ King.prototype.moves = function() {
 	    [ 0, -1],
 	    [+1, -1]
 	 ];
-	return this.moveSteps(steps, false);
+	return this.moveSteps(steps, true);
 }
 
 // ===== Queen Type ======

@@ -58,6 +58,6 @@ span {
 }
 
 .selected-figure {
-    color: lightcoral;
+  border:3px dashed lightcoral;
 }
 

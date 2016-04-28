@@ -563,6 +563,11 @@ document.getElementById("random").addEventListener("click", function () {
 });
 //new game 
 document.getElementById("newGame").addEventListener("click", function () {
+	//clear side figures around board
+	var divBlackTaken = document.getElementById("blackTaken");
+	divBlackTaken.innerHTML = '';
+	var divWhiteTaken = document.getElementById("whiteTaken");
+	divWhiteTaken.innerHTML = '';
     clearInterval(c.randomPlay);
 	c.reset();
 	drawTable(c);

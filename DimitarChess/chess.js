@@ -16,6 +16,7 @@ var figureToMove = null;
 var figureMoveColor = true;
 var brW = 0;
 var brB = 0;
+var takenFigures = [];
 
 for(var i = 0; i < 8; i++){
 	lettersPossition.push(LETTERS[i]);
@@ -42,15 +43,40 @@ function movingYourFiugre(tr, td){
 				// console.log("---" + tr.dataset.row);
 				// console.log("---" + td.dataset.col);
 				if(figureToMove.moves()[i].to.row == tr.dataset.row && figureToMove.moves()[i].to.col == td.dataset.col){
+//					console.log("--->" + c.board[tr.dataset.row][td.dataset.col]);
 					var pom1 = figureToMove.pos.row;
 					var pom2 = figureToMove.pos.col;
-					c.set(Number.parseInt(tr.dataset.row), Number.parseInt(td.dataset.col), figureToMove);
-					c.board[pom1][pom2] = null;
-					c.drawChessTable();
-					if(figureMoveColor){
-						figureMoveColor = false;
+					if(c.board[tr.dataset.row][td.dataset.col] == null){
+						c.set(Number.parseInt(tr.dataset.row), Number.parseInt(td.dataset.col), figureToMove);
+						c.board[pom1][pom2] = null;
+						c.drawChessTable();
+						if(figureMoveColor){
+							figureMoveColor = false;
+						}else{
+							figureMoveColor = true;
+						}
 					}else{
-						figureMoveColor = true;
+						if(c.at(tr.dataset.row, td.dataset.col).type == "KG"){
+							alert("WHITE is the winner, GAME OVER!");
+							document.getElementById("takenFiguresW").innerHTML = "";
+							c.reset();
+							c.drawChessTable();
+						}else{
+							console.log("-->" + c.at(tr.dataset.row, td.dataset.col));
+							takenFigures.push(c.at(tr.dataset.row, td.dataset.col));
+							var figure = c.at(tr.dataset.row, td.dataset.col);
+							var img = new Image();
+							img.src = "images/" + figure.color+figure.type + ".png";
+							document.getElementById("takenFiguresW").appendChild(img);
+							c.set(Number.parseInt(tr.dataset.row), Number.parseInt(td.dataset.col), figureToMove);
+							c.board[pom1][pom2] = null;
+							c.drawChessTable();
+							if(figureMoveColor){
+								figureMoveColor = false;
+							}else{
+								figureMoveColor = true;
+							}
+						}
 					}
 				}
 			}
@@ -65,17 +91,42 @@ function movingYourFiugre(tr, td){
 				// console.log("---" + tr.dataset.row);
 				// console.log("---" + td.dataset.col);
 				if(figureToMove.moves()[i].to.row == tr.dataset.row && figureToMove.moves()[i].to.col == td.dataset.col){
+//					console.log("--->" + c.board[tr.dataset.row][td.dataset.col]);
 					var pom1 = figureToMove.pos.row;
 					var pom2 = figureToMove.pos.col;
-					c.set(Number.parseInt(tr.dataset.row), Number.parseInt(td.dataset.col), figureToMove);
-					c.board[pom1][pom2] = null;
-					c.drawChessTable();
-					if(figureMoveColor){
-						figureMoveColor = false;
+					if(c.board[tr.dataset.row][td.dataset.col] == null){
+						c.set(Number.parseInt(tr.dataset.row), Number.parseInt(td.dataset.col), figureToMove);
+						c.board[pom1][pom2] = null;
+						c.drawChessTable();
+						if(figureMoveColor){
+							figureMoveColor = false;
+						}else{
+							figureMoveColor = true;
+						}
 					}else{
-						figureMoveColor = true;
+						if(c.at(tr.dataset.row, td.dataset.col).type == "KG"){
+							alert("BLACK is the winner, GAME OVER!");
+							document.getElementById("takenFiguresB").innerHTML = "";
+							c.reset();
+							c.drawChessTable();
+						}else{
+							console.log("-->" + c.at(tr.dataset.row, td.dataset.col));
+							takenFigures.push(c.at(tr.dataset.row, td.dataset.col));
+							var figure = c.at(tr.dataset.row, td.dataset.col);
+							var img = new Image();
+							img.src = "images/" + figure.color+figure.type + ".png";
+							document.getElementById("takenFiguresB").appendChild(img);
+							c.set(Number.parseInt(tr.dataset.row), Number.parseInt(td.dataset.col), figureToMove);
+							c.board[pom1][pom2] = null;
+							c.drawChessTable();
+							if(figureMoveColor){
+								figureMoveColor = false;
+							}else{
+								figureMoveColor = true;
+							}
+						}
 					}
-				}	
+				}
 			}	
 		}else{
 			alert("Figure black it's your turn!");
@@ -85,13 +136,14 @@ function movingYourFiugre(tr, td){
 };
 
 //Tuka ja zema figurata
-function takeFigure(figure){
+/*function takeFigure(figure){
 	if(figureToMove.color == figure.color){
 		console.log(figureToMove);
 		c.board[figureToMove.pos.row][figureToMove.pos.col] = null;
 					
 	}
 };
+*/
 
 //Funkcija od gi oboj zeleni polinjata so se available za odredena figura
 function drawAvailableMoves(availableMoves){
@@ -196,12 +248,21 @@ Chessboard.prototype.drawChessTable = function(){
 					img.addEventListener('click', (function (figure, tr, td) {
 						return function(){
 							var availMoves = figure.moves();
-							if(availMoves.length > 0 ){
+/*							if(availMoves.length > 0){
 								// console.log("---" + c.board[Number.parseInt(tr.dataset.row)][Number.parseInt(td.dataset.col)]);
 								// if(c.board[Number.parseInt(tr.dataset.row)][Number.parseInt(td.dataset.col)]){
-								figureToMove = figure;									
+								figureToMove = figure;				
 							}
 							else{
+								console.log('No moves: null');
+								figureToMove = null;
+							}
+	*/ 
+							if(availMoves.length > 0 && figureToMove == null){
+								figureToMove = figure;				
+							}else if(availMoves.length > 0 && figureToMove != null){
+								movingYourFiugre(tr, td);
+							}else{
 								console.log('No moves: null');
 								figureToMove = null;
 							}

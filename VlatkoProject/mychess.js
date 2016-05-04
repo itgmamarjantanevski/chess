@@ -341,6 +341,14 @@ function Pawn(color, index, pos) {
 }
 
 Pawn.prototype.moves = function() {
+	 var fig = this;
+	    var board = this.board;
+	    var pos = this.pos;
+	    var steps = [
+	        [+1, 0],
+	        [+1, -1],
+	        [+1, +1]
+	    ];
 	return this.moveSteps(true);
 }
 

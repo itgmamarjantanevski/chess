@@ -5,6 +5,7 @@
     
 }
 
+
 #chessBoard{
     width: 604px;
     height: 604px;
@@ -55,4 +56,21 @@
 
 body{
     background: grey;
+}
+
+.imgForm{
+    /*margin-left: 2px;
+    margin-right: 2px;*/
+    margin: 2px;
+    max-width: 49px;
+    max-height: 49px;
+}
+
+img:hover{
+    vertical-align:bottom;
+    background-color:chartreuse;
+}
+
+img:onclick{
+    
 }

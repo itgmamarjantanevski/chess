@@ -1,26 +1,26 @@
-<html>
-<head>
-    <link rel="stylesheet" href="css/style.css">
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-</head>
-<body>
-    <section class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-5">
-            <button onclick="randomGame()" id="randomGameBtn" class="btn btn-lg btn-success">Play random</button>
-            <button onclick="manualGame()" id="manualGameBtn" class="btn btn-lg btn-info">Play manually</button>
-            <hr />
+<html lang='en-US'>
+    <head>
+        <title> Natalija Chess Game </title>
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        <meta charset="utf-8">
+    </head>
+    <body>
+       <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-5">
+                <button id="randomGameBtn" class="btn btn-lg btn-success">Play random</button>
+                <button id="manualGameBtn" class="btn btn-lg btn-info">Play manually</button>
+                <hr />
+            </div>
+        </div>        
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-lg-5 col-md-6">
+                <div id="takenwFigures"></div>
+                <div id="board"></div>
+                <div id="takenbFigures"></div>
+            </div>
+            <div class=" col-sm-7 col-lg-7 col-md-7" id="stats"></div>
         </div>
-    </section>
-    
-    <section class="row">
-        <div class="col-xs-12 col-sm-12 col-lg-5 col-md-6">
-            <div id="takenwFigures"></div>
-            <div id="board"></div>
-            <div id="takenbFigures"></div>
-        </div>
-        <div class=" col-sm-7 col-lg-7 col-md-7" id="stats"></div>
-    </section>
-    <script src="script/chess.js"></script>
-</body>
+        <script src="script/chess.js" > </script>
+    </body>
 </html>

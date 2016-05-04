@@ -136,7 +136,7 @@ Chessboard.prototype.play = function(name) {
             clearTimeout(chessboard.timeOut);
         }
         chessboard.turn = !chessboard.turn;
-    }, 1000);
+    }, 500);
 }
 //find the best move(serach of all posiblle moves there is only one move that can take opposite fugure, that move is returned,
 //if there are more than one move, then check the vale of figure that will be taken, adn return move with max value,
@@ -250,7 +250,7 @@ Chessboard.prototype.selectFigure= function(i,j) {
             }
             else{
                 document.getElementById('stats').innerHTML+="Wait, it's not your turn!!!<br />";
-                this.figura=null
+                this.figura=null;
             }
         }
         else{
@@ -267,7 +267,6 @@ Chessboard.prototype.selectFigure= function(i,j) {
 //and check if that figure is King - the Game is over 
 Chessboard.prototype.placeFigure= function(i,j) {
     document.getElementById(String.fromCharCode(this.figura.pos.col + 65) + (this.figura.pos.row+1)).parentElement.classList.remove('bordered')
-    var currentPosition = this.at(i,j);
     var availableMoves = this.figura.moves();
     var isok=false;
     for(var m = 0; m<availableMoves.length;m++){
@@ -628,13 +627,13 @@ Pawn.prototype.moves = function() {
 var c1 = new Chessboard();
 
 //button for random game
-function randomGame(){
+document.getElementById("randomGameBtn").onclick = function(){
     c1.reset();
     c1.play("me");
 }
 
 //button for manual game
-function manualGame(){
+document.getElementById("manualGameBtn").onclick= function(){
     c1.reset();
     c1.drawChessboard("me");
     document.getElementById('stats').innerHTML+="White player turn!<br />";

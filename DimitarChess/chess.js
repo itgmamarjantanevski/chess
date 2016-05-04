@@ -260,8 +260,10 @@ Chessboard.prototype.drawChessTable = function(){
 	*/ 
 							if(availMoves.length > 0 && figureToMove == null){
 								figureToMove = figure;				
-							}else if(availMoves.length > 0 && figureToMove != null){
-								movingYourFiugre(tr, td);
+							}else if(figureToMove != null){
+								if(figureToMove.moves().length > 0){
+									movingYourFiugre(tr, td);
+								}
 							}else{
 								console.log('No moves: null');
 								figureToMove = null;
